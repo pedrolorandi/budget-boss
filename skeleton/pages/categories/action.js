@@ -10,8 +10,7 @@ export default function CategoryAction() {
   
   return(
     <div>
-      <div>Add A Category</div>
-      <Form onSubmit={handleSubmit} name='category'/>
+      <Form onSubmit={handleSubmit} name='category' text='Add A Category' />
     </div>
   )
 }

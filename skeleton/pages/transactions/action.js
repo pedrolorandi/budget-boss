@@ -10,8 +10,7 @@ export default function TransactionAction() {
   
   return(
     <div>
-      <div>Add A Transaction</div>
-      <Form onSubmit={handleSubmit} name='transaction'/>
+      <Form onSubmit={handleSubmit} name='transaction' text='Add A Transaction'/>
     </div>
   )
 }

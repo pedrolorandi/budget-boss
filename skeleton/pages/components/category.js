@@ -5,8 +5,11 @@ export default function Category() {
   console.log(category); //for testing
 
   return (
-    <div>
-      <select id='category' value={category} onChange={e => setCategory(e.target.value)}> {/* the value property of the select element = user's selection */}
+    <div className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+      <select 
+      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      id='category' value={category} onChange={e => setCategory(e.target.value)}
+      > {/* the value property of the select element = user's selection */}
         <option value='Clothing'>Clothing</option>
         <option value='Dining Out'>Dining Out</option>
         <option value='Education'>Education</option>
