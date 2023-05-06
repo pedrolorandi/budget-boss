@@ -31,4 +31,4 @@ yarn-error.log*
 # vercel
 .vercel
 
-dev.db
+/prisma/dev.db
