@@ -30,8 +30,6 @@ export default function Transactions({ month, year, transactions }) {
       });
   };
 
-  console.log(currentMonth, currentYear);
-
   return (
     <main className="flex flex-col p-5">
       <div className="flex flex-row mb-5 space-x-5">

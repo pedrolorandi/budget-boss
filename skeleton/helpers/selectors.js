@@ -12,13 +12,13 @@ export async function getTransactions(userId, month, year) {
   const prisma = new PrismaClient();
   const transactions = await prisma.transaction.findMany({
     where: {
-      sources: { user: { id: userId } },
+      source: { user: { id: userId } },
       AND: [
         { date: { gte: new Date(year, month - 1, 1) } },
         { date: { lt: new Date(year, month, 1) } },
       ],
     },
-    include: { sources: true, categories: true },
+    include: { source: true, category: true },
   });
 
   const formattedTransactions = transactions.map((transaction) => {

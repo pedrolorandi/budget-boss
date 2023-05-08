@@ -1,5 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { categoryIcons, formatDate } from "../../helpers/formatters.js";
+import {
+  categoryIcons,
+  formatDate,
+  formatAmount,
+} from "../../helpers/formatters.js";
 
 export default function TransactionList({ transactions }) {
   return (
@@ -15,18 +19,21 @@ export default function TransactionList({ transactions }) {
                   <div key={transaction.id} className="flex mt-5">
                     <div className="flex items-center w-16">
                       <FontAwesomeIcon
-                        icon={categoryIcons(transaction.categories.name)}
+                        icon={categoryIcons(transaction.category.name)}
                         size="3x"
                       />
                     </div>
                     <div className="flex flex-col ms-5 flex-1 justify-center">
                       <div className="flex font-semibold text-xl">
-                        {transaction.title}
+                        {transaction.source.name}: {transaction.title}
                       </div>
                       <div className="flex text-sm">{transaction.date}</div>
                     </div>
                     <div className="flex items-center font-bold text-xl">
-                      -${transaction.amountDecimal}
+                      {formatAmount(
+                        transaction.type,
+                        transaction.amountDecimal
+                      )}
                     </div>
                   </div>
                 );
