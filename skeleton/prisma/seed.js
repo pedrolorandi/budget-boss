@@ -40,15 +40,17 @@ async function main() {
   ]);
 
   const transactionPromises = transactions.map(async (transaction) => {
+    console.log(transaction);
     return prisma.transaction.create({ data: transaction });
   });
 }
 
 main()
-  .catch((e) => {
-    console.log(e);
-    process.exit(1);
-  })
-  .finally(async () => {
+  .then(async () => {
     await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
   });
