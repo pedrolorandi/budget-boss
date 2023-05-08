@@ -5,7 +5,30 @@ import { PrismaClient } from "@prisma/client";
 export default function Reports({ categories, categoriesPercentages }) {
   const [categoriesData, setCategoriesData] = useState({
     labels: categories,
-    datasets: [{ label: "Test", data: categoriesPercentages }],
+    datasets: [
+      {
+        label: "Categories",
+        data: categoriesPercentages,
+        backgroundColor: [
+          "#FCED29",
+          "#FBB03B",
+          "#F15A25",
+          "#ED1B24",
+          "#C2272F",
+          "#93268F",
+          "#652D92",
+          "#2D3194",
+          "#0071BD",
+          "#2AABE4",
+          "#01A89E",
+          "#23B574",
+          "#006837",
+          "#019247",
+          "#3AB54D",
+          "#8DC640",
+        ],
+      },
+    ],
   });
 
   return (
@@ -36,7 +59,6 @@ export async function getServerSideProps() {
     },
   });
 
-  console.log(categories);
   const sortedCategoreies = categories.map((category) => category.name);
 
   const totalTransactions = categories.reduce(
@@ -46,7 +68,7 @@ export async function getServerSideProps() {
 
   const categoriesPercentages = categories.map((category) => {
     const numTransactions = category.transactions.length;
-    return (numTransactions / totalTransactions) * 100;
+    return ((numTransactions / totalTransactions) * 100).toFixed(2);
   });
 
   return {
