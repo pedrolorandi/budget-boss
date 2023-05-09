@@ -1,12 +1,33 @@
 import React from 'react';
 
-export default function Form({onSubmit, type, text, categories, accounts, titleRef, cateRef, amountRef, accountRef, sourRef}) {
+export default function Form({onSubmit, type, text, categories, accounts, titleRef, cateRef, amountRef, accountRef, sourRef, typeValue, handleOnChange}) {
   
   return (
     <div className="flex items-center h-screen">
-      {type === 'transaction' && (
         <form onSubmit={onSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mx-auto">
           <h1 className="text-xl font-bold mb-4">{text}</h1>
+
+          {type === 'transaction' && (
+            <>
+              <label style={{paddingRight: "160px"}}>
+                <input 
+                  type='radio' name='circle' value='Income' onChange={handleOnChange} checked={typeValue === 'Income'}
+                  style={{ display: 'inline-block', width: '20px', height: '20px', borderRadius: '50%', border: '1px solid black', marginRight: '5px', backgroundColor: typeValue === "Income" ? 'black' : '#FFFFFF' }}
+                  />
+                Income
+              </label>
+
+              <label>
+                <input 
+                type='radio' name='circle' value='Expense' onChange={handleOnChange} checked={typeValue === 'Expense'} 
+                style={{ display: 'inline-block', width: '20px', height: '20px', borderRadius: '50%', border: '1px solid black', marginRight: '5px', backgroundColor: typeValue === "Expense" ? 'black' : '#FFFFFF' }}
+                /> 
+                Expense 
+              </label>
+              <br />
+            </>
+          )}
+
           <label>
             Title:
             <input 
@@ -73,7 +94,6 @@ export default function Form({onSubmit, type, text, categories, accounts, titleR
             Submit
           </button>
         </form>
-        )}
     </div>
   );
 }

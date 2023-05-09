@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Form from "../../components/add-edit-delete/form";
 import { PrismaClient } from '@prisma/client'
 import axios from 'axios';
@@ -9,10 +9,12 @@ export default function AddTransaction({categories, accounts}) {
   const amountRef = useRef(); 
   const accountRef = useRef(); 
   const sourRef = useRef(); 
+  const [typeValue, setTypeValue] = useState('');
   
   function handleSubmit(event) {
     event.preventDefault();
     const inputValue = {
+      type: typeValue,
       title: titleRef.current.value,
       categoryId: Number(cateRef.current.value),
       amountDecimal: amountRef.current.value*100,
@@ -29,7 +31,8 @@ export default function AddTransaction({categories, accounts}) {
   return(
     <div>
       <Form onSubmit={handleSubmit} 
-      titleRef={titleRef} cateRef={cateRef} amountRef={amountRef} accountRef={accountRef} sourRef={sourRef}
+      titleRef={titleRef} cateRef={cateRef} amountRef={amountRef} accountRef={accountRef} sourRef={sourRef} typeValue={typeValue}
+      handleOnChange={event => setTypeValue(event.target.value)}
       type='transaction' text='Add A Transaction' categories={categories} accounts={accounts}/>
     </div>
   )
