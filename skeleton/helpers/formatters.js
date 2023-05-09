@@ -61,3 +61,7 @@ export function formatTransaction(type, amount) {
 
   return signal + "$" + (amount / 100).toFixed(2);
 }
+
+export function formatCategoryClassName(category) {
+  return category.toLowerCase().replaceAll(" ", "_").replace("&", "n");
+}

@@ -1,5 +1,4 @@
 import TransactionList from "@/components/ui/TransactionsList";
-import { PrismaClient } from "@prisma/client";
 
 import { getDateByMonthYear, getTransactions } from "../../helpers/selectors";
 import axios from "axios";
@@ -30,8 +29,6 @@ export default function Transactions({ month, year, transactions }) {
       });
   };
 
-  console.log(currentMonth, currentYear);
-
   return (
     <main className="flex flex-col p-5">
       <div className="flex flex-row mb-5 space-x-5">
@@ -61,8 +58,6 @@ export default function Transactions({ month, year, transactions }) {
 }
 
 export async function getServerSideProps() {
-  const prisma = new PrismaClient();
-
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
   const transactions = await getTransactions(1, currentMonth, currentYear);
