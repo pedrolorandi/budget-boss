@@ -15,7 +15,7 @@ export default function TransactionList({ transactions }) {
                   <div key={transaction.id} className="flex mt-5">
                     <div className="flex items-center w-16">
                       <FontAwesomeIcon
-                        icon={categoryIcons(transaction.categories.name)}
+                        icon={categoryIcons(transaction.Category.name)}
                         size="3x"
                       />
                     </div>

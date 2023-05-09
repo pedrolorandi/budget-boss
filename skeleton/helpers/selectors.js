@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/prisma/prismaclient";
 
 export function getDateByMonthYear(month, year) {
   const monthName = new Date(year, month - 1, 1).toLocaleString("default", {
@@ -9,16 +9,15 @@ export function getDateByMonthYear(month, year) {
 }
 
 export async function getTransactions(userId, month, year) {
-  const prisma = new PrismaClient();
   const transactions = await prisma.transaction.findMany({
     where: {
-      sources: { user: { id: userId } },
+      Source: { User: { id: userId } },
       AND: [
         { date: { gte: new Date(year, month - 1, 1) } },
         { date: { lt: new Date(year, month, 1) } },
       ],
     },
-    include: { sources: true, categories: true },
+    include: { Source: true, Category: true },
   });
 
   const formattedTransactions = transactions.map((transaction) => {

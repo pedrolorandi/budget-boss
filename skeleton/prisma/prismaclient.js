@@ -1,4 +1,3 @@
-// push into main for future use
 import { PrismaClient } from "@prisma/client";
 
 let prisma;
