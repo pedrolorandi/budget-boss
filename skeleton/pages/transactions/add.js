@@ -23,7 +23,7 @@ export default function AddTransaction({categories, accounts}) {
       date: new Date().toISOString()
     }
     console.log('submit is clicked!');
-    axios.post('/api/transaction', inputValue)
+    axios.post('/api/transaction/add', inputValue)
     .then(res => console.log('res', res))
     .catch(error => console.log(error.response.status));
   }
