@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client'
 import axios from 'axios';
 
 import Form from "../../components/add-edit-delete/form";
-import useHooks from '../../hooks/custom-hooks';
+import useHook from '../../hooks/useHook';
 
 export default function AddTransaction({categories, accounts}) {
   const {
@@ -14,7 +14,7 @@ export default function AddTransaction({categories, accounts}) {
     sourRef,
     typeValue,
     setTypeValue
-  } = useHooks();
+  } = useHook();
   
   function handleSubmit(event) {
     event.preventDefault();
@@ -31,7 +31,7 @@ export default function AddTransaction({categories, accounts}) {
 
     axios.post('/api/transaction/add', inputValue)
     .then(res => console.log('res', res))
-    .catch(error => console.log(error.response.status));
+    .catch(error => console.log(error.response));
   }
   
   return(

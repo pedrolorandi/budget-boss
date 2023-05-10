@@ -33,7 +33,7 @@ export default function Form({onSubmit, type, text, categories, accounts, titleR
             Title:
             <input 
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="text" ref={titleRef} placeholder={transaction && transaction.title && transaction.title}
+            type="text" ref={titleRef} placeholder={transaction && transaction.title}
             />
           </label>
           <br />
@@ -58,7 +58,7 @@ export default function Form({onSubmit, type, text, categories, accounts, titleR
             Expense Amount:
             <input 
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="text" ref={amountRef} placeholder={transaction && transaction.amountDecimal && transaction.amountDecimal/100}
+            type="text" ref={amountRef} placeholder={transaction && transaction.amountDecimal/100}
             />
           </label>
           <br />
@@ -83,7 +83,7 @@ export default function Form({onSubmit, type, text, categories, accounts, titleR
             Source:
             <input 
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type='text' ref={sourRef} placeholder={transaction && transaction.sourceId && transactionSource}
+            type='text' ref={sourRef} placeholder={transaction && transactionSource}
             />
           </label>
           <br/>

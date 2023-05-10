@@ -1,6 +1,6 @@
 import React, {useRef, useState} from 'react';
 
-export default function useHooks () {
+export default function useHook () {
   const titleRef = useRef(); //create a mutable value that persists across re-renders and doesn't trigger a re-render when it is updated.
   const cateRef = useRef(); 
   const amountRef = useRef(); 
