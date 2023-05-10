@@ -41,9 +41,9 @@ export default function AddTransaction({transaction, categories, accounts, sourc
 
 export async function getServerSideProps(content) {
   const prisma = new PrismaClient();
-  const userId = Number(content.params.id); //got the id here
+  const transactionID = Number(content.params.id); //got the id here
   const transaction = await prisma.transaction.findUnique({
-    where: {id: userId}
+    where: {id: transactionID}
   })
 
   const categories = await prisma.category.findMany();
