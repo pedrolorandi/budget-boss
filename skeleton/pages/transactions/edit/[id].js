@@ -3,12 +3,14 @@ import Form from "../../../components/add-edit-delete/form"
 import { PrismaClient } from '@prisma/client'
 import axios from 'axios';
 
-export default function AddTransaction({transaction, categories, accounts }) {
+export default function AddTransaction({transaction, categories, accounts, sources }) {
   const titleRef = useRef(); 
   const cateRef = useRef(); 
   const amountRef = useRef(); 
   const accountRef = useRef(); 
   const sourRef = useRef(); 
+  
+  const transactionSource = sources.find(source => source.id === transaction.sourceId).name;
   
   function handleSubmit(event) {
     event.preventDefault();
@@ -32,7 +34,7 @@ export default function AddTransaction({transaction, categories, accounts }) {
     <div>
       <Form onSubmit={handleSubmit} 
       titleRef={titleRef} cateRef={cateRef} amountRef={amountRef} accountRef={accountRef} sourRef={sourRef}
-      type='Edit' text='Edit A Transaction' categories={categories} accounts={accounts}/>
+      type='Edit' text='Edit A Transaction' transaction={transaction} categories={categories} accounts={accounts} transactionSource={transactionSource} />
     </div>
   )
 }
@@ -46,6 +48,7 @@ export async function getServerSideProps(content) {
 
   const categories = await prisma.category.findMany();
   const accounts = await prisma.account.findMany();
+  const sources = await prisma.source.findMany();
 
   return {
     props: {
@@ -54,7 +57,8 @@ export async function getServerSideProps(content) {
         date: transaction.date.toISOString()
       },
       categories,
-      accounts
+      accounts,
+      sources
     }
   }
 };

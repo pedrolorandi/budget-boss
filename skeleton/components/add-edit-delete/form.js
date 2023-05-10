@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Form({onSubmit, type, text, categories, accounts, titleRef, cateRef, amountRef, accountRef, sourRef, typeValue, handleOnChange}) {
+export default function Form({onSubmit, type, text, categories, accounts, titleRef, cateRef, amountRef, accountRef, sourRef, typeValue, handleOnChange, transaction, transactionSource}) {
   
   return (
     <div className="flex items-center h-screen">
@@ -27,12 +27,13 @@ export default function Form({onSubmit, type, text, categories, accounts, titleR
               <br />
             </>
           )}
+          <br />
 
           <label>
             Title:
             <input 
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="text" ref={titleRef}
+            type="text" ref={titleRef} placeholder={transaction && transaction.title && transaction.title}
             />
           </label>
           <br />
@@ -43,7 +44,7 @@ export default function Form({onSubmit, type, text, categories, accounts, titleR
             <div className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
               <select 
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id='category' ref={cateRef}
+              id='category' ref={cateRef} 
               >
               {categories && categories.map(category => {
                 return <option value={category.id} key={category.id}>{category.name}</option>
@@ -52,13 +53,12 @@ export default function Form({onSubmit, type, text, categories, accounts, titleR
             </div>
           </label>
           <br />
-          <br/>
           
           <label>
             Expense Amount:
             <input 
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="text" ref={amountRef}
+            type="text" ref={amountRef} placeholder={transaction && transaction.amountDecimal && transaction.amountDecimal/100}
             />
           </label>
           <br />
@@ -69,7 +69,7 @@ export default function Form({onSubmit, type, text, categories, accounts, titleR
             <div className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
               <select 
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id='account' ref={accountRef}
+              id='account' ref={accountRef} 
               >
               {accounts && accounts.map(account => {
                 return <option value={account.id} key={account.id}>{account.name}</option>
@@ -78,13 +78,12 @@ export default function Form({onSubmit, type, text, categories, accounts, titleR
             </div>
           </label>
           <br/>
-          <br/>
           
           <label>
-            Sources:
+            Source:
             <input 
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type='text' ref={sourRef}
+            type='text' ref={sourRef} placeholder={transaction && transaction.sourceId && transactionSource}
             />
           </label>
           <br/>
