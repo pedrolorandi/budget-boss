@@ -1,5 +1,6 @@
 import { formatCategoryClassName, pieChartColors } from "@/helpers/formatters";
 import PieChart from "../components/ui/PieChart";
+import Chart from "../components/ui/RunningTotalChart";
 
 import {
   getDateByMonthYear,
@@ -8,6 +9,7 @@ import {
 } from "../helpers/selectors";
 import axios from "axios";
 import { useState } from "react";
+import { PrismaClient } from "@prisma/client";
 
 export default function Reports({
   month,
@@ -15,9 +17,11 @@ export default function Reports({
   categories,
   categoriesPercentages,
   percentagePerCategory,
+  dates,
+  incomes,
+  expenses,
+  currentRunningTotal,
 }) {
-  const [currentPercentagePerCategory, setCurrentPercentagePerCategory] =
-    useState(percentagePerCategory);
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
   const [currentCategories, setCurrentCategories] = useState({
@@ -26,6 +30,33 @@ export default function Reports({
         label: "Percentage",
         data: categoriesPercentages,
         backgroundColor: getPieChartColors(),
+      },
+    ],
+  });
+  const [currentPercentagePerCategory, setCurrentPercentagePerCategory] =
+    useState(percentagePerCategory);
+  const [currentRunningTotalData, setCurrentRunningTotalData] = useState({
+    labels: dates,
+    datasets: [
+      {
+        type: "line",
+        label: "Running Total",
+        borderColor: "rgb(255, 99, 132)",
+        backgroundColor: "rgba(53, 162, 235, 0.5)",
+        fill: true,
+        data: currentRunningTotal,
+      },
+      {
+        type: "bar",
+        label: "Incomes",
+        backgroundColor: "rgb(75, 192, 192)",
+        data: incomes,
+      },
+      {
+        type: "bar",
+        label: "Expenses",
+        backgroundColor: "rgb(53, 162, 235)",
+        data: expenses,
       },
     ],
   });
@@ -97,11 +128,15 @@ export default function Reports({
           <PieChart chartData={currentCategories} />
         </div>
       </div>
+      <div className="flex w-full">
+        <Chart chartData={currentRunningTotalData} />
+      </div>
     </main>
   );
 }
 
 export async function getServerSideProps() {
+  const prisma = new PrismaClient();
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
 
@@ -113,6 +148,66 @@ export async function getServerSideProps() {
     percentagePerCategory,
   } = await getCategoriesData(1, currentMonth, currentYear);
 
+  /*--------------*/
+  // Running Total
+  const transactions = await prisma.transaction.findMany({
+    where: {
+      source: { user: { id: 1 } },
+    },
+    include: { source: true, category: true },
+    orderBy: {
+      date: "asc",
+    },
+  });
+
+  // Refactor
+
+  const dates = [];
+  const incomes = [];
+  const expenses = [];
+  const runningTotal = [];
+  const currentRunningTotal = [];
+  let currentTotal = 0;
+
+  transactions.forEach(({ date, type, amountDecimal }, i) => {
+    const formattedDate = date.toLocaleDateString();
+
+    type === "Income"
+      ? (currentTotal += amountDecimal / 100)
+      : (currentTotal -= amountDecimal / 100);
+
+    if (
+      transactions[i - 1] &&
+      formattedDate === transactions[i - 1].date.toLocaleDateString()
+    ) {
+      runningTotal[runningTotal.length - 1] = currentTotal;
+    } else {
+      runningTotal.push(currentTotal);
+    }
+
+    if (
+      Number(formattedDate.split("/")[0]) === currentMonth &&
+      Number(formattedDate.split("/")[2]) === currentYear
+    ) {
+      if (
+        transactions[i - 1] &&
+        formattedDate === transactions[i - 1].date.toLocaleDateString()
+      ) {
+        incomes[incomes.length - 1] +=
+          type === "Income" ? amountDecimal / 100 : 0;
+        expenses[expenses.length - 1] +=
+          type === "Expenses" ? amountDecimal / 100 : 0;
+        currentRunningTotal[currentRunningTotal.length - 1] =
+          runningTotal[runningTotal.length - 1];
+      } else {
+        dates.push(formattedDate);
+        incomes.push(type === "Income" ? amountDecimal / 100 : 0);
+        expenses.push(type === "Expense" ? amountDecimal / 100 : 0);
+        currentRunningTotal.push(currentTotal);
+      }
+    }
+  });
+
   return {
     props: {
       month,
@@ -120,6 +215,10 @@ export async function getServerSideProps() {
       categories,
       categoriesPercentages,
       percentagePerCategory,
+      dates,
+      incomes,
+      expenses,
+      currentRunningTotal,
     },
   };
 }
