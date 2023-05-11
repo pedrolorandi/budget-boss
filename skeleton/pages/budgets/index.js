@@ -26,6 +26,7 @@ export default function Budgets({
     <div>
       <BudgetCategoriesList
         transactionsByCategory={transactionsByCategory}
+        budgets={budgets}
       ></BudgetCategoriesList>
     </div>
   );
