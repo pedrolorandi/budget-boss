@@ -56,7 +56,10 @@ export async function getTransactions(userId, month, year) {
 export async function add_edit (inputValue, action){
   const prisma = new PrismaClient();
   const inputSource = inputValue.sourceId //user's input of source in text
-  const sources = await prisma.source.findMany();
+  const sources = await prisma.source.findMany({
+    where: {"userId": 1}
+  })
+  console.log(sources);
 
   //check if the recorded source is already in the source table. If not, we'll add a new row to the source table with the recorded source name as well.
   let sourceID = 0

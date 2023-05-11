@@ -2,7 +2,7 @@ import React from "react";
 import { PrismaClient } from '@prisma/client'
 import axios from 'axios';
 
-import Form from "../../components/add-edit-delete/form";
+import Form from "../../components/ui/Form";
 import useHook from '../../hooks/useHook';
 
 export default function AddTransaction({categories, accounts}) {
@@ -49,7 +49,9 @@ export default function AddTransaction({categories, accounts}) {
 export async function getServerSideProps() {
   const prisma = new PrismaClient();
   const categories = await prisma.category.findMany(); //names of the tables are in the seed.js file
-  const accounts = await prisma.account.findMany();
+  const accounts = await prisma.account.findMany({
+    where: {userId: 1}
+  });
 
   return {
     props: { categories, accounts },

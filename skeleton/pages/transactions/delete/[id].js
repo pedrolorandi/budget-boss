@@ -7,7 +7,7 @@ export default function DeleteTransaction({transactionID}) {
   const {route} = useHook();
 
   function Delete () {
-    axios.post('/api/transaction/delete', {id: transactionID})
+    axios.delete('/api/transaction/delete', {data: {id: transactionID}})
     .then(res => {
       console.log('res', res)
       route.push('/transactions')

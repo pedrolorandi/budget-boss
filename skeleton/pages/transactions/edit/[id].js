@@ -2,7 +2,7 @@ import React from "react";
 import { PrismaClient } from '@prisma/client'
 import axios from 'axios';
 
-import Form from "../../../components/add-edit-delete/form"
+import Form from "../../../components/ui/Form"
 import useHook from '../../../hooks/useHook'
 
 export default function EditTransaction({transaction, categories, accounts, sources }) {
@@ -30,7 +30,7 @@ export default function EditTransaction({transaction, categories, accounts, sour
       date: new Date().toISOString()
     }
 
-    axios.post('/api/transaction/edit', inputValue)
+    axios.put('/api/transaction/edit', inputValue)
     .then(res => console.log('res', res))
     .catch(error => console.log(error.response));
   }
@@ -53,8 +53,12 @@ export async function getServerSideProps(content) {
     where: {id: transactionID}
   })
   const categories = await prisma.category.findMany();
-  const accounts = await prisma.account.findMany();
-  const sources = await prisma.source.findMany();
+  const accounts = await prisma.account.findMany({
+    where: {userId: 1}
+  });
+  const sources = await prisma.source.findMany({
+    where: {userId: 1}
+  });
 
   return {
     props: {
