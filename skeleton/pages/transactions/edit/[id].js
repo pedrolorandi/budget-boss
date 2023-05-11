@@ -26,11 +26,11 @@ export default function EditTransaction({transaction, categories, accounts, sour
       categoryId: Number(cateRef.current.value),
       amountDecimal: amountRef.current.value*100,
       accountId: Number(accountRef.current.value),
-      sourceId: sourRef.current.value,
       date: new Date().toISOString()
     }
+    const sourceName = sourRef.current.value;
 
-    axios.put('/api/transaction/edit', inputValue)
+    axios.put('/api/transaction/edit', {data: {sourceName, inputValue}})
     .then(res => console.log('res', res))
     .catch(error => console.log(error.response));
   }

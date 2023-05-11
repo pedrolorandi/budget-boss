@@ -25,11 +25,11 @@ export default function AddTransaction({categories, accounts}) {
       categoryId: Number(cateRef.current.value),
       amountDecimal: amountRef.current.value * 100,
       accountId: Number(accountRef.current.value),
-      sourceId: sourRef.current.value,
       date: new Date().toISOString()
     }
+    const sourceName = sourRef.current.value;
 
-    axios.post('/api/transaction/add', inputValue)
+    axios.post('/api/transaction/add', {data: {sourceName, inputValue}})
     .then(res => console.log('res', res))
     .catch(error => console.log(error.response));
   }

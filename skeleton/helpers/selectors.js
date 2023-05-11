@@ -53,35 +53,6 @@ export async function getTransactions(userId, month, year) {
   return sortedTransactions;
 };
 
-export async function add_edit (inputValue, action){
-  const prisma = new PrismaClient();
-  const inputSource = inputValue.sourceId //user's input of source in text
-  const sources = await prisma.source.findMany({
-    where: {"userId": 1}
-  })
-  console.log(sources);
-
-  //check if the recorded source is already in the source table. If not, we'll add a new row to the source table with the recorded source name as well.
-  let sourceID = 0
-  sources.forEach(item => item.name === inputSource ? sourceID = item.id : false); //record the sourceID when we find it in the sources array
-  if (sourceID) { //the recorded source exists in the source table
-    inputValue.sourceId = sourceID
-    action();
-    console.log('inputValue', inputValue);
-  } else { //the recorded source doesn't exist in the source table
-    const NewSource = await prisma.source.create({data: { //create a new source row
-      name: inputSource,
-      userId: 1
-    }});
-    
-    inputValue.sourceId = NewSource.id
-    action();
-    console.log('inputValue', inputValue);
-  }
-
-  return;
-};
-
 export async function getCategoriesData(userId, month, year) {
   const prisma = new PrismaClient();
 

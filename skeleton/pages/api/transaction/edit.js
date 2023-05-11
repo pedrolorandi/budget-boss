@@ -1,29 +1,33 @@
 //see the outputs of console.log() here in the terminal
 import { PrismaClient } from '@prisma/client'
-import {add_edit} from '../../../helpers/selectors'
+import {add_edit} from '../../../helpers/crud'
 
 export default async function Editing (req, res) {
   const prisma = new PrismaClient();
-  const inputValue = req.body;
-  async function editing () {
-    await prisma.transaction.update({
-      where: {id: inputValue.id},
-      data: inputValue
-    });
-  }
+  let inputValue = req.body.data.inputValue;
+  const sourceName = req.body.data.sourceName;
 
-  add_edit(inputValue, editing);
+  inputValue = await add_edit(inputValue, sourceName); //inputValue with sourceId 
+  console.log(inputValue);
+  await prisma.transaction.update({
+    where: {id: inputValue.id},
+    data: inputValue
+  });
 
   res.status(200).send('Transaction Edited');
 }
 
-/* inputValue = req.body = { (passed in from the front-end)
-  id: 2, (number)
-  title: "dining-out",
-  accountId: 1, (CIBC)
+/* (passed in from the front-end)
+req.body.data = {
+  sourceName: 'dango',
+  inputValue: {
+  id: 3,
+  type: 'Expense',
+  title: 'da',
+  categoryId: 1,
   amountDecimal: 1200,
-  categoryId: 1, ("Clothing")
-  sourceId: 1, ("Amazon")
-  date: (today's date and time)
+  accountId: 1,
+  date: '2023-05-11T20:08:26.860Z'
+  }
 }
 */
