@@ -6,7 +6,6 @@ export default function AddCategory() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log('submit is clicked!');
   }
   
   return(
