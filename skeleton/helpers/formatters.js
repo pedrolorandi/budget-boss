@@ -16,6 +16,7 @@ import {
   faPaw,
   faHouse,
   faArrowsSpin,
+  faSackDollar,
 } from "@fortawesome/free-solid-svg-icons";
 
 export function categoryIcons(category) {
@@ -36,6 +37,7 @@ export function categoryIcons(category) {
     Pet: faPaw,
     Rent: faHouse,
     Subscriptions: faArrowsSpin,
+    Income: faSackDollar,
   };
 
   return CATEGORY_ICONS[category];
@@ -52,4 +54,14 @@ export function formatDate(date) {
     : date === yesterday.toLocaleDateString()
     ? "Yesterday"
     : date;
+}
+
+export function formatTransaction(type, amount) {
+  const signal = type === "Income" ? "+" : "-";
+
+  return signal + "$" + (amount / 100).toFixed(2);
+}
+
+export function formatCategoryClassName(category) {
+  return category.toLowerCase().replaceAll(" ", "_").replace("&", "n");
 }
