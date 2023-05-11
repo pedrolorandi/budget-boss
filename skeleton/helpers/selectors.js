@@ -69,5 +69,25 @@ export async function getBudgets(userId, month, year) {
       amountDecimal: true,
     },
   });
-  return budgets;
+
+  const budgetNames = await prisma.category.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
+  const result = [];
+
+  for (let i of budgets) {
+    for (let j of budgetNames)
+      if (i.categoryId === j.id) {
+        let element = {
+          ...i,
+          name: j.name,
+        };
+        result.push(element);
+      }
+  }
+  return result;
 }
