@@ -5,7 +5,7 @@ import axios from 'axios';
 import Form from "../../components/ui/Form";
 import useHook from '../../hooks/useHook';
 
-export default function AddTransaction({categories, accounts}) {
+export default function AddTransaction({categories, accounts }) {
   const {
     titleRef,
     cateRef,

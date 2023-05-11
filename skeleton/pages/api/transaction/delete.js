@@ -3,7 +3,6 @@ import { PrismaClient } from '@prisma/client'
 export default async function Deleting (req, res) {
   const prisma = new PrismaClient();
   const transactionID = req.body.id;
-  console.log('transactionID:', transactionID);
 
   try {
     await prisma.transaction.delete({

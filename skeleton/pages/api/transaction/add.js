@@ -1,4 +1,3 @@
-//see the outputs of console.log() here in the terminal
 import { PrismaClient } from '@prisma/client'
 import {add_edit} from '../../../helpers/crud'
 
@@ -7,7 +6,8 @@ export default async function Adding (req, res) {
   let inputValue = req.body.data.inputValue;
   const sourceName = req.body.data.sourceName;
 
-  inputValue = await add_edit(inputValue, sourceName); //inputValue with sourceId
+  const sourceID = await add_edit(sourceName); //inputValue with sourceId
+  inputValue['sourceId'] = sourceID;
   await prisma.transaction.create({data: inputValue});
 
   res.status(200).send('Transaction Added');
