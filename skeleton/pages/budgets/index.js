@@ -17,11 +17,13 @@ export default function Budgets({
   transactionsByCategory,
   budgets,
 }) {
+  const [currentTransactions, setCurrentTransactions] = useState(
+    transactionsByCategory
+  );
   const [currentBudgets, setCurrentBudgets] = useState(transactionsByCategory);
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
 
-  console.log(budgets);
   return (
     <div>
       <BudgetCategoriesList
