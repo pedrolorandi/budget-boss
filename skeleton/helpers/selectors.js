@@ -53,9 +53,9 @@ export async function getTransactions(userId, month, year) {
   return sortedTransactions;
 }
 
-export async function getBudgets(userId, month, year) {
+export async function getTransactionsGroupedByCategory(userId, month, year) {
   const prisma = new PrismaClient();
-  const budgets = await prisma.transaction.groupBy({
+  const categories = await prisma.transaction.groupBy({
     by: ["categoryId"],
     where: {
       Source: { User: { id: userId } },
@@ -70,7 +70,7 @@ export async function getBudgets(userId, month, year) {
     },
   });
 
-  const budgetNames = await prisma.category.findMany({
+  const categoryNames = await prisma.category.findMany({
     select: {
       id: true,
       name: true,
@@ -79,8 +79,8 @@ export async function getBudgets(userId, month, year) {
 
   const result = [];
 
-  for (let i of budgets) {
-    for (let j of budgetNames)
+  for (let i of categories) {
+    for (let j of categoryNames)
       if (i.categoryId === j.id) {
         let element = {
           ...i,
@@ -90,4 +90,31 @@ export async function getBudgets(userId, month, year) {
       }
   }
   return result;
+}
+
+export async function getBudgets(userId, month, year) {
+  const prisma = new PrismaClient();
+
+  const budgets = await prisma.budgetCategory.findMany({
+    where: {
+      Budget: {
+        userId: userId,
+        AND: [
+          { date: { gte: new Date(year, month - 1, 1) } },
+          { date: { lt: new Date(year, month, 1) } },
+        ],
+      },
+    },
+    select: {
+      amountDecimal: true,
+      Category: {
+        select: {
+          name: true,
+          id: true,
+        },
+      },
+    },
+  });
+
+  return budgets;
 }
