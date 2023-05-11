@@ -24,11 +24,34 @@ export default function Budgets({
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
 
+  const getBudgetAmounts = (transactions, budgets) => {
+    let result = [];
+
+    for (let b of budgets) {
+      for (let c of transactions) {
+        if (b.Category.id === c.categoryId) {
+          result.push({
+            categoryId: b.Category.id,
+            name: b.Category.name,
+            totalBudget: b.amountDecimal / 100,
+            currentAmount: c._sum.amountDecimal / 100,
+            budgetRemaining: (b.amountDecimal - c._sum.amountDecimal) / 100,
+            budgetPercentage: (c._sum.amountDecimal / b.amountDecimal) * 100,
+          });
+        }
+      }
+    }
+    return result;
+  };
+
+  const budgetAmounts = getBudgetAmounts(transactionsByCategory, budgets);
+
   return (
     <div>
       <BudgetCategoriesList
         transactionsByCategory={transactionsByCategory}
         budgets={budgets}
+        budgetAmounts={budgetAmounts}
       ></BudgetCategoriesList>
     </div>
   );
