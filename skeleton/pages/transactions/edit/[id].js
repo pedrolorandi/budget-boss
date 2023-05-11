@@ -5,7 +5,7 @@ import axios from 'axios';
 import Form from "../../../components/add-edit-delete/form"
 import useHook from '../../../hooks/useHook'
 
-export default function AddTransaction({transaction, categories, accounts, sources }) {
+export default function EditTransaction({transaction, categories, accounts, sources }) {
   const {
     titleRef,
     cateRef,

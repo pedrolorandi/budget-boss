@@ -11,7 +11,7 @@ export default async function Adding (req, res) {
 
   await add_edit(inputValue, adding);
 
-  res.status(200).json({add: 'transaction'});
+  res.status(200).send('Transaction Added');
 }
 
 /* inputValue = { (passed in from the front-end)

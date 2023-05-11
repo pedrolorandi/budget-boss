@@ -1,23 +1,25 @@
 import React from "react";
 import axios from 'axios';
-import { useRouter } from 'next/router';
 
-export default function AddTransaction({transactionID}) {
-  const route = useRouter();
+import useHook from '../../../hooks/useHook';
 
-  function handleOnClick () {
+export default function DeleteTransaction({transactionID}) {
+  const {route} = useHook();
+
+  function Delete () {
     axios.post('/api/transaction/delete', {id: transactionID})
     .then(res => {
       console.log('res', res)
-      route.push('/transactions/add')
+      route.push('/transactions')
     })
-    .catch(error => console.log(error.response.status));
+    .catch(error => console.log(error.response));
   }
 
   return(
     <div>
       <p>Are you sure you wanna delete this transaction?</p>
-      <button onClick={handleOnClick}>Delete</button>
+      <button onClick={Delete} style={{paddingRight: "20px"}}>Delete</button>
+      <button onClick={() => route.push('/transactions')}>Cancel</button>
     </div>
   )
 }
