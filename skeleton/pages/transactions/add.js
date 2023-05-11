@@ -23,7 +23,7 @@ export default function AddTransaction({categories, accounts}) {
       type: typeValue,
       title: titleRef.current.value,
       categoryId: Number(cateRef.current.value),
-      amountDecimal: amountRef.current.value*100,
+      amountDecimal: amountRef.current.value * 100,
       accountId: Number(accountRef.current.value),
       sourceId: sourRef.current.value,
       date: new Date().toISOString()
@@ -33,8 +33,8 @@ export default function AddTransaction({categories, accounts}) {
     .then(res => console.log('res', res))
     .catch(error => console.log(error.response));
   }
-  
-  return(
+
+  return (
     <div>
       <Form onSubmit={handleSubmit} 
       titleRef={titleRef} cateRef={cateRef} amountRef={amountRef} accountRef={accountRef} sourRef={sourRef} typeValue={typeValue}
@@ -43,12 +43,12 @@ export default function AddTransaction({categories, accounts}) {
       categories={categories} accounts={accounts}
       />
     </div>
-  )
+  );
 }
 
 export async function getServerSideProps() {
   const prisma = new PrismaClient();
-  const categories = await prisma.category.findMany(); //names of the tables are in the seed.js file 
+  const categories = await prisma.category.findMany(); //names of the tables are in the seed.js file
   const accounts = await prisma.account.findMany();
 
   return {
