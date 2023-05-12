@@ -12,13 +12,13 @@ export async function getTransactions(userId, month, year) {
   const prisma = new PrismaClient();
   const transactions = await prisma.transaction.findMany({
     where: {
-      Source: { User: { id: userId } },
+      source: { user: { id: userId } },
       AND: [
         { date: { gte: new Date(year, month - 1, 1) } },
         { date: { lt: new Date(year, month, 1) } },
       ],
     },
-    include: { Source: true, Category: true },
+    include: { source: true, category: true },
   });
 
   const formattedTransactions = transactions.map((transaction) => {
@@ -58,7 +58,7 @@ export async function getTransactionsGroupedByCategory(userId, month, year) {
   const categories = await prisma.transaction.groupBy({
     by: ["categoryId"],
     where: {
-      Source: { User: { id: userId } },
+      source: { user: { id: userId } },
       AND: [
         { date: { gte: new Date(year, month - 1, 1) } },
         { date: { lt: new Date(year, month, 1) } },
@@ -97,7 +97,7 @@ export async function getBudgets(userId, month, year) {
 
   const budgets = await prisma.budgetCategory.findMany({
     where: {
-      Budget: {
+      budget: {
         userId: userId,
         AND: [
           { date: { gte: new Date(year, month - 1, 1) } },
@@ -107,7 +107,7 @@ export async function getBudgets(userId, month, year) {
     },
     select: {
       amountDecimal: true,
-      Category: {
+      category: {
         select: {
           name: true,
           id: true,
