@@ -27,6 +27,7 @@ export default function Budgets({
   } else {
     pieChartColour.push("#DC244B");
   }
+
   const [currentTransactions, setCurrentTransactions] = useState(
     transactionsByCategory
   );
@@ -43,18 +44,6 @@ export default function Budgets({
           (budgetSum.currentBudget / 100).toFixed(2),
         ],
         backgroundColor: ["#E9ECEF", `${pieChartColour}`],
-        plugins: [
-          {
-            centerText: {
-              id: "centerText",
-              afterDatasetsDraw(chart, args, options) {
-                const { ctx } = chart;
-
-                const text = budgetSum.percent;
-              },
-            },
-          },
-        ],
       },
     ],
   });
@@ -84,7 +73,10 @@ export default function Budgets({
   return (
     <div>
       <div className="text-center text-3xl font-bold">Total Budgets</div>
-      <BudgetPieChart currentBudgetTotal={currentBudgetTotal}></BudgetPieChart>
+      <BudgetPieChart
+        currentBudgetTotal={currentBudgetTotal}
+        budgetSum={budgetSum}
+      ></BudgetPieChart>
       <BudgetCategoriesList
         budgetAmounts={budgetAmounts}
       ></BudgetCategoriesList>
