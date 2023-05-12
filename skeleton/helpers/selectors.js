@@ -149,7 +149,6 @@ export function getPieChartColors() {
 }
 
 // Function to retrieve running total data for a given user, month, and year
-// Function to retrieve running total data for a given user, month, and year
 export async function getRunningTotalData(userId, month, year) {
   const prisma = new PrismaClient();
 
