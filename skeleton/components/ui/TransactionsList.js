@@ -4,6 +4,7 @@ import {
   formatDate,
   formatTransaction,
 } from "../../helpers/formatters.js";
+import { faPen, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 export default function TransactionList({ transactions }) {
   return (
@@ -34,6 +35,12 @@ export default function TransactionList({ transactions }) {
                         transaction.type,
                         transaction.amountDecimal
                       )}
+                    </div>
+                    <div className="flex items-center ps-3 ms-3">
+                      <FontAwesomeIcon icon={faPen} />
+                    </div>
+                    <div className="flex items-center ps-3">
+                      <FontAwesomeIcon icon={faTrashCan} />
                     </div>
                   </div>
                 );
