@@ -3,11 +3,13 @@ import TransactionList from "@/components/ui/TransactionsList";
 import { getDateByMonthYear, getTransactions } from "../../helpers/selectors";
 import axios from "axios";
 import { useState } from "react";
+import { PrismaClient } from "@prisma/client";
 
-export default function Transactions({ month, year, transactions }) {
+export default function Transactions({ month, year, transactions, accounts }) {
   const [currentTransactions, setCurrentTransactions] = useState(transactions);
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
+  const [currentAccount, setCurrentAccount] = useState(accounts);
 
   const getTransactionsAPI = (month, year) => {
     if (month === 0) {
@@ -21,7 +23,7 @@ export default function Transactions({ month, year, transactions }) {
     }
 
     axios
-      .get("../api/transactions", { params: { month, year } })
+      .get("../api/transactions", { params: { month, year, currentAccount } })
       .then((res) => {
         setCurrentMonth(Number(res.data.month));
         setCurrentYear(Number(res.data.year));
@@ -32,8 +34,13 @@ export default function Transactions({ month, year, transactions }) {
   return (
     <main className="flex flex-col p-5">
       <div className="flex flex-row mb-5 space-x-5">
-        <div className="flex-1 bg-nav-gray rounded-lg p-5">Checkings</div>
-        <div className="flex-1 bg-nav-gray rounded-lg p-5">Savings</div>
+        {accounts.map((account) => {
+          return (
+            <div key={account.id} className="flex-1 bg-nav-gray rounded-lg p-5">
+              {account.name}
+            </div>
+          );
+        })}
       </div>
       <div className="flex space-x-5 justify-center mb-5">
         <button
@@ -62,11 +69,18 @@ export async function getServerSideProps() {
   const currentYear = new Date().getFullYear();
   const transactions = await getTransactions(1, currentMonth, currentYear);
 
+  const prisma = new PrismaClient();
+
+  const accounts = await prisma.account.findMany({
+    where: { userId: 1 },
+  });
+
   return {
     props: {
       month: currentMonth,
       year: currentYear,
-      transactions: transactions,
+      transactions,
+      accounts,
     },
   };
 }

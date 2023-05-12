@@ -8,16 +8,22 @@ export function getDateByMonthYear(month, year) {
   return `${monthName} ${year}`;
 }
 
-export async function getTransactions(userId, month, year) {
+export async function getTransactions(userId, month, year, accountId) {
   const prisma = new PrismaClient();
+  const whereClause = {
+    source: { user: { id: userId } },
+    AND: [
+      { date: { gte: new Date(year, month - 1, 1) } },
+      { date: { lt: new Date(year, month, 1) } },
+    ],
+  };
+
+  if (accountId != undefined) {
+    whereClause.accountId = accountId;
+  }
+
   const transactions = await prisma.transaction.findMany({
-    where: {
-      source: { user: { id: userId } },
-      AND: [
-        { date: { gte: new Date(year, month - 1, 1) } },
-        { date: { lt: new Date(year, month, 1) } },
-      ],
-    },
+    where: whereClause,
     include: { source: true, category: true },
   });
 
@@ -51,7 +57,7 @@ export async function getTransactions(userId, month, year) {
   });
 
   return sortedTransactions;
-};
+}
 
 export async function getCategoriesData(userId, month, year) {
   const prisma = new PrismaClient();
