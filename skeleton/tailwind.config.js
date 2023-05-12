@@ -10,6 +10,7 @@ module.exports = {
     // Or if using `src` directory:
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+
   theme: {
     extend: {},
     colors: {
@@ -30,8 +31,43 @@ module.exports = {
       yellow: colors.yellow,
       turquoise: "#52A1A3",
       red: "#DC244B",
+      clothing: "#FCED29",
+      dining_out: "#FBB03B",
+      education: "#F15A25",
+      electronics: "#ED1B24",
+      "fast-food": "#C2272F",
+      gifts: "#93268F",
+      groceries: "#652D92",
+      household: "#2D3194",
+      internet_n_phone: "#0071BD",
+      loans: "#2AABE4",
+      medical: "#01A89E",
+      personal: "#23B574",
+      pet: "#006837",
+      rent: "#019247",
+      subscriptions: "#3AB54D",
+      transportation: "#8DC640",
     },
   },
+
+  safelist: [
+    "bg-clothing",
+    "bg-dining_out",
+    "bg-education",
+    "bg-electronics",
+    "bg-fast-food",
+    "bg-gifts",
+    "bg-groceries",
+    "bg-household",
+    "bg-internet_n_phone",
+    "bg-loans",
+    "bg-medical",
+    "bg-personal",
+    "bg-pet",
+    "bg-rent",
+    "bg-subscriptions",
+    "bg-transportation",
+  ],
 
   plugins: [
     function ({ addBase, theme }) {
