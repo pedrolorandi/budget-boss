@@ -76,10 +76,13 @@ export default function BudgetCategoriesList(props) {
   });
 
   return (
-    <>
-      <div>{transactions}</div>
-      <div>{budgets}</div>
+    <div className="text-center text-3xl font-bold">
+      {" "}
+      Budgets
+      <div className="font-bold text-xl flex justify-end mr-5">
+        Current / Total
+      </div>
       {progressCharts}
-    </>
+    </div>
   );
 }

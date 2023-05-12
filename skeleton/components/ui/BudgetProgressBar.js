@@ -13,7 +13,7 @@ export default function BarChart(props) {
   return (
     <div className="m-5 text-lg">
       <div className="m-2 flex justify-between">
-        <span className="font-bold">{props.name} </span>
+        <span className="font-bold">{props.name}</span>
         <span>
           ${props.currentAmount} / ${props.totalBudget}
         </span>
@@ -23,7 +23,7 @@ export default function BarChart(props) {
         <div
           className={`${classNames.join(
             " "
-          )} text-lg font-medium text-blue-100 text-center p-0.5 leading-none rounded-full`}
+          )} text-lg font-medium text-blue-100 text-center p-1 leading-none rounded-full`}
           style={{ width: `${props.width < 100 ? props.width : 100}` + "%" }}
         >
           {props.width}%
