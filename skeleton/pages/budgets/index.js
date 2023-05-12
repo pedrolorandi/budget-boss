@@ -10,6 +10,7 @@ import axios from "axios";
 import { useState } from "react";
 
 import BudgetCategoriesList from "@/components/ui/BudgetCategoriesList";
+import BudgetPieChart from "@/components/ui/BudgetPieChart";
 
 export default function Budgets({
   month,
@@ -44,7 +45,23 @@ export default function Budgets({
     return result;
   };
 
+  const getBudgetSum = (transactions, budgets) => {
+    let result = { totalBudget: 0, currentBudget: 0 };
+
+    for (let b of budgets) {
+      result.totalBudget += b.amountDecimal;
+      for (let c of transactions) {
+        if (b.Category.id === c.categoryId) {
+          result.currentBudget += c._sum.amountDecimal;
+        }
+      }
+    }
+    console.log(result);
+    return result;
+  };
+
   const budgetAmounts = getBudgetAmounts(transactionsByCategory, budgets);
+  const budgetSum = getBudgetSum(transactionsByCategory, budgets);
 
   return (
     <div>
