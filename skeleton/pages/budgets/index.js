@@ -43,6 +43,18 @@ export default function Budgets({
           (budgetSum.currentBudget / 100).toFixed(2),
         ],
         backgroundColor: ["#E9ECEF", `${pieChartColour}`],
+        plugins: [
+          {
+            centerText: {
+              id: "centerText",
+              afterDatasetsDraw(chart, args, options) {
+                const { ctx } = chart;
+
+                const text = budgetSum.percent;
+              },
+            },
+          },
+        ],
       },
     ],
   });
@@ -93,7 +105,7 @@ export async function getServerSideProps() {
   const budgets = await getBudgets(1, currentMonth, currentYear);
 
   const getBudgetSum = (transactions, budgets) => {
-    let result = { totalBudget: 0, currentBudget: 0 };
+    let result = { totalBudget: 0, currentBudget: 0, percent: 0 };
 
     for (let b of budgets) {
       result.totalBudget += b.amountDecimal;
@@ -103,18 +115,12 @@ export async function getServerSideProps() {
         }
       }
     }
-    console.log({
-      ...result,
-      percent: (result.currentBudget / result.totalBudget) * 100,
-      difference:
-        result.percent > 100 ? 0 : result.totalBudget - result.currentBudget,
-    });
-    return {
-      ...result,
-      percent: (result.currentBudget / result.totalBudget) * 100,
-      difference:
-        result.percent > 100 ? 0 : result.totalBudget - result.currentBudget,
-    };
+
+    result.percent = (result.currentBudget / result.totalBudget) * 100;
+    result.difference =
+      result.percent > 100 ? 0 : result.totalBudget - result.currentBudget;
+
+    return result;
   };
   const budgetSum = getBudgetSum(transactionsByCategory, budgets);
 
