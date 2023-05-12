@@ -59,7 +59,7 @@ export async function getTransactions(userId, month, year) {
   });
 
   return sortedTransactions;
-};
+}
 
 // Function to retrieve category data for a given user, month, and year
 export async function getCategoriesData(userId, month, year) {
@@ -154,9 +154,9 @@ export async function getRunningTotalData(userId, month, year) {
 
   // Querying the Prisma client to fetch transactions for the specified user
   const transactions = await prisma.transaction.findMany({
-    where: {
-      source: { user: { id: userId } },
-    },
+    // where: {
+    //   source: { user: { id: userId } },
+    // },
     include: { source: true, category: true },
     orderBy: {
       date: "asc",
@@ -218,6 +218,8 @@ export async function getRunningTotalData(userId, month, year) {
       }
     }
   });
+
+  console.log(dates, incomes, expenses, currentRunningTotal);
 
   // Returning an object containing dates, incomes, expenses, and current running total
   return { dates, incomes, expenses, runningTotal: currentRunningTotal };
