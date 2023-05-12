@@ -1,11 +1,5 @@
-import { formatCategoryClassName, pieChartColors } from "@/helpers/formatters";
 import PieChart from "../components/ui/PieChart";
 
-import {
-  getDateByMonthYear,
-  getCategoriesData,
-  getPieChartColors,
-} from "../helpers/selectors";
 import axios from "axios";
 import { useState } from "react";
 
@@ -14,13 +8,11 @@ export default function Reports({
   year,
   categories,
   categoriesPercentages,
-  percentagePerCategory,
 }) {
-  const [currentPercentagePerCategory, setCurrentPercentagePerCategory] =
-    useState(percentagePerCategory);
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
   const [currentCategories, setCurrentCategories] = useState({
+    labels: categories,
     datasets: [
       {
         label: "Percentage",
@@ -44,21 +36,16 @@ export default function Reports({
     axios.get("../api/categories", { params: { month, year } }).then((res) => {
       setCurrentMonth(Number(res.data.month));
       setCurrentYear(Number(res.data.year));
-      setCurrentPercentagePerCategory(res.data.percentagePerCategory);
-      setCurrentCategories({
-        ...currentCategories,
-        datasets: [
-          {
-            ...currentCategories.datasets[0],
-            data: res.data.categoriesPercentages,
-          },
-        ],
-      });
+      // setCurrentCategories(res.data.transactions);
     });
   };
 
   return (
     <main className="flex flex-col p-5">
+      <div className="flex flex-row mb-5 space-x-5">
+        <div className="flex-1 bg-nav-gray rounded-lg p-5">Checkings</div>
+        <div className="flex-1 bg-nav-gray rounded-lg p-5">Savings</div>
+      </div>
       <div className="flex space-x-5 justify-center mb-5">
         <button
           className="flex"
@@ -76,27 +63,7 @@ export default function Reports({
           Next month
         </button>
       </div>
-      <div className="flex flex-row items-center">
-        <ul className="flex flex-col w-full">
-          {categories.map((category) => {
-            return (
-              <li key={category} className="flex flex-row mb-2">
-                <div
-                  className={`flex bg-${formatCategoryClassName(
-                    category
-                  )} w-10 me-3`}
-                ></div>
-                <div className="flex-1">{category}</div>
-                <div>{currentPercentagePerCategory[category]} %</div>
-              </li>
-            );
-          })}
-        </ul>
-
-        <div className="flex w-full ms-10">
-          <PieChart chartData={currentCategories} />
-        </div>
-      </div>
+      <PieChart chartData={currentCategories} />
     </main>
   );
 }
@@ -105,21 +72,40 @@ export async function getServerSideProps() {
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
 
-  const {
-    month,
-    year,
-    categories,
-    categoriesPercentages,
-    percentagePerCategory,
-  } = await getCategoriesData(1, currentMonth, currentYear);
+  const categories = await prisma.category.findMany({
+    include: {
+      transactions: {
+        where: {
+          date: {
+            gte: new Date(currentYear, currentMonth - 1, 1),
+            lt: new Date(currentYear, currentMonth, 1),
+          },
+        },
+      },
+    },
+    orderBy: {
+      name: "asc",
+    },
+  });
+
+  const sortedCategories = categories.map((category) => category.name);
+
+  const totalTransactions = categories.reduce(
+    (sum, cat) => sum + cat.transactions.length,
+    0
+  );
+
+  const categoriesPercentages = categories.map((category) => {
+    const numTransactions = category.transactions.length;
+    return ((numTransactions / totalTransactions) * 100).toFixed(2);
+  });
 
   return {
     props: {
-      month,
-      year,
-      categories,
+      month: currentMonth,
+      year: currentYear,
+      categories: sortedCategories,
       categoriesPercentages,
-      percentagePerCategory,
     },
   };
 }
