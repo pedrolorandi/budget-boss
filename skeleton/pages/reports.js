@@ -1,10 +1,12 @@
-import { formatCategoryClassName, pieChartColors } from "@/helpers/formatters";
+import { formatCategoryClassName } from "@/helpers/formatters";
 import PieChart from "../components/ui/PieChart";
+import Chart from "../components/ui/RunningTotalChart";
 
 import {
   getDateByMonthYear,
   getCategoriesData,
   getPieChartColors,
+  getRunningTotalData,
 } from "../helpers/selectors";
 import axios from "axios";
 import { useState } from "react";
@@ -15,9 +17,11 @@ export default function Reports({
   categories,
   categoriesPercentages,
   percentagePerCategory,
+  dates,
+  incomes,
+  expenses,
+  runningTotal,
 }) {
-  const [currentPercentagePerCategory, setCurrentPercentagePerCategory] =
-    useState(percentagePerCategory);
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
   const [currentCategories, setCurrentCategories] = useState({
@@ -29,8 +33,37 @@ export default function Reports({
       },
     ],
   });
+  const [currentPercentagePerCategory, setCurrentPercentagePerCategory] =
+    useState(percentagePerCategory);
+  const [currentRunningTotal, setCurrentRunningTotal] = useState({
+    labels: dates,
+    datasets: [
+      {
+        type: "line",
+        label: "Running Total",
+        borderColor: "rgb(255, 99, 132)",
+        backgroundColor: "rgba(53, 162, 235, 0.5)",
+        fill: true,
+        data: runningTotal,
+      },
+      {
+        type: "bar",
+        label: "Incomes",
+        backgroundColor: "rgb(75, 192, 192)",
+        data: incomes,
+      },
+      {
+        type: "bar",
+        label: "Expenses",
+        backgroundColor: "rgb(53, 162, 235)",
+        data: expenses,
+      },
+    ],
+  });
 
+  // Function to fetch transactions data from the API
   const getTransactionsAPI = (month, year) => {
+    // Adjusting month and year values for previous and next month
     if (month === 0) {
       month = 12;
       year--;
@@ -41,7 +74,9 @@ export default function Reports({
       year++;
     }
 
-    axios.get("../api/categories", { params: { month, year } }).then((res) => {
+    // Making an API call to retrieve data for the specified month and year
+    axios.get("../api/reports", { params: { month, year } }).then((res) => {
+      // Updating the state with the fetched data
       setCurrentMonth(Number(res.data.month));
       setCurrentYear(Number(res.data.year));
       setCurrentPercentagePerCategory(res.data.percentagePerCategory);
@@ -51,6 +86,23 @@ export default function Reports({
           {
             ...currentCategories.datasets[0],
             data: res.data.categoriesPercentages,
+          },
+        ],
+      });
+      setCurrentRunningTotal({
+        labels: res.data.dates,
+        datasets: [
+          {
+            ...currentRunningTotal.datasets[0],
+            data: res.data.runningTotal,
+          },
+          {
+            ...currentRunningTotal.datasets[1],
+            data: res.data.incomes,
+          },
+          {
+            ...currentRunningTotal.datasets[2],
+            data: res.data.expenses,
           },
         ],
       });
@@ -97,6 +149,9 @@ export default function Reports({
           <PieChart chartData={currentCategories} />
         </div>
       </div>
+      <div className="flex w-full">
+        <Chart chartData={currentRunningTotal} />
+      </div>
     </main>
   );
 }
@@ -113,6 +168,12 @@ export async function getServerSideProps() {
     percentagePerCategory,
   } = await getCategoriesData(1, currentMonth, currentYear);
 
+  const { dates, incomes, expenses, runningTotal } = await getRunningTotalData(
+    1,
+    currentMonth,
+    currentYear
+  );
+
   return {
     props: {
       month,
@@ -120,6 +181,10 @@ export async function getServerSideProps() {
       categories,
       categoriesPercentages,
       percentagePerCategory,
+      dates,
+      incomes,
+      expenses,
+      runningTotal,
     },
   };
 }
