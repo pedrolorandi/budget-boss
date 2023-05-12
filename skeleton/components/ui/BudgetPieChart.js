@@ -6,7 +6,7 @@ export default function BudgetPieChart(props) {
   const plugins = [
     {
       beforeDraw: function (chart) {
-        var width = chart.width,
+        const width = chart.width,
           height = chart.height,
           ctx = chart.ctx;
         ctx.restore();
@@ -22,7 +22,7 @@ export default function BudgetPieChart(props) {
     },
   ];
   return (
-    <div className="w-1/4 flex justify-center">
+    <div className="w-1/4">
       <Doughnut data={props.currentBudgetTotal} plugins={plugins} />
     </div>
   );

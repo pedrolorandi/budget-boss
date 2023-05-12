@@ -19,7 +19,7 @@ export default function BudgetCategoriesList(props) {
   });
 
   return (
-    <div className="text-center text-3xl font-bold">
+    <div className="text-center text-3xl font-bold w-full mt-24">
       {" "}
       Budgets
       <div className="font-bold text-xl flex justify-end mr-5">

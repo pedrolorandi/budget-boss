@@ -71,7 +71,7 @@ export default function Budgets({
   const budgetAmounts = getBudgetAmounts(transactionsByCategory, budgets);
 
   return (
-    <div>
+    <div className="flex flex-col items-center content-center w-full">
       <div className="text-center text-3xl font-bold">Total Budgets</div>
       <BudgetPieChart
         currentBudgetTotal={currentBudgetTotal}
