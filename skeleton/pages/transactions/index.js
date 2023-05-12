@@ -1,5 +1,4 @@
 import TransactionList from "@/components/ui/TransactionsList";
-import { PrismaClient } from "@prisma/client";
 
 import { getDateByMonthYear, getTransactions } from "../../helpers/selectors";
 import axios from "axios";
@@ -10,7 +9,9 @@ export default function Transactions({ month, year, transactions }) {
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
 
+  // Function to fetch transactions data from the API
   const getTransactionsAPI = (month, year) => {
+    // Adjusting month and year values for previous and next month
     if (month === 0) {
       month = 12;
       year--;
@@ -21,16 +22,16 @@ export default function Transactions({ month, year, transactions }) {
       year++;
     }
 
+    // Making an API call to retrieve data for the specified month and year
     axios
       .get("../api/transactions", { params: { month, year } })
       .then((res) => {
+        // Updating the state with the fetched data
         setCurrentMonth(Number(res.data.month));
         setCurrentYear(Number(res.data.year));
         setCurrentTransactions(res.data.transactions);
       });
   };
-
-  console.log(currentMonth, currentYear);
 
   return (
     <main className="flex flex-col p-5">
@@ -61,8 +62,6 @@ export default function Transactions({ month, year, transactions }) {
 }
 
 export async function getServerSideProps() {
-  const prisma = new PrismaClient();
-
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
   const transactions = await getTransactions(1, currentMonth, currentYear);
