@@ -28,6 +28,8 @@ module.exports = {
       emerald: colors.emerald,
       indigo: colors.indigo,
       yellow: colors.yellow,
+      turquoise: "#52A1A3",
+      red: "#DC244B",
     },
   },
 
