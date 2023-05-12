@@ -1,4 +1,4 @@
-// Category icons
+// Importing necessary dependencies for category icons
 import {
   faBus,
   faShirt,
@@ -19,6 +19,7 @@ import {
   faSackDollar,
 } from "@fortawesome/free-solid-svg-icons";
 
+// Function to retrieve the appropriate icon for a given category
 export function categoryIcons(category) {
   const CATEGORY_ICONS = {
     Transportation: faBus,
@@ -43,7 +44,7 @@ export function categoryIcons(category) {
   return CATEGORY_ICONS[category];
 }
 
-// Check if the date is today or yesterday and format text accordingly
+// Function to format the date text based on whether it is today, yesterday, or another date
 export function formatDate(date) {
   const today = new Date();
   const yesterday = new Date(today);
@@ -56,12 +57,14 @@ export function formatDate(date) {
     : date;
 }
 
+// Function to format the transaction text with the appropriate signal and amount
 export function formatTransaction(type, amount) {
   const signal = type === "Income" ? "+" : "-";
 
   return signal + "$" + (amount / 100).toFixed(2);
 }
 
+// Function to format the category class name for styling purposes
 export function formatCategoryClassName(category) {
   return category.toLowerCase().replaceAll(" ", "_").replace("&", "n");
 }

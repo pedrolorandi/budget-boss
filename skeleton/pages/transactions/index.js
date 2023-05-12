@@ -11,7 +11,9 @@ export default function Transactions({ month, year, transactions, accounts }) {
   const [currentYear, setCurrentYear] = useState(year);
   const [currentAccount, setCurrentAccount] = useState(accounts);
 
+  // Function to fetch transactions data from the API
   const getTransactionsAPI = (month, year) => {
+    // Adjusting month and year values for previous and next month
     if (month === 0) {
       month = 12;
       year--;
@@ -22,9 +24,11 @@ export default function Transactions({ month, year, transactions, accounts }) {
       year++;
     }
 
+    // Making an API call to retrieve data for the specified month and year
     axios
       .get("../api/transactions", { params: { month, year, currentAccount } })
       .then((res) => {
+        // Updating the state with the fetched data
         setCurrentMonth(Number(res.data.month));
         setCurrentYear(Number(res.data.year));
         setCurrentTransactions(res.data.transactions);
