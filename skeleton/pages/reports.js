@@ -1,4 +1,4 @@
-import { formatCategoryClassName, pieChartColors } from "@/helpers/formatters";
+import { formatCategoryClassName } from "@/helpers/formatters";
 import PieChart from "../components/ui/PieChart";
 import Chart from "../components/ui/RunningTotalChart";
 
@@ -10,7 +10,6 @@ import {
 } from "../helpers/selectors";
 import axios from "axios";
 import { useState } from "react";
-import { PrismaClient } from "@prisma/client";
 
 export default function Reports({
   month,
