@@ -1,0 +1,6 @@
+[
+  { "amountDecimal": 3000, "budgetId": 1, "categoryId": 1 },
+  { "amountDecimal": 40000, "budgetId": 1, "categoryId": 2 },
+  { "amountDecimal": 5000, "budgetId": 1, "categoryId": 3 }
+]
+
