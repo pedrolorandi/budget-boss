@@ -51,7 +51,7 @@ export async function getTransactions(userId, month, year) {
   });
 
   return sortedTransactions;
-}
+};
 
 export async function getCategoriesData(userId, month, year) {
   const prisma = new PrismaClient();
