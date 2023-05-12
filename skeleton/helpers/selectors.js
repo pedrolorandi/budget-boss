@@ -222,3 +222,69 @@ export async function getRunningTotalData(userId, month, year) {
   // Returning an object containing dates, incomes, expenses, and current running total
   return { dates, incomes, expenses, runningTotal: currentRunningTotal };
 }
+
+export async function getTransactionsGroupedByCategory(userId, month, year) {
+  const prisma = new PrismaClient();
+  const categories = await prisma.transaction.groupBy({
+    by: ["categoryId"],
+    where: {
+      source: { user: { id: userId } },
+      AND: [
+        { date: { gte: new Date(year, month - 1, 1) } },
+        { date: { lt: new Date(year, month, 1) } },
+      ],
+      type: "Expense",
+    },
+    _sum: {
+      amountDecimal: true,
+    },
+  });
+
+  const categoryNames = await prisma.category.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
+  const result = [];
+
+  for (let i of categories) {
+    for (let j of categoryNames)
+      if (i.categoryId === j.id) {
+        let element = {
+          ...i,
+          name: j.name,
+        };
+        result.push(element);
+      }
+  }
+  return result;
+}
+
+export async function getBudgets(userId, month, year) {
+  const prisma = new PrismaClient();
+
+  const budgets = await prisma.budgetCategory.findMany({
+    where: {
+      budget: {
+        userId: userId,
+        AND: [
+          { date: { gte: new Date(year, month - 1, 1) } },
+          { date: { lt: new Date(year, month, 1) } },
+        ],
+      },
+    },
+    select: {
+      amountDecimal: true,
+      category: {
+        select: {
+          name: true,
+          id: true,
+        },
+      },
+    },
+  });
+
+  return budgets;
+}
