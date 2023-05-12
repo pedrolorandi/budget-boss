@@ -49,8 +49,6 @@ export default function Budgets({
   return (
     <div>
       <BudgetCategoriesList
-        transactionsByCategory={transactionsByCategory}
-        budgets={budgets}
         budgetAmounts={budgetAmounts}
       ></BudgetCategoriesList>
     </div>
