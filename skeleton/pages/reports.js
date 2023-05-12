@@ -6,6 +6,7 @@ import {
   getDateByMonthYear,
   getCategoriesData,
   getPieChartColors,
+  getRunningTotalData,
 } from "../helpers/selectors";
 import axios from "axios";
 import { useState } from "react";
@@ -20,7 +21,7 @@ export default function Reports({
   dates,
   incomes,
   expenses,
-  currentRunningTotal,
+  runningTotal,
 }) {
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
@@ -35,7 +36,7 @@ export default function Reports({
   });
   const [currentPercentagePerCategory, setCurrentPercentagePerCategory] =
     useState(percentagePerCategory);
-  const [currentRunningTotalData, setCurrentRunningTotalData] = useState({
+  const [currentRunningTotal, setCurrentRunningTotal] = useState({
     labels: dates,
     datasets: [
       {
@@ -44,7 +45,7 @@ export default function Reports({
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(53, 162, 235, 0.5)",
         fill: true,
-        data: currentRunningTotal,
+        data: runningTotal,
       },
       {
         type: "bar",
@@ -61,7 +62,9 @@ export default function Reports({
     ],
   });
 
+  // Function to fetch transactions data from the API
   const getTransactionsAPI = (month, year) => {
+    // Adjusting month and year values for previous and next month
     if (month === 0) {
       month = 12;
       year--;
@@ -72,7 +75,9 @@ export default function Reports({
       year++;
     }
 
-    axios.get("../api/categories", { params: { month, year } }).then((res) => {
+    // Making an API call to retrieve data for the specified month and year
+    axios.get("../api/reports", { params: { month, year } }).then((res) => {
+      // Updating the state with the fetched data
       setCurrentMonth(Number(res.data.month));
       setCurrentYear(Number(res.data.year));
       setCurrentPercentagePerCategory(res.data.percentagePerCategory);
@@ -82,6 +87,23 @@ export default function Reports({
           {
             ...currentCategories.datasets[0],
             data: res.data.categoriesPercentages,
+          },
+        ],
+      });
+      setCurrentRunningTotal({
+        labels: res.data.dates,
+        datasets: [
+          {
+            ...currentRunningTotal.datasets[0],
+            data: res.data.runningTotal,
+          },
+          {
+            ...currentRunningTotal.datasets[1],
+            data: res.data.incomes,
+          },
+          {
+            ...currentRunningTotal.datasets[2],
+            data: res.data.expenses,
           },
         ],
       });
@@ -129,14 +151,13 @@ export default function Reports({
         </div>
       </div>
       <div className="flex w-full">
-        <Chart chartData={currentRunningTotalData} />
+        <Chart chartData={currentRunningTotal} />
       </div>
     </main>
   );
 }
 
 export async function getServerSideProps() {
-  const prisma = new PrismaClient();
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
 
@@ -148,65 +169,11 @@ export async function getServerSideProps() {
     percentagePerCategory,
   } = await getCategoriesData(1, currentMonth, currentYear);
 
-  /*--------------*/
-  // Running Total
-  const transactions = await prisma.transaction.findMany({
-    where: {
-      source: { user: { id: 1 } },
-    },
-    include: { source: true, category: true },
-    orderBy: {
-      date: "asc",
-    },
-  });
-
-  // Refactor
-
-  const dates = [];
-  const incomes = [];
-  const expenses = [];
-  const runningTotal = [];
-  const currentRunningTotal = [];
-  let currentTotal = 0;
-
-  transactions.forEach(({ date, type, amountDecimal }, i) => {
-    const formattedDate = date.toLocaleDateString();
-
-    type === "Income"
-      ? (currentTotal += amountDecimal / 100)
-      : (currentTotal -= amountDecimal / 100);
-
-    if (
-      transactions[i - 1] &&
-      formattedDate === transactions[i - 1].date.toLocaleDateString()
-    ) {
-      runningTotal[runningTotal.length - 1] = currentTotal;
-    } else {
-      runningTotal.push(currentTotal);
-    }
-
-    if (
-      Number(formattedDate.split("/")[0]) === currentMonth &&
-      Number(formattedDate.split("/")[2]) === currentYear
-    ) {
-      if (
-        transactions[i - 1] &&
-        formattedDate === transactions[i - 1].date.toLocaleDateString()
-      ) {
-        incomes[incomes.length - 1] +=
-          type === "Income" ? amountDecimal / 100 : 0;
-        expenses[expenses.length - 1] +=
-          type === "Expenses" ? amountDecimal / 100 : 0;
-        currentRunningTotal[currentRunningTotal.length - 1] =
-          runningTotal[runningTotal.length - 1];
-      } else {
-        dates.push(formattedDate);
-        incomes.push(type === "Income" ? amountDecimal / 100 : 0);
-        expenses.push(type === "Expense" ? amountDecimal / 100 : 0);
-        currentRunningTotal.push(currentTotal);
-      }
-    }
-  });
+  const { dates, incomes, expenses, runningTotal } = await getRunningTotalData(
+    1,
+    currentMonth,
+    currentYear
+  );
 
   return {
     props: {
@@ -218,7 +185,7 @@ export async function getServerSideProps() {
       dates,
       incomes,
       expenses,
-      currentRunningTotal,
+      runningTotal,
     },
   };
 }
