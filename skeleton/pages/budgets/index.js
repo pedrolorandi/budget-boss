@@ -52,10 +52,10 @@ export default function Budgets({
 
     for (let b of budgets) {
       for (let c of transactions) {
-        if (b.Category.id === c.categoryId) {
+        if (b.category.id === c.categoryId) {
           result.push({
-            categoryId: b.Category.id,
-            name: b.Category.name,
+            categoryId: b.category.id,
+            name: b.category.name,
             totalBudget: b.amountDecimal / 100,
             currentAmount: c._sum.amountDecimal / 100,
             budgetRemaining: (b.amountDecimal - c._sum.amountDecimal) / 100,
@@ -98,7 +98,7 @@ export async function getServerSideProps() {
     for (let b of budgets) {
       result.totalBudget += b.amountDecimal;
       for (let c of transactions) {
-        if (b.Category.id === c.categoryId) {
+        if (b.category.id === c.categoryId) {
           result.currentBudget += c._sum.amountDecimal;
         }
       }
