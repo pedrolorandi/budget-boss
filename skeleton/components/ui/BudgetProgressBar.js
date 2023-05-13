@@ -14,7 +14,7 @@ export default function BarChart(props) {
     <div className="m-5 text-lg">
       <div className="m-2 flex justify-between">
         <span className="font-bold">{props.name}</span>
-        <span>
+        <span className="font-normal">
           ${props.currentAmount} / ${props.totalBudget}
         </span>
       </div>
