@@ -77,6 +77,24 @@ export default function Budgets({
         currentBudgetTotal={currentBudgetTotal}
         budgetSum={budgetSum}
       ></BudgetPieChart>
+      <table className="table-fixed w-full">
+        <thead>
+          <tr>
+            <th className="px-6 py-3 text-right">Current Transactions</th>
+            <th className="px-6 py-3 text-left">Budget Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td className="px-6 text-right">{`$${Math.round(
+              budgetSum.currentBudget / 100
+            ).toFixed(2)}`}</td>
+            <td className="px-6 text-left">{`$${Math.round(
+              budgetSum.totalBudget / 100
+            ).toFixed(2)}`}</td>
+          </tr>
+        </tbody>
+      </table>
       <BudgetCategoriesList
         budgetAmounts={budgetAmounts}
       ></BudgetCategoriesList>
