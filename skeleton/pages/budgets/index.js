@@ -77,7 +77,7 @@ export default function Budgets({
         currentBudgetTotal={currentBudgetTotal}
         budgetSum={budgetSum}
       ></BudgetPieChart>
-      <table className="table-fixed w-full">
+      <table className="table-fixed w-full text-lg">
         <thead>
           <tr>
             <th className="px-6 py-3 text-right">Current Transactions</th>
