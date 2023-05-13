@@ -9,10 +9,10 @@ export default function Transactions({ month, year, transactions, accounts }) {
   const [currentTransactions, setCurrentTransactions] = useState(transactions);
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
-  const [currentAccount, setCurrentAccount] = useState(accounts);
+  const [currentAccount, setCurrentAccount] = useState(undefined);
 
   // Function to fetch transactions data from the API
-  const getTransactionsAPI = (month, year) => {
+  const getTransactionsAPI = (month, year, accountId) => {
     // Adjusting month and year values for previous and next month
     if (month === 0) {
       month = 12;
@@ -24,14 +24,17 @@ export default function Transactions({ month, year, transactions, accounts }) {
       year++;
     }
 
+    if (accountId === Number(currentAccount)) accountId = undefined;
+
     // Making an API call to retrieve data for the specified month and year
     axios
-      .get("../api/transactions", { params: { month, year, currentAccount } })
+      .get("../api/transactions", { params: { month, year, accountId } })
       .then((res) => {
         // Updating the state with the fetched data
         setCurrentMonth(Number(res.data.month));
         setCurrentYear(Number(res.data.year));
         setCurrentTransactions(res.data.transactions);
+        setCurrentAccount(res.data.accountId);
       });
   };
 
@@ -40,16 +43,24 @@ export default function Transactions({ month, year, transactions, accounts }) {
       <div className="flex flex-row mb-5 space-x-5">
         {accounts.map((account) => {
           return (
-            <div key={account.id} className="flex-1 bg-nav-gray rounded-lg p-5">
+            <button
+              key={account.id}
+              className="flex-1 bg-nav-gray rounded-lg p-5"
+              onClick={() =>
+                getTransactionsAPI(currentMonth, currentYear, account.id)
+              }
+            >
               {account.name}
-            </div>
+            </button>
           );
         })}
       </div>
       <div className="flex space-x-5 justify-center mb-5">
         <button
           className="flex"
-          onClick={() => getTransactionsAPI(currentMonth - 1, currentYear)}
+          onClick={() =>
+            getTransactionsAPI(currentMonth - 1, currentYear, currentAccount)
+          }
         >
           Previous month
         </button>
@@ -58,7 +69,9 @@ export default function Transactions({ month, year, transactions, accounts }) {
         </h1>
         <button
           className="flex"
-          onClick={() => getTransactionsAPI(currentMonth + 1, currentYear)}
+          onClick={() =>
+            getTransactionsAPI(currentMonth + 1, currentYear, currentAccount)
+          }
         >
           Next month
         </button>

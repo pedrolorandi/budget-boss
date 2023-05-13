@@ -21,7 +21,7 @@ export async function getTransactions(userId, month, year, accountId) {
   };
 
   if (accountId != undefined) {
-    whereClause.accountId = accountId;
+    whereClause.accountId = Number(accountId);
   }
 
   const transactions = await prisma.transaction.findMany({
