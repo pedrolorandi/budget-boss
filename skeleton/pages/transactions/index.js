@@ -2,12 +2,19 @@ import TransactionList from "@/components/ui/TransactionsList";
 
 import { getDateByMonthYear, getTransactions } from "../../helpers/selectors";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { formatDate } from "@/helpers/formatters";
 
 export default function Transactions({ month, year, transactions }) {
   const [currentTransactions, setCurrentTransactions] = useState(transactions);
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
+  const [formattedDates, setFormattedDates] = useState({});
+
+  useEffect(() => {
+    const transactionDates = formatDate(currentTransactions);
+    setFormattedDates(transactionDates);
+  }, []);
 
   // Function to fetch transactions data from the API
   const getTransactionsAPI = (month, year) => {
@@ -56,7 +63,10 @@ export default function Transactions({ month, year, transactions }) {
           Next month
         </button>
       </div>
-      <TransactionList transactions={currentTransactions} />
+      <TransactionList
+        transactions={currentTransactions}
+        formattedDates={formattedDates}
+      />
     </main>
   );
 }
