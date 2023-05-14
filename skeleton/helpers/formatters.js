@@ -45,16 +45,35 @@ export function categoryIcons(category) {
 }
 
 // Function to format the date text based on whether it is today, yesterday, or another date
-export function formatDate(date) {
+export function formatDate(transactions) {
+  // Create a new Date object representing the current date and time
   const today = new Date();
+
+  // Create a new Date object and set it to the same date and time as today
   const yesterday = new Date(today);
+
+  // Subtract 1 day from yesterday's date
   yesterday.setDate(yesterday.getDate() - 1);
 
-  return date === today.toLocaleDateString()
-    ? "Today"
-    : date === yesterday.toLocaleDateString()
-    ? "Yesterday"
-    : date;
+  // Initialize an empty object to store formatted transaction dates
+  const transactionDates = transactions.reduce((datesObj, transaction) => {
+    // Format the transaction date based on its value
+    const formattedDate =
+      transaction.date === today.toLocaleDateString()
+        ? "Today"
+        : transaction.date === yesterday.toLocaleDateString()
+        ? "Yesterday"
+        : transaction.date;
+
+    // Assign the formatted date to the corresponding transaction date in the object
+    datesObj[transaction.date] = formattedDate;
+
+    // Return the updated object for the next iteration
+    return datesObj;
+  }, {});
+
+  // Return the object containing formatted transaction dates
+  return transactionDates;
 }
 
 // Function to format the transaction text with the appropriate signal and amount
