@@ -56,6 +56,7 @@ export async function getTransactionsGroupedByDate(
     return transaction.date.slice(0, 7) === currentMonthAndYear;
   });
 
+  // If there's an account, filter the transactions by accountId
   if (accountId) {
     filteredTransactions = filteredTransactions.filter((transaction) => {
       return transaction.accountId === Number(accountId);

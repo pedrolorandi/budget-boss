@@ -50,8 +50,7 @@ export default function Transactions({ month, year, transactions, accounts }) {
         setCurrentMonth(Number(res.data.month));
         setCurrentYear(Number(res.data.year));
         setCurrentTransactions(res.data.transactions);
-        // setCurrentAccount(res.data.accountId);
-
+        setCurrentAccount(res.data.accountId);
         setFormattedDates(formatDate(res.data.transactions));
       });
   };
