@@ -46,19 +46,19 @@ export default function Budgets({
     ],
   });
 
-  useEffect((currentMonth, currentYear) => {
-    if (currentMonth === 0) {
-      setCurrentMonth(12);
-      setCurrentYear(currentYear - 1);
-    }
+  // useEffect((currentMonth, currentYear) => {
+  //   if (currentMonth === 0) {
+  //     setCurrentMonth(12);
+  //     setCurrentYear(currentYear - 1);
+  //   }
 
-    if (currentMonth === 13) {
-      setCurrentMonth(1);
-      setCurrentYear(currentYear + 1);
-    }
-    const newBudgetSum = getBudgetSum(transactionsByCategory, budgets);
-    setCurrentBudgetTotal(newBudgetSum);
-  }, []);
+  //   if (currentMonth === 13) {
+  //     setCurrentMonth(1);
+  //     setCurrentYear(currentYear + 1);
+  //   }
+  //   const newBudgetSum = getBudgetSum(transactionsByCategory, budgets);
+  //   setCurrentBudgetTotal(newBudgetSum);
+  // }, []);
 
   const getBudgetAmounts = (transactions, budgets) => {
     let result = [];
