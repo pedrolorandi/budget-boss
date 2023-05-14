@@ -1,11 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  categoryIcons,
-  formatDate,
-  formatTransaction,
-} from "../../helpers/formatters.js";
+import { categoryIcons, formatTransaction } from "../../helpers/formatters.js";
 
-export default function TransactionList({ transactions }) {
+export default function TransactionList({ transactions, formattedDates }) {
   return (
     <>
       <div className="p-5 bg-mid-gray rounded-lg flex flex-col">
@@ -13,7 +9,7 @@ export default function TransactionList({ transactions }) {
         {transactions.map(({ date, transactions }) => {
           return (
             <div className="mt-5 flex flex-col" key={date + transactions[0].id}>
-              <span className="text-sm">{formatDate(date)}</span>
+              <span className="text-sm">{formattedDates[date]}</span>
               {transactions.map((transaction) => {
                 return (
                   <div key={transaction.id} className="flex mt-5">

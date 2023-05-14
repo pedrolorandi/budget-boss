@@ -10,35 +10,126 @@ export function getDateByMonthYear(month, year) {
   return `${monthName} ${year}`;
 }
 
-export async function getTransactions(userId, month, year, accountId) {
+// Function to get all transactions for a specific user
+export async function getAllTransactions(userId) {
+  // Create a new instance of PrismaClient
   const prisma = new PrismaClient();
-  const whereClause = {
-    source: { user: { id: userId } },
-    AND: [
-      { date: { gte: new Date(year, month - 1, 1) } },
-      { date: { lt: new Date(year, month, 1) } },
-    ],
-  };
 
-  if (accountId != undefined) {
-    whereClause.accountId = Number(accountId);
-  }
-
+  // Fetch transactions from the Prisma database based on the specified criteria
   const transactions = await prisma.transaction.findMany({
-    where: whereClause,
-    include: { source: true, category: true },
+    where: { source: { user: { id: userId } } },
+    include: { source: true, category: true, account: true }, // Include the related source and category data for each transaction // Filter transactions by user ID}
   });
 
-  // Formatting the transaction dates and grouping transactions by date
-  const formattedTransactions = transactions.map((transaction) => {
+  // Format the transaction dates and group transactions by date
+  const formattedTransactions = transactions
+    .map((transaction) => {
+      const date = JSON.stringify(transaction.date).substring(1, 11);
+
+      return {
+        ...transaction,
+        date, // Format the transaction date as a localized string
+      };
+    })
+    .sort((a, b) => {
+      return new Date(b.date) - new Date(a.date);
+    });
+
+  return formattedTransactions;
+}
+
+// Function to retrieve and group transactions by date, filtered by the specified month and year
+export async function getTransactionsGroupedByDate(
+  userId,
+  month,
+  year,
+  accountId
+) {
+  // Retrieve all transactions for the specified user
+  const transactions = await getAllTransactions(userId);
+
+  // Create a string representing the current month and year in the format "YYYY-MM"
+  const currentMonthAndYear = `${year}-${month < 10 ? "0" + month : month}`;
+
+  // Filter transactions to include only those that match the current month and year
+  let filteredTransactions = transactions.filter((transaction) => {
+    return transaction.date.slice(0, 7) === currentMonthAndYear;
+  });
+
+  if (accountId) {
+    filteredTransactions = filteredTransactions.filter((transaction) => {
+      return transaction.accountId === Number(accountId);
+    });
+  }
+
+  // Group the filtered transactions by date
+  const groupedTransactions = filteredTransactions.reduce(
+    (result, transaction) => {
+      // Create a string representing the current month and year in the format "YYYY-MM"
+      const currentMonthAndYear = `${year}-${month < 10 ? "0" + month : month}`;
+
+      // If the transaction date matches the current month and year, add it to the corresponding group
+      if (transaction.date.slice(0, 7) === currentMonthAndYear) {
+        !result[transaction.date]
+          ? (result[transaction.date] = [transaction])
+          : result[transaction.date].push(transaction);
+      }
+
+      return result;
+    },
+    {}
+  );
+
+  // Create an array of transactions grouped by date
+  const transactionsByDate = Object.keys(groupedTransactions).map((date) => {
     return {
-      ...transaction,
-      date: transaction.date.toLocaleDateString(),
+      date: date,
+      transactions: groupedTransactions[date],
     };
   });
 
+  // Return the transactions grouped by date
+  return transactionsByDate;
+}
+
+// Function to retrieve and format transactions by month and year, grouping them by date
+export async function getTransactions(userId, month, year, accountId) {
+  // Create a new instance of PrismaClient
+  const prisma = new PrismaClient();
+
+  // Define the whereClause object to filter transactions
+  const whereClause = {
+    source: { user: { id: userId } }, // Filter transactions by user ID
+    AND: [
+      { date: { gte: new Date(year, month - 1, 1) } }, // Filter transactions with a date greater than or equal to the start of the specified month and year
+      { date: { lt: new Date(year, month, 1) } }, // Filter transactions with a date less than the start of the next month
+    ],
+  };
+
+  // Check if an accountId is provided
+  if (accountId != undefined) {
+    whereClause.accountId = Number(accountId); // Filter transactions by account ID
+  }
+
+  // Fetch transactions from the Prisma database based on the specified criteria
+  const transactions = await prisma.transaction.findMany({
+    where: whereClause, // Apply the whereClause as the filter for the transactions
+    include: { source: true, category: true }, // Include the related source and category data for each transaction
+  });
+
+  // Format the transaction dates and group transactions by date
+  const formattedTransactions = transactions.map((transaction) => {
+    return {
+      ...transaction,
+      date: transaction.date.toLocaleDateString(), // Format the transaction date as a localized string
+    };
+  });
+
+  // Group the formatted transactions by date
   const groupedTransactions = formattedTransactions.reduce(
     (result, transaction) => {
+      // If the date group doesn't exist in the result object, create a new array for it
+      // Otherwise, push the transaction into the existing array
       !result[transaction.date]
         ? (result[transaction.date] = [transaction])
         : result[transaction.date].push(transaction);
@@ -48,12 +139,12 @@ export async function getTransactions(userId, month, year, accountId) {
     {}
   );
 
-  // Sorting the grouped transactions by date in descending order
+  // Sort the grouped transactions by date in descending order
   const sortedKeys = Object.keys(groupedTransactions).sort((a, b) => {
     return new Date(b) - new Date(a);
   });
 
-  // Creating an array of sorted transactions with date and corresponding grouped transactions
+  // Create an array of sorted transactions with date and corresponding grouped transactions
   const sortedTransactions = sortedKeys.map((date) => {
     return {
       date: date,
@@ -61,6 +152,7 @@ export async function getTransactions(userId, month, year, accountId) {
     };
   });
 
+  // Return the sorted transactions
   return sortedTransactions;
 }
 
@@ -176,8 +268,8 @@ export async function getRunningTotalData(userId, month, year) {
 
   // Looping through transactions to calculate running totals, incomes, expenses, and dates
   transactions.forEach(({ date, type, amountDecimal }, i) => {
-    const formattedDate = date.toLocaleDateString();
-    const [transactionMonth, _, transactionYear] = formattedDate.split("/");
+    const formattedDate = JSON.stringify(date).substring(1, 11);
+    const [transactionYear, transactionMonth, _] = formattedDate.split("-");
 
     // Calculating the running total based on transaction type and amount
     currentTotal +=
@@ -224,4 +316,70 @@ export async function getRunningTotalData(userId, month, year) {
 
   // Returning an object containing dates, incomes, expenses, and current running total
   return { dates, incomes, expenses, runningTotal: currentRunningTotal };
+}
+
+export async function getTransactionsGroupedByCategory(userId, month, year) {
+  const prisma = new PrismaClient();
+  const categories = await prisma.transaction.groupBy({
+    by: ["categoryId"],
+    where: {
+      source: { user: { id: userId } },
+      AND: [
+        { date: { gte: new Date(year, month - 1, 1) } },
+        { date: { lt: new Date(year, month, 1) } },
+      ],
+      type: "Expense",
+    },
+    _sum: {
+      amountDecimal: true,
+    },
+  });
+
+  const categoryNames = await prisma.category.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
+  const result = [];
+
+  for (let i of categories) {
+    for (let j of categoryNames)
+      if (i.categoryId === j.id) {
+        let element = {
+          ...i,
+          name: j.name,
+        };
+        result.push(element);
+      }
+  }
+  return result;
+}
+
+export async function getBudgets(userId, month, year) {
+  const prisma = new PrismaClient();
+
+  const budgets = await prisma.budgetCategory.findMany({
+    where: {
+      budget: {
+        userId: userId,
+        AND: [
+          { date: { gte: new Date(year, month - 1, 1) } },
+          { date: { lt: new Date(year, month, 1) } },
+        ],
+      },
+    },
+    select: {
+      amountDecimal: true,
+      category: {
+        select: {
+          name: true,
+          id: true,
+        },
+      },
+    },
+  });
+
+  return budgets;
 }

@@ -1,4 +1,4 @@
-import { getTransactions } from "@/helpers/selectors";
+import { getTransactionsGroupedByDate } from "@/helpers/selectors";
 
 export default async function handler(req, res) {
   const userId = 1;
@@ -6,7 +6,12 @@ export default async function handler(req, res) {
   const year = req.query.year;
   const accountId = req.query.accountId;
 
-  const transactions = await getTransactions(userId, month, year, accountId);
+  const transactions = await getTransactionsGroupedByDate(
+    userId,
+    month,
+    year,
+    accountId
+  );
 
-  res.send(JSON.stringify({ month, year, transactions, accountId }));
+  res.send(JSON.stringify({ month, year, transactions }));
 }

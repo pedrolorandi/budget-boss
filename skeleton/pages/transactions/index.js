@@ -1,15 +1,31 @@
 import TransactionList from "@/components/ui/TransactionsList";
 
-import { getDateByMonthYear, getTransactions } from "../../helpers/selectors";
+import {
+  getAllTransactions,
+  getDateByMonthYear,
+  getTransactions,
+  getTransactionsGroupedByDate,
+} from "../../helpers/selectors";
 import axios from "axios";
-import { useState } from "react";
+
 import { PrismaClient } from "@prisma/client";
+import { useEffect, useState } from "react";
+import { formatDate } from "@/helpers/formatters";
+import AccountTile from "@/components/ui/AccountTile";
 
 export default function Transactions({ month, year, transactions, accounts }) {
   const [currentTransactions, setCurrentTransactions] = useState(transactions);
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
   const [currentAccount, setCurrentAccount] = useState(undefined);
+  const [formattedDates, setFormattedDates] = useState({});
+
+  console.log();
+
+  useEffect(() => {
+    const transactionDates = formatDate(currentTransactions);
+    setFormattedDates(transactionDates);
+  }, []);
 
   // Function to fetch transactions data from the API
   const getTransactionsAPI = (month, year, accountId) => {
@@ -34,7 +50,9 @@ export default function Transactions({ month, year, transactions, accounts }) {
         setCurrentMonth(Number(res.data.month));
         setCurrentYear(Number(res.data.year));
         setCurrentTransactions(res.data.transactions);
-        setCurrentAccount(res.data.accountId);
+        // setCurrentAccount(res.data.accountId);
+
+        setFormattedDates(formatDate(res.data.transactions));
       });
   };
 
@@ -43,15 +61,14 @@ export default function Transactions({ month, year, transactions, accounts }) {
       <div className="flex flex-row mb-5 space-x-5">
         {accounts.map((account) => {
           return (
-            <button
+            <AccountTile
               key={account.id}
-              className="flex-1 bg-nav-gray rounded-lg p-5"
-              onClick={() =>
-                getTransactionsAPI(currentMonth, currentYear, account.id)
-              }
-            >
-              {account.name}
-            </button>
+              account={account}
+              currentAccount={currentAccount}
+              getTransactionsAPI={getTransactionsAPI}
+              currentMonth={currentMonth}
+              currentYear={currentYear}
+            />
           );
         })}
       </div>
@@ -76,7 +93,10 @@ export default function Transactions({ month, year, transactions, accounts }) {
           Next month
         </button>
       </div>
-      <TransactionList transactions={currentTransactions} />
+      <TransactionList
+        transactions={currentTransactions}
+        formattedDates={formattedDates}
+      />
     </main>
   );
 }
@@ -84,13 +104,19 @@ export default function Transactions({ month, year, transactions, accounts }) {
 export async function getServerSideProps() {
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
-  const transactions = await getTransactions(1, currentMonth, currentYear);
 
   const prisma = new PrismaClient();
 
   const accounts = await prisma.account.findMany({
     where: { userId: 1 },
   });
+
+  const transactions = await getTransactionsGroupedByDate(
+    1,
+    currentMonth,
+    currentYear,
+    undefined
+  );
 
   return {
     props: {
