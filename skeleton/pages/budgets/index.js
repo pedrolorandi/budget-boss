@@ -2,11 +2,9 @@ import { PrismaClient } from "@prisma/client";
 
 import {
   getDateByMonthYear,
-  getTransactions,
   getTransactionsGroupedByCategory,
   getBudgets,
 } from "../../helpers/selectors";
-import axios from "axios";
 import { useState, useEffect } from "react";
 
 import BudgetCategoriesList from "@/components/ui/BudgetCategoriesList";
@@ -51,13 +49,15 @@ export default function Budgets({
   useEffect((currentMonth, currentYear) => {
     if (currentMonth === 0) {
       setCurrentMonth(12);
-      setCurrentMonth(currentMonth - 1);
+      setCurrentYear(currentYear - 1);
     }
 
     if (currentMonth === 13) {
       setCurrentMonth(1);
-      setCurrentMonth(currentMonth + 1);
+      setCurrentYear(currentYear + 1);
     }
+    const newBudgetSum = getBudgetSum(transactionsByCategory, budgets);
+    setCurrentBudgetTotal(newBudgetSum);
   }, []);
 
   const getBudgetAmounts = (transactions, budgets) => {
