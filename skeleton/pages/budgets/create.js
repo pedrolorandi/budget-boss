@@ -1,23 +1,16 @@
 import React, {useRef} from 'react';
 import axios from 'axios';
 
+import {getUserInput} from '../../helpers/selectors'
+
 export default function CreateBudget() {
   const input = useRef({});
   let elements = [];
 
-  function getValue(obj) {
-    const keys = Object.keys(obj);
-    keys.forEach(key => {
-      obj[`${key}`] = obj[`${key}`].value;
-    });
-    
-    return obj;
-  }
-  
   function handleSubmit(event) {
     event.preventDefault();
     const inputValue = input.current;
-    getValue(inputValue);
+    getUserInput(inputValue);
     console.log(inputValue);
 
     axios.put('/api/budget/create', inputValue)
