@@ -7,7 +7,7 @@ import {
   getBudgets,
 } from "../../helpers/selectors";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import BudgetCategoriesList from "@/components/ui/BudgetCategoriesList";
 import BudgetPieChart from "@/components/ui/BudgetPieChart";
@@ -48,6 +48,18 @@ export default function Budgets({
     ],
   });
 
+  useEffect((currentMonth, currentYear) => {
+    if (currentMonth === 0) {
+      setCurrentMonth(12);
+      setCurrentMonth(currentMonth - 1);
+    }
+
+    if (currentMonth === 13) {
+      setCurrentMonth(1);
+      setCurrentMonth(currentMonth + 1);
+    }
+  }, []);
+
   const getBudgetAmounts = (transactions, budgets) => {
     let result = [];
 
@@ -72,6 +84,23 @@ export default function Budgets({
 
   return (
     <div className="flex flex-col items-center content-center w-full">
+      <div className="flex space-x-5 justify-center mb-5">
+        <button
+          className="flex"
+          onClick={() => getTransactionsAPI(currentMonth - 1, currentYear)}
+        >
+          Previous month
+        </button>
+        <h1 className="flex">
+          {getDateByMonthYear(currentMonth, currentYear)}
+        </h1>
+        <button
+          className="flex"
+          onClick={() => getTransactionsAPI(currentMonth + 1, currentYear)}
+        >
+          Next month
+        </button>
+      </div>
       <div className="text-center text-3xl font-bold">Total Budgets</div>
       <BudgetPieChart
         currentBudgetTotal={currentBudgetTotal}
@@ -103,8 +132,6 @@ export default function Budgets({
 }
 
 export async function getServerSideProps() {
-  const prisma = new PrismaClient();
-
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
   const transactionsByCategory = await getTransactionsGroupedByCategory(
