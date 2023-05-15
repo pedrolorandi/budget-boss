@@ -35,7 +35,7 @@ export default function AddTransaction({categories, accounts }) {
   }
 
   return (
-    <div>
+    <div >
       <Form onSubmit={handleSubmit} 
       titleRef={titleRef} cateRef={cateRef} amountRef={amountRef} accountRef={accountRef} sourRef={sourRef} typeValue={typeValue}
       handleOnChange={event => setTypeValue(event.target.value)}

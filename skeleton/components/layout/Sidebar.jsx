@@ -7,12 +7,10 @@ export default function Sidebar() {
   // add paths when they're completed
   const links = [
     {label: 'Overview', path: "/"},
-    {label: 'Accounts', path: "/"},
-    {label: 'Budgets', path: "/"},
-    {label: 'Reports', path: "/"},
+    {label: 'Accounts', path: "/transactions"},
+    {label: 'Budgets', path: "/budgets"},
+    {label: 'Reports', path: "/reports"},
   ];
-
-
 
   return (
     <div className="flex-col w-1/6 items-center justify-center">
