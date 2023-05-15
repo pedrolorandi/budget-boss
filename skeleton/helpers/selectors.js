@@ -94,29 +94,42 @@ export async function getTransactionsGroupedByDate(
   return transactionsByDate;
 }
 
-export async function getRunnigTotalByAccount(userId) {
+// Function to calculate the running total by account for a user,
+// based on the filtered transactions and their amounts
+export async function getRunningTotalByAccount(userId) {
+  // Retrieve all transactions for the specified user
   const transactions = await getAllTransactions(userId);
+
+  // Get the current date in the "YYYY-MM-DD" format
   const today = convertDate(new Date());
 
+  // Filter transactions to include only those up to the current date,
+  // and reverse the order to start with the oldest transaction
   const filteredTransactions = transactions
     .reverse()
     .filter((transaction) => transaction.date <= today);
 
+  // Initialize an empty object to store the running total by account
   const accounts = {};
 
+  // Calculate the running total for each transaction, grouped by account
   filteredTransactions.forEach((transaction) => {
+    // If the account doesn't exist in the accounts object, initialize it with a running total of 0
     if (!accounts[transaction.account.id]) accounts[transaction.account.id] = 0;
 
+    // Update the running total based on the transaction type (income or expense)
     accounts[transaction.account.id] +=
       transaction.type === "Income"
         ? transaction.amountDecimal / 100
         : -transaction.amountDecimal / 100;
   });
 
+  // Format the running total to have two decimal places for each account
   Object.keys(accounts).forEach((accountId) => {
     accounts[accountId] = accounts[accountId].toFixed(2);
   });
 
+  // Return the running total by account
   return accounts;
 }
 
