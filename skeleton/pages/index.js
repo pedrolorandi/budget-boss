@@ -1,9 +1,11 @@
 import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "next/font/google";
-
 import prisma from "@/prisma/prismaclient";
+
 import Layout from "@/components/layout/Layout";
+import TransactionList from "@/components/ui/TransactionsList";
+import RunningTotalChart from "@/components/ui/RunningTotalChart";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +26,7 @@ export default function Home({ user }) {
   return (
     <>
       <Layout user={user}></Layout>
+      <RunningTotalChart />
     </>
   );
 }
