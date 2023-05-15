@@ -1,11 +1,14 @@
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 
-export default function Layout(props) {
+export default function Layout({ children }) {
   return (
-    <>
-      <Navbar user={props.user}/>
-      <Sidebar></Sidebar>
-    </>
+    <div>
+      <Navbar />
+      <div className="flex container">
+        <Sidebar />
+        <main className="flex flex-col p-5">{children}</main>
+      </div>
+    </div>
   );
 }

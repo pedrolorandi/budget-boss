@@ -6,30 +6,28 @@ export default function Sidebar() {
 
   // add paths when they're completed
   const links = [
-    {label: 'Overview', path: "/"},
-    {label: 'Accounts', path: "/"},
-    {label: 'Budgets', path: "/"},
-    {label: 'Reports', path: "/"},
+    { label: "Overview", path: "/" },
+    { label: "Accounts", path: "/transactions" },
+    { label: "Budgets", path: "/" },
+    { label: "Reports", path: "/reports" },
   ];
-
-
 
   return (
     <div className="flex-col w-1/6 items-center justify-center">
-      {links.map( (link, i) => {
+      {links.map((link, i) => {
         return (
           <Link
             key={i}
             href={`${link.path}`}
-            className={`h-20 w-full justify-center hover:bg-gray-100 flex items-center ${links[activeMenuIndex].label === link.label ? "bg-gray-200" : ""}`}
+            className={`h-20 w-full justify-center hover:bg-gray-100 flex items-center ${
+              links[activeMenuIndex].label === link.label ? "bg-gray-200" : ""
+            }`}
             onClick={() => setActiveMenuIndex(i)}
-            >
-              {link.label}
+          >
+            {link.label}
           </Link>
-        )})}
+        );
+      })}
     </div>
   );
-};
-
-
-//look up react-context to access props data from any component
+}

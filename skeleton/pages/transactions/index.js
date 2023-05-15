@@ -41,7 +41,7 @@ export default function Transactions({ month, year, transactions }) {
   };
 
   return (
-    <main className="flex flex-col p-5">
+    <>
       <div className="flex flex-row mb-5 space-x-5">
         <div className="flex-1 bg-nav-gray rounded-lg p-5">Checkings</div>
         <div className="flex-1 bg-nav-gray rounded-lg p-5">Savings</div>
@@ -67,7 +67,7 @@ export default function Transactions({ month, year, transactions }) {
         transactions={currentTransactions}
         formattedDates={formattedDates}
       />
-    </main>
+    </>
   );
 }
 
