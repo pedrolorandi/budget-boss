@@ -96,7 +96,7 @@ export async function getTransactionsGroupedByDate(
 
 // Function to calculate the running total by account for a user,
 // based on the filtered transactions and their amounts
-export async function getRunningTotalByAccount(userId) {
+export async function getRunnigTotalByAccount(userId) {
   // Retrieve all transactions for the specified user
   const transactions = await getAllTransactions(userId);
 
