@@ -5,7 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { formatDate } from "@/helpers/formatters";
 
-export default function Transactions({ month, year, transactions, indexPage}) {
+export default function Transactions({ month, year, transactions, indexPage, text}) {
   const [currentTransactions, setCurrentTransactions] = useState(transactions);
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
@@ -42,26 +42,26 @@ export default function Transactions({ month, year, transactions, indexPage}) {
 
   return (
     <main className="flex flex-col p-5">
-      <div className="flex flex-row mb-5 space-x-5">
+      {!indexPage && <div className="flex flex-row mb-5 space-x-5">
         <div className="flex-1 bg-nav-gray rounded-lg p-5">Checkings</div>
         <div className="flex-1 bg-nav-gray rounded-lg p-5">Savings</div>
-      </div>
+      </div>}
       <div className="flex space-x-5 justify-center mb-5">
-        <button
+        {!indexPage && <button
           className="flex"
           onClick={() => getTransactionsAPI(currentMonth - 1, currentYear)}
         >
           Previous month
-        </button>
+        </button>}
         <h1 className="flex">
-          {getDateByMonthYear(currentMonth, currentYear)}
+          {indexPage ? text : getDateByMonthYear(currentMonth, currentYear)}
         </h1>
-        <button
+        {!indexPage && <button
           className="flex"
           onClick={() => getTransactionsAPI(currentMonth + 1, currentYear)}
         >
           Next month
-        </button>
+        </button>}
       </div>
       <TransactionList
         transactions={currentTransactions}

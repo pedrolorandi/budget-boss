@@ -7,7 +7,7 @@ import {
 
 export default function TransactionList({ transactions, formattedDates, indexPage }) {
 
-  const transactionList = indexPage ? transactions.slice(0,5) : transactions;
+  const transactionList = indexPage ? transactions.slice(0,3) : transactions;
   
   return (
     <>
