@@ -1,10 +1,9 @@
 import TransactionList from "@/components/ui/TransactionsList";
 
 import {
-  getAllTransactions,
   getDateByMonthYear,
-  getTransactions,
   getTransactionsGroupedByDate,
+  getRunnigTotalByAccount,
 } from "../../helpers/selectors";
 import axios from "axios";
 
@@ -13,14 +12,20 @@ import { useEffect, useState } from "react";
 import { formatDate } from "@/helpers/formatters";
 import AccountTile from "@/components/ui/AccountTile";
 
-export default function Transactions({ month, year, transactions, accounts }) {
+export default function Transactions({
+  month,
+  year,
+  transactions,
+  accounts,
+  runningTotalbyAccount,
+}) {
   const [currentTransactions, setCurrentTransactions] = useState(transactions);
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
   const [currentAccount, setCurrentAccount] = useState(undefined);
   const [formattedDates, setFormattedDates] = useState({});
-
-  console.log();
+  const [currentRunningTotalbyAccount, setCurrentRunningTotalByAccount] =
+    useState(runningTotalbyAccount);
 
   useEffect(() => {
     const transactionDates = formatDate(currentTransactions);
@@ -64,6 +69,7 @@ export default function Transactions({ month, year, transactions, accounts }) {
               key={account.id}
               account={account}
               currentAccount={currentAccount}
+              currentRunningTotalbyAccount={currentRunningTotalbyAccount}
               getTransactionsAPI={getTransactionsAPI}
               currentMonth={currentMonth}
               currentYear={currentYear}
@@ -110,6 +116,8 @@ export async function getServerSideProps() {
     where: { userId: 1 },
   });
 
+  const runningTotalbyAccount = await getRunnigTotalByAccount(1);
+
   const transactions = await getTransactionsGroupedByDate(
     1,
     currentMonth,
@@ -123,6 +131,7 @@ export async function getServerSideProps() {
       year: currentYear,
       transactions,
       accounts,
+      runningTotalbyAccount,
     },
   };
 }

@@ -1,5 +1,6 @@
 // Importing necessary dependencies
 import { PrismaClient } from "@prisma/client";
+import { convertDate } from "./formatters";
 
 // Function to get the formatted date string by month and year
 export function getDateByMonthYear(month, year) {
@@ -93,68 +94,30 @@ export async function getTransactionsGroupedByDate(
   return transactionsByDate;
 }
 
-// Function to retrieve and format transactions by month and year, grouping them by date
-export async function getTransactions(userId, month, year, accountId) {
-  // Create a new instance of PrismaClient
-  const prisma = new PrismaClient();
+export async function getRunnigTotalByAccount(userId) {
+  const transactions = await getAllTransactions(userId);
+  const today = convertDate(new Date());
 
-  // Define the whereClause object to filter transactions
-  const whereClause = {
-    source: { user: { id: userId } }, // Filter transactions by user ID
-    AND: [
-      { date: { gte: new Date(year, month - 1, 1) } }, // Filter transactions with a date greater than or equal to the start of the specified month and year
-      { date: { lt: new Date(year, month, 1) } }, // Filter transactions with a date less than the start of the next month
-    ],
-  };
+  const filteredTransactions = transactions
+    .reverse()
+    .filter((transaction) => transaction.date <= today);
 
-  // Check if an accountId is provided
-  if (accountId != undefined) {
-    whereClause.accountId = Number(accountId); // Filter transactions by account ID
-  }
+  const accounts = {};
 
-  // Fetch transactions from the Prisma database based on the specified criteria
-  const transactions = await prisma.transaction.findMany({
-    where: whereClause, // Apply the whereClause as the filter for the transactions
-    include: { source: true, category: true }, // Include the related source and category data for each transaction
+  filteredTransactions.forEach((transaction) => {
+    if (!accounts[transaction.account.id]) accounts[transaction.account.id] = 0;
+
+    accounts[transaction.account.id] +=
+      transaction.type === "Income"
+        ? transaction.amountDecimal / 100
+        : -transaction.amountDecimal / 100;
   });
 
-  // Format the transaction dates and group transactions by date
-  const formattedTransactions = transactions.map((transaction) => {
-    return {
-      ...transaction,
-      date: transaction.date.toLocaleDateString(), // Format the transaction date as a localized string
-    };
+  Object.keys(accounts).forEach((accountId) => {
+    accounts[accountId] = accounts[accountId].toFixed(2);
   });
 
-  // Group the formatted transactions by date
-  const groupedTransactions = formattedTransactions.reduce(
-    (result, transaction) => {
-      // If the date group doesn't exist in the result object, create a new array for it
-      // Otherwise, push the transaction into the existing array
-      !result[transaction.date]
-        ? (result[transaction.date] = [transaction])
-        : result[transaction.date].push(transaction);
-
-      return result;
-    },
-    {}
-  );
-
-  // Sort the grouped transactions by date in descending order
-  const sortedKeys = Object.keys(groupedTransactions).sort((a, b) => {
-    return new Date(b) - new Date(a);
-  });
-
-  // Create an array of sorted transactions with date and corresponding grouped transactions
-  const sortedTransactions = sortedKeys.map((date) => {
-    return {
-      date: date,
-      transactions: groupedTransactions[date],
-    };
-  });
-
-  // Return the sorted transactions
-  return sortedTransactions;
+  return accounts;
 }
 
 // Function to retrieve category data for a given user, month, and year

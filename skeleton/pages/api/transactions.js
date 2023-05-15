@@ -13,5 +13,12 @@ export default async function handler(req, res) {
     accountId
   );
 
-  res.send(JSON.stringify({ month, year, transactions, accountId }));
+  res.send(
+    JSON.stringify({
+      month,
+      year,
+      transactions,
+      accountId,
+    })
+  );
 }
