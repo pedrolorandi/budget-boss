@@ -1,14 +1,12 @@
 import React from 'react';
 
-import Navbar from '../../components/layout/Navbar'
-import Sidebar from '../../components/layout/Sidebar'
+import Layout from '../../components/layout/Layout'
 
-export default function Form({onSubmit, type, text, categories, accounts, titleRef, cateRef, amountRef, accountRef, sourRef, typeValue, handleOnChange, transaction, transactionSource}) {
+export default function Form({onSubmit, type, text, categories, accounts, user, titleRef, cateRef, amountRef, accountRef, sourRef, typeValue, handleOnChange, transaction, transactionSource}) {
   
   return (
     <>
-      <Navbar />
-      <Sidebar />
+      <Layout user={user}/>
       <div className="flex items-center h-screen">
           <form onSubmit={onSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mx-auto" style={{marginBottom: "780px", marginLeft: "330px"}}>
             <h1 className="text-xl font-bold mb-4">{text}</h1>

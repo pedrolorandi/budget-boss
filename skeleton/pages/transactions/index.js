@@ -2,12 +2,19 @@ import TransactionList from "@/components/ui/TransactionsList";
 
 import { getDateByMonthYear, getTransactions } from "../../helpers/selectors";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { formatDate } from "@/helpers/formatters";
 
-export default function Transactions({ month, year, transactions }) {
+export default function Transactions({ month, year, transactions, indexPage}) {
   const [currentTransactions, setCurrentTransactions] = useState(transactions);
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
+  const [formattedDates, setFormattedDates] = useState({});
+
+  useEffect(() => {
+    const transactionDates = formatDate(currentTransactions);
+    setFormattedDates(transactionDates);
+  }, []);
 
   // Function to fetch transactions data from the API
   const getTransactionsAPI = (month, year) => {
@@ -56,7 +63,11 @@ export default function Transactions({ month, year, transactions }) {
           Next month
         </button>
       </div>
-      <TransactionList transactions={currentTransactions} />
+      <TransactionList
+        transactions={currentTransactions}
+        formattedDates={formattedDates}
+        indexPage={indexPage}
+      />
     </main>
   );
 }
@@ -65,12 +76,14 @@ export async function getServerSideProps() {
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
   const transactions = await getTransactions(1, currentMonth, currentYear);
+  const indexPage = false;
 
   return {
     props: {
       month: currentMonth,
       year: currentYear,
       transactions: transactions,
+      indexPage: indexPage
     },
   };
 }

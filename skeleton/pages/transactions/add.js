@@ -5,7 +5,7 @@ import axios from 'axios';
 import Form from "../../components/ui/Form";
 import useHook from '../../hooks/useHook';
 
-export default function AddTransaction({categories, accounts }) {
+export default function AddTransaction({categories, accounts, user}) {
   const {
     titleRef,
     cateRef,
@@ -40,7 +40,7 @@ export default function AddTransaction({categories, accounts }) {
       titleRef={titleRef} cateRef={cateRef} amountRef={amountRef} accountRef={accountRef} sourRef={sourRef} typeValue={typeValue}
       handleOnChange={event => setTypeValue(event.target.value)}
       type='transaction' text='Add A Transaction' 
-      categories={categories} accounts={accounts}
+      categories={categories} accounts={accounts} user={user}
       />
     </div>
   );
@@ -52,8 +52,13 @@ export async function getServerSideProps() {
   const accounts = await prisma.account.findMany({
     where: {userId: 1}
   });
+  const user = await prisma.user.findUnique({
+    where: {
+      id: 1,
+    },
+  });
 
   return {
-    props: { categories, accounts },
+    props: { categories, accounts, user},
   };
 }

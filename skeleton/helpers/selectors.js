@@ -290,8 +290,7 @@ export async function getBudgets(userId, month, year) {
 }
 
 export function getUserInput(obj) {
-  const keys = Object.keys(obj);
-  keys.forEach(key => {
+  Object.keys(obj).forEach(key => {
     obj[`${key}`] = obj[`${key}`].value;
   });
   
