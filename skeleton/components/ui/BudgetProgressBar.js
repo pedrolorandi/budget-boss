@@ -28,7 +28,7 @@ export default function BarChart(props) {
             width: `${props.width < 100 ? props.width : 100}` + "%",
           }}
         >
-          {props.width}
+          {props.width}%
         </div>
       </div>
     </div>

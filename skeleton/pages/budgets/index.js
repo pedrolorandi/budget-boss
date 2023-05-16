@@ -38,8 +38,8 @@ export default function Budgets({
       {
         label: [],
         data: [
-          (budgetSum.difference / 100).toFixed(2),
-          (budgetSum.currentBudget / 100).toFixed(2),
+          budgetSum.difference.toFixed(2),
+          budgetSum.currentBudget.toFixed(2),
         ],
         backgroundColor: ["#E9ECEF", `${pieChartColour}`],
       },
@@ -93,7 +93,6 @@ export default function Budgets({
         }
       }
     }
-    console.log(result);
     return result;
   };
 
@@ -132,10 +131,10 @@ export default function Budgets({
         </thead>
         <tbody>
           <tr>
-            <td className="px-6 text-right">{`$${Math.round(
+            <td className="px-6 text-right">{`$${(
               budgetSum.currentBudget / 100
             ).toFixed(2)}`}</td>
-            <td className="px-6 text-left">{`$${Math.round(
+            <td className="px-6 text-left">{`$${(
               budgetSum.totalBudget / 100
             ).toFixed(2)}`}</td>
           </tr>
@@ -165,7 +164,9 @@ export async function getServerSideProps() {
       result.totalBudget += b.amountDecimal;
       for (let c of transactions) {
         if (b.category.id === c.categoryId) {
-          result.currentBudget += c._sum.amountDecimal;
+          if (b.amountDecimal > 0) {
+            result.currentBudget += c._sum.amountDecimal;
+          }
         }
       }
     }
@@ -173,6 +174,10 @@ export async function getServerSideProps() {
     result.percent = (result.currentBudget / result.totalBudget) * 100;
     result.difference =
       result.percent > 100 ? 0 : result.totalBudget - result.currentBudget;
+
+    // result.totalBudget = result.totalBudget / 100;
+    // result.currentBudget = result.currentBudget / 100;
+
     return result;
   };
   const budgetSum = getBudgetSum(transactionsByCategory, budgets);
