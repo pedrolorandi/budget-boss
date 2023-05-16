@@ -55,7 +55,7 @@ export default function Budgets({
           const fontSize = (height / 160).toFixed(2);
           ctx.font = fontSize + "em sans-serif";
           ctx.textBaseline = "top";
-          const text = `${Math.round(budgetSum.percent).toFixed(0)}%`,
+          let text = `${Math.round(budgetSum.percent).toFixed(0)}%`,
             textX = Math.round((width - ctx.measureText(text).width) / 2),
             textY = height / 2;
           ctx.fillText(text, textX, textY);
@@ -118,7 +118,7 @@ export default function Budgets({
               const fontSize = (height / 160).toFixed(2);
               ctx.font = fontSize + "em sans-serif";
               ctx.textBaseline = "top";
-              const text = `${Math.round(res.data.newBudgetSum.percent).toFixed(
+              let text = `${Math.round(res.data.newBudgetSum.percent).toFixed(
                   0
                 )}%`,
                 textX = Math.round((width - ctx.measureText(text).width) / 2),
@@ -131,6 +131,7 @@ export default function Budgets({
       });
     });
   };
+  // console.log(currentBudgetPieData);
 
   return (
     <div className="flex flex-col items-center content-center w-full">
