@@ -20,12 +20,14 @@ export default function Budgets({
   month,
   year,
   transactionsByCategory,
+  budgets,
   budgetSum,
   budgetAmounts,
   budgetPieChartColour,
 }) {
   const [currentTransactionsByCategory, setCurrentTransactionsByCategory] =
     useState(transactionsByCategory);
+  const [currentBudgets, setCurrentBudgets] = useState(budgets);
   const [currentBudgetSum, setCurrentBudgetSum] = useState(budgetSum);
   const [currentBudgetAmounts, setCurrentBudgetAmounts] =
     useState(budgetAmounts);
@@ -62,7 +64,6 @@ export default function Budgets({
       },
     ],
   });
-
   const getBudgetsAPI = (month, year) => {
     // Adjusting month and year values for previous and next month
     if (month === 0) {
@@ -90,6 +91,7 @@ export default function Budgets({
       setCurrentYear(Number(res.data.reqYear));
       setCurrentBudgetAmounts(res.data.newBudgetAmounts);
       setCurrentTransactionsByCategory(res.data.newTransactions);
+      setCurrentBudgets(res.data.newBudgets);
       setCurrentBudgetSum(res.data.newBudgetSum);
       setCurrentBudgetPieData({
         ...currentBudgetPieData,
@@ -149,26 +151,37 @@ export default function Budgets({
           Next month
         </button>
       </div>
-      <div className="text-center text-3xl font-bold">Total Budgets</div>
-      <BudgetPieChart budgetPieData={currentBudgetPieData}></BudgetPieChart>
-      <table className="table-fixed w-full text-lg">
-        <thead>
-          <tr>
-            <th className="px-6 py-3 text-right">Current Transactions</th>
-            <th className="px-6 py-3 text-left">Budget Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="px-6 text-right">{`$${(
-              currentBudgetSum.currentBudget / 100
-            ).toFixed(2)}`}</td>
-            <td className="px-6 text-left">{`$${(
-              currentBudgetSum.totalBudget / 100
-            ).toFixed(2)}`}</td>
-          </tr>
-        </tbody>
-      </table>
+      {currentBudgets.length > 0 && (
+        <>
+          <div className="text-center text-3xl font-bold">Total Budgets</div>
+          <BudgetPieChart budgetPieData={currentBudgetPieData}></BudgetPieChart>
+          <table className="table-fixed w-full text-lg">
+            <thead>
+              <tr>
+                <th className="px-6 py-3 text-right">Current Transactions</th>
+                <th className="px-6 py-3 text-left">Budget Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="px-6 text-right">{`$${(
+                  currentBudgetSum.currentBudget / 100
+                ).toFixed(2)}`}</td>
+                <td className="px-6 text-left">{`$${(
+                  currentBudgetSum.totalBudget / 100
+                ).toFixed(2)}`}</td>
+              </tr>
+            </tbody>
+          </table>
+        </>
+      )}
+      {currentBudgets.length === 0 && (
+        <span className="text-xl my-48">
+          A budget has not yet been created for{" "}
+          {getDateByMonthYear(currentMonth, currentYear)}. Please create a
+          budget.
+        </span>
+      )}
       <BudgetCategoriesList
         budgetAmounts={currentBudgetAmounts}
       ></BudgetCategoriesList>

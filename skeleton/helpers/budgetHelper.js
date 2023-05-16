@@ -15,7 +15,8 @@ export function getBudgetAmounts(transactions, budgets) {
         totalBudget: 0,
         currentAmount: c._sum.amountDecimal / 100,
         budgetRemaining: 0,
-        budgetPercentage: 0,
+        budgetPercentage: 100,
+        isValid: false,
       });
     }
   } else {

@@ -37,6 +37,7 @@ export default async function handler(req, res) {
     JSON.stringify({
       reqMonth,
       reqYear,
+      newBudgets,
       newTransactions,
       newBudgetSum,
       newBudgetAmounts,
