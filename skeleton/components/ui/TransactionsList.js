@@ -5,15 +5,13 @@ import {
   formatTransaction,
 } from "../../helpers/formatters.js";
 
-export default function TransactionList({ transactions, formattedDates, indexPage }) {
-
-  const transactionList = indexPage ? transactions.slice(0,3) : transactions;
+export default function TransactionList({ transactions, formattedDates}) {
   
   return (
     <>
       <div className="p-5 bg-mid-gray rounded-lg flex flex-col">
         <h1>Transactions</h1>
-        {transactionList.map(({ date, transactions }) => {
+        {transactions.map(({ date, transactions }) => {
           return (
             <div className="mt-5 flex flex-col" key={date + transactions[0].id}>
               <span className="text-sm">{formattedDates[date]}</span>
