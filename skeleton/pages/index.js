@@ -1,38 +1,16 @@
-import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "next/font/google";
-
-import prisma from "@/prisma/prismaclient";
-import Layout from "@/components/layout/Layout";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export async function getServerSideProps() {
-  // !!! ask Alvin about this !!!
-  const user = await prisma.user.findUnique({
-    where: {
-      id: 1,
-    },
-  });
-
-  return {
-    props: { user }, // will be passed to the page component as props
-  };
-}
-
-export default function Home({ user }) {
+export default function Home() {
   return (
     <>
-      <Layout user={user}></Layout>
+      <div className="bg-[#FFF] flex flex-col flex-1 rounded-lg p-5">
+        <div className="flex flex-row items-center">
+          <img src="images/user-icon.png" className="flex h-20" />
+          <h1 className="text-4xl ms-5">Hi, Jane!</h1>
+        </div>
+      </div>
     </>
   );
 }
-
-// export async function getStaticProps() {
-//   const prisma = new PrismaClient()
-//   const blogs = await prisma.blog.findMany()
-
-//   return {
-//     props : { blogs }
-//   }
-// }

@@ -1,4 +1,6 @@
 import TransactionList from "@/components/ui/TransactionsList";
+import { faCircleLeft, faCircleRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
   getDateByMonthYear,
@@ -61,8 +63,8 @@ export default function Transactions({
   };
 
   return (
-    <main className="flex flex-col p-5">
-      <div className="flex flex-row mb-5 space-x-5">
+    <>
+      <div className="flex flex-row mb-2 space-x-2">
         {accounts.map((account) => {
           return (
             <AccountTile
@@ -77,16 +79,16 @@ export default function Transactions({
           );
         })}
       </div>
-      <div className="flex space-x-5 justify-center mb-5">
+      <div className="flex bg-[#FFF] space-x-5 justify-center mb-2 p-5 rounded-lg">
         <button
           className="flex"
           onClick={() =>
             getTransactionsAPI(currentMonth - 1, currentYear, currentAccount)
           }
         >
-          Previous month
+          <FontAwesomeIcon icon={faCircleLeft} size="2xl" />
         </button>
-        <h1 className="flex">
+        <h1 className="flex w-60 justify-center">
           {getDateByMonthYear(currentMonth, currentYear)}
         </h1>
         <button
@@ -95,14 +97,14 @@ export default function Transactions({
             getTransactionsAPI(currentMonth + 1, currentYear, currentAccount)
           }
         >
-          Next month
+          <FontAwesomeIcon icon={faCircleRight} size="2xl" />
         </button>
       </div>
       <TransactionList
         transactions={currentTransactions}
         formattedDates={formattedDates}
       />
-    </main>
+    </>
   );
 }
 
