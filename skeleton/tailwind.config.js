@@ -47,6 +47,8 @@ module.exports = {
       rent: "#019247",
       subscriptions: "#3AB54D",
       transportation: "#8DC640",
+      selected: "#50B99B",
+      unselected: "#CED4DA",
     },
   },
 
@@ -67,6 +69,8 @@ module.exports = {
     "bg-rent",
     "bg-subscriptions",
     "bg-transportation",
+    "bg-selected",
+    "bg-unselected",
   ],
 
   plugins: [
