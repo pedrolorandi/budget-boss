@@ -4,7 +4,7 @@ import styles from "@/styles/Home.module.css";
 
 export default function Navbar() {
   return (
-    <div className="flex justify-self-auto bg-nav-gray">
+    <div className="flex fixed justify-self-auto bg-nav-gray">
       <img
         src="https://github.com/pedrolorandi/budget-boss/blob/feature/sidebar/skeleton/planning/Logo.png?raw=true"
         alt="Logo"

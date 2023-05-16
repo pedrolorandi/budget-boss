@@ -110,7 +110,7 @@ export default function Reports({
   };
 
   return (
-    <main className="flex flex-col p-5">
+    <>
       <div className="flex space-x-5 justify-center mb-5">
         <button
           className="flex"
@@ -152,7 +152,7 @@ export default function Reports({
       <div className="flex w-full">
         <Chart chartData={currentRunningTotal} />
       </div>
-    </main>
+    </>
   );
 }
 

@@ -154,9 +154,9 @@ export async function getRunningTotalData(userId, month, year) {
 
   // Querying the Prisma client to fetch transactions for the specified user
   const transactions = await prisma.transaction.findMany({
-    // where: {
-    //   source: { user: { id: userId } },
-    // },
+    where: {
+      source: { user: { id: userId } },
+    },
     include: { source: true, category: true },
     orderBy: {
       date: "asc",
@@ -289,4 +289,13 @@ export async function getBudgets(userId, month, year) {
   });
 
   return budgets;
+}
+
+export function getLinks() {
+  return [
+    { label: "Overview", path: "/" },
+    { label: "Accounts", path: "/transactions" },
+    { label: "Budgets", path: "/" },
+    { label: "Reports", path: "/reports" },
+  ];
 }
