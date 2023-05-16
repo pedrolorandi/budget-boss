@@ -43,21 +43,21 @@ export default function Reports({
       {
         type: "line",
         label: "Running Total",
-        borderColor: "rgb(255, 99, 132)",
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
+        borderColor: "rgb(222, 226, 230)",
+        backgroundColor: "rgba(173, 181, 189, 0.4)",
         fill: true,
         data: runningTotal,
       },
       {
         type: "bar",
         label: "Incomes",
-        backgroundColor: "rgb(75, 192, 192)",
+        backgroundColor: "rgb(80, 185, 155)",
         data: incomes,
       },
       {
         type: "bar",
         label: "Expenses",
-        backgroundColor: "rgb(53, 162, 235)",
+        backgroundColor: "rgb(220, 36, 75)",
         data: expenses,
       },
     ],
@@ -130,7 +130,7 @@ export default function Reports({
           <FontAwesomeIcon icon={faCircleRight} size="2xl" />
         </button>
       </div>
-      <div className="flex flex-row items-center bg-[#FFF] p-5 rounded-lg space-x-10">
+      <div className="flex flex-row items-center bg-[#F2F7FC] p-5 rounded-lg space-x-10">
         <ul className="flex flex-col w-1/3">
           {categories.slice(0, 8).map((category) => {
             return (
@@ -161,13 +161,9 @@ export default function Reports({
             );
           })}
         </ul>
-        <div className="flex w-1/3 ms-10 justify-center">
-          <PieChart chartData={currentCategories} />
-        </div>
+        <PieChart chartData={currentCategories} />
       </div>
-      <div className="flex w-full bg-[#FFF] p-5 rounded-lg mt-2">
-        <Chart chartData={currentRunningTotal} />
-      </div>
+      <Chart chartData={currentRunningTotal} />
     </>
   );
 }
