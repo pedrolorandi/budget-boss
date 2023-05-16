@@ -24,9 +24,11 @@ export default function BarChart(props) {
           className={`${classNames.join(
             " "
           )} text-lg font-medium text-blue-100 text-center p-1 leading-none rounded-full`}
-          style={{ width: `${props.width < 100 ? props.width : 100}` + "%" }}
+          style={{
+            width: `${props.width < 100 ? props.width : 100}` + "%",
+          }}
         >
-          {props.width}%
+          {props.width}
         </div>
       </div>
     </div>

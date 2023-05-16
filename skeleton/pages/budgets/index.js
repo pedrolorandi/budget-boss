@@ -63,20 +63,37 @@ export default function Budgets({
   const getBudgetAmounts = (transactions, budgets) => {
     let result = [];
 
-    for (let b of budgets) {
+    if (budgets.length === 0) {
       for (let c of transactions) {
-        if (b.category.id === c.categoryId) {
-          result.push({
-            categoryId: b.category.id,
-            name: b.category.name,
-            totalBudget: b.amountDecimal / 100,
-            currentAmount: c._sum.amountDecimal / 100,
-            budgetRemaining: (b.amountDecimal - c._sum.amountDecimal) / 100,
-            budgetPercentage: (c._sum.amountDecimal / b.amountDecimal) * 100,
-          });
+        result.push({
+          categoryId: c.categoryId,
+          name: c.name,
+          totalBudget: 0,
+          currentAmount: c._sum.amountDecimal / 100,
+          budgetRemaining: 0,
+          budgetPercentage: 0,
+        });
+      }
+    } else {
+      for (let b of budgets) {
+        for (let c of transactions) {
+          if (b.category.id === c.categoryId) {
+            result.push({
+              categoryId: b.category.id,
+              name: b.category.name,
+              totalBudget: b.amountDecimal / 100,
+              currentAmount: c._sum.amountDecimal / 100,
+              budgetRemaining: (b.amountDecimal - c._sum.amountDecimal) / 100,
+              budgetPercentage:
+                b.amountDecimal === 0
+                  ? 0
+                  : (c._sum.amountDecimal / b.amountDecimal) * 100,
+            });
+          }
         }
       }
     }
+    console.log(result);
     return result;
   };
 
@@ -156,7 +173,6 @@ export async function getServerSideProps() {
     result.percent = (result.currentBudget / result.totalBudget) * 100;
     result.difference =
       result.percent > 100 ? 0 : result.totalBudget - result.currentBudget;
-
     return result;
   };
   const budgetSum = getBudgetSum(transactionsByCategory, budgets);
@@ -171,3 +187,11 @@ export async function getServerSideProps() {
     },
   };
 }
+
+/*
+budgetCategory table: amountDecimal
+- category.name list with the right order of category table (.map method)
+- amountDecimal with the same order, but value of budgetCategory table (!amountDecimal ? 0 : amountDecimal.value from budgetCategory table) (.map method)
+
+category list + amountDecimal with 0
+*/
