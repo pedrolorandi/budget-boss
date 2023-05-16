@@ -43,6 +43,18 @@ export function categoryIcons(category) {
 
   return CATEGORY_ICONS[category];
 }
+// Function to convert a Date object to a formatted date string in the "YYYY-MM-DD" format
+export function convertDate(date) {
+  // Extract the year, month, and date components from the Date object
+  const dateParts = [
+    date.getFullYear(), // Year component
+    ("0" + (date.getMonth() + 1)).slice(-2), // Month component (padded with leading zero if needed)
+    ("0" + date.getDate()).slice(-2), // Date component (padded with leading zero if needed)
+  ];
+
+  // Join the date parts into a formatted date string using hyphens
+  return dateParts.join("-");
+}
 
 // Function to format the date text based on whether it is today, yesterday, or another date
 export function formatDate(transactions) {
@@ -59,9 +71,9 @@ export function formatDate(transactions) {
   const transactionDates = transactions.reduce((datesObj, transaction) => {
     // Format the transaction date based on its value
     const formattedDate =
-      transaction.date === today.toLocaleDateString()
+      transaction.date === convertDate(today)
         ? "Today"
-        : transaction.date === yesterday.toLocaleDateString()
+        : transaction.date === convertDate(yesterday)
         ? "Yesterday"
         : transaction.date;
 
