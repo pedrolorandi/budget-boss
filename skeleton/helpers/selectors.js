@@ -360,3 +360,12 @@ export async function getBudgets(userId, month, year) {
 
   return budgets;
 }
+
+export function getLinks() {
+  return [
+    { label: "Overview", path: "/" },
+    { label: "Accounts", path: "/transactions" },
+    { label: "Budgets", path: "/" },
+    { label: "Reports", path: "/reports" },
+  ];
+}
