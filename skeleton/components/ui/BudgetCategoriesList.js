@@ -14,6 +14,7 @@ export default function BudgetCategoriesList(props) {
           2
         )}
         totalBudget={(Math.round(element.totalBudget * 100) / 100).toFixed(2)}
+        isValid={element.isValid}
       ></BarChart>
     );
   });

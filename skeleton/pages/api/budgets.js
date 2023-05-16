@@ -4,6 +4,12 @@ import {
   getTransactionsGroupedByCategory,
 } from "@/helpers/selectors";
 
+import {
+  getBudgetAmounts,
+  getBudgetSum,
+  getBudgetPieChartColour,
+} from "@/helpers/budgetHelper";
+
 // Defining an asynchronous function called 'handler' with 'req' and 'res' as parameters
 export default async function handler(req, res) {
   // Setting a constant variable 'userId' to 1
@@ -22,36 +28,19 @@ export default async function handler(req, res) {
     reqYear
   );
 
+  const newBudgetAmounts = getBudgetAmounts(newTransactions, newBudgets);
+  const newBudgetSum = getBudgetSum(newTransactions, newBudgets);
+  const newBudgetPieChartColour = getBudgetPieChartColour(newBudgetSum);
+
   // Sending the response as a JSON string containing the retrieved data
   res.send(
     JSON.stringify({
-      newBudgets,
+      reqMonth,
+      reqYear,
       newTransactions,
+      newBudgetSum,
+      newBudgetAmounts,
+      newBudgetPieChartColour,
     })
   );
 }
-
-/*
-
-type Pikmin = {
-    colour: string
-    size: string
-    nickname: string
-}
-
-getPikmin(): Pikmin {
-    const pikmin: Pikmin = fetch(onion)
-    return pikmin
-
-    or
-
-
-    const { colour, size } = fetch(onion)
-    return {
-        colour,
-        size,
-        nickanme: CONSTA
-    }
-}
-
- */

@@ -2,12 +2,14 @@ import React from "react";
 
 export default function BarChart(props) {
   let classNames = [];
-  if (props.width < 50) {
+  if (props.width < 50 && props.isValid) {
     classNames.push("bg-turquoise");
-  } else if (props.width >= 50 && props.width < 75) {
+  } else if (props.width >= 50 && props.width < 75 && props.isValid) {
     classNames.push("bg-yellow-500");
-  } else {
+  } else if (props.width >= 75 && props.isValid) {
     classNames.push("bg-red");
+  } else {
+    classNames.push("bg-gray-400");
   }
 
   return (
@@ -19,7 +21,7 @@ export default function BarChart(props) {
         </span>
       </div>
 
-      <div className="w-full bg-gray-200 rounded-full dark-bg-gray-700">
+      <div className="w-full bg-gray-200 rounded-full">
         <div
           className={`${classNames.join(
             " "
@@ -28,7 +30,7 @@ export default function BarChart(props) {
             width: `${props.width < 100 ? props.width : 100}` + "%",
           }}
         >
-          {props.width}%
+          {`${props.isValid ? props.width + "%" : "N/A"} `}
         </div>
       </div>
     </div>
