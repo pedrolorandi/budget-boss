@@ -1,6 +1,8 @@
 import { formatCategoryClassName } from "@/helpers/formatters";
 import PieChart from "../components/ui/PieChart";
 import Chart from "../components/ui/RunningTotalChart";
+import { faCircleLeft, faCircleRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
   getDateByMonthYear,
@@ -111,26 +113,26 @@ export default function Reports({
 
   return (
     <>
-      <div className="flex space-x-5 justify-center mb-5">
+      <div className="flex bg-[#FFF] space-x-5 justify-center mb-2 p-5 rounded-lg">
         <button
           className="flex"
           onClick={() => getTransactionsAPI(currentMonth - 1, currentYear)}
         >
-          Previous month
+          <FontAwesomeIcon icon={faCircleLeft} size="2xl" />
         </button>
-        <h1 className="flex">
+        <h1 className="flex w-60 justify-center">
           {getDateByMonthYear(currentMonth, currentYear)}
         </h1>
         <button
           className="flex"
           onClick={() => getTransactionsAPI(currentMonth + 1, currentYear)}
         >
-          Next month
+          <FontAwesomeIcon icon={faCircleRight} size="2xl" />
         </button>
       </div>
-      <div className="flex flex-row items-center">
-        <ul className="flex flex-col w-full">
-          {categories.map((category) => {
+      <div className="flex flex-row items-center bg-[#FFF] p-5 rounded-lg space-x-10">
+        <ul className="flex flex-col w-1/3">
+          {categories.slice(0, 8).map((category) => {
             return (
               <li key={category} className="flex flex-row mb-2">
                 <div
@@ -144,12 +146,26 @@ export default function Reports({
             );
           })}
         </ul>
-
-        <div className="flex w-full ms-10">
+        <ul className="flex flex-col w-1/3">
+          {categories.slice(8, 16).map((category) => {
+            return (
+              <li key={category} className="flex flex-row mb-2">
+                <div
+                  className={`flex bg-${formatCategoryClassName(
+                    category
+                  )} w-10 me-3`}
+                ></div>
+                <div className="flex-1">{category}</div>
+                <div>{currentPercentagePerCategory[category]} %</div>
+              </li>
+            );
+          })}
+        </ul>
+        <div className="flex w-1/3 ms-10 justify-center">
           <PieChart chartData={currentCategories} />
         </div>
       </div>
-      <div className="flex w-full">
+      <div className="flex w-full bg-[#FFF] p-5 rounded-lg mt-2">
         <Chart chartData={currentRunningTotal} />
       </div>
     </>
