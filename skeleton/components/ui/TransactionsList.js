@@ -4,7 +4,7 @@ import { categoryIcons, formatTransaction } from "../../helpers/formatters.js";
 export default function TransactionList({ transactions, formattedDates }) {
   return (
     <>
-      <div className="p-5 bg-mid-gray rounded-lg flex flex-col">
+      <div className="p-5 bg-mid-gray rounded-lg flex flex-col flex-1">
         <h1>Transactions</h1>
         {transactions.map(({ date, transactions }) => {
           return (
