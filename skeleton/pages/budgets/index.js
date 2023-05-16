@@ -6,6 +6,7 @@ import {
   getBudgets,
 } from "../../helpers/selectors";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 import BudgetCategoriesList from "@/components/ui/BudgetCategoriesList";
 import BudgetPieChart from "@/components/ui/BudgetPieChart";
@@ -46,19 +47,34 @@ export default function Budgets({
     ],
   });
 
-  // useEffect((currentMonth, currentYear) => {
-  //   if (currentMonth === 0) {
-  //     setCurrentMonth(12);
-  //     setCurrentYear(currentYear - 1);
-  //   }
+  const getTransactionsAPI = (month, year) => {
+    // Adjusting month and year values for previous and next month
+    if (month === 0) {
+      month = 12;
+      year--;
+    }
 
-  //   if (currentMonth === 13) {
-  //     setCurrentMonth(1);
-  //     setCurrentYear(currentYear + 1);
-  //   }
-  //   const newBudgetSum = getBudgetSum(transactionsByCategory, budgets);
-  //   setCurrentBudgetTotal(newBudgetSum);
-  // }, []);
+    if (month === 13) {
+      month = 1;
+      year++;
+    }
+
+    // Making an API call to retrieve data for the specified month and year
+    axios.get("../api/reports", { params: { month, year } }).then((res) => {
+      // Updating the state with the fetched data
+      setCurrentMonth(Number(res.data.month));
+      setCurrentYear(Number(res.data.year));
+      setCurrentBudgets(res.data.newTransactions);
+      // setCurrentBudgets{
+      //   ...currentCategories,
+      //   datasets: [
+      //     {
+      //       ...currentCategories.datasets[0],
+      //       data: res.data.categoriesPercentages,
+      //     },
+      //   ],
+    });
+  };
 
   const getBudgetAmounts = (transactions, budgets) => {
     let result = [];
@@ -175,9 +191,6 @@ export async function getServerSideProps() {
     result.difference =
       result.percent > 100 ? 0 : result.totalBudget - result.currentBudget;
 
-    // result.totalBudget = result.totalBudget / 100;
-    // result.currentBudget = result.currentBudget / 100;
-
     return result;
   };
   const budgetSum = getBudgetSum(transactionsByCategory, budgets);
@@ -192,11 +205,3 @@ export async function getServerSideProps() {
     },
   };
 }
-
-/*
-budgetCategory table: amountDecimal
-- category.name list with the right order of category table (.map method)
-- amountDecimal with the same order, but value of budgetCategory table (!amountDecimal ? 0 : amountDecimal.value from budgetCategory table) (.map method)
-
-category list + amountDecimal with 0
-*/
