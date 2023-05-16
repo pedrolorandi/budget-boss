@@ -72,6 +72,9 @@ module.exports = {
   plugins: [
     function ({ addBase, theme }) {
       addBase({
+        body: {
+          backgroundColor: "#F0F0F0",
+        },
         h1: {
           fontSize: theme("fontSize.2xl"),
           fontWeight: theme("fontWeight.bold"),

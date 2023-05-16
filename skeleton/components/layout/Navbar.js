@@ -16,7 +16,10 @@ export default function Navbar() {
           src="https://thumbs.dreamstime.com/b/creative-illustration-default-avatar-profile-placeholder-isolated-background-art-design-grey-photo-blank-template-mo-mockup-118823744.jpg"
           alt="user-image"
         />
-        <div className="">Hi, Jane!</div>
+        <div className="">
+          <img src="https://i.pinimg.com/550x/50/b2/6c/50b26ce6d2bc8adcf0e9a720c6fdc3f9.jpg" />
+          <h1>Hi, Jane!</h1>
+        </div>
       </nav>
     </div>
   );
