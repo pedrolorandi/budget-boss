@@ -116,10 +116,12 @@ export function formatCategoryClassName(category) {
 
 export function formatDateISOString(date) {
   const today = new Date();
-  const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
+  const hours = today.getHours().toString().padStart(2, "0");
+  const minutes = today.getMinutes().toString().padStart(2, "0");
+  const time = `${hours}:${minutes}`;
+
   const dateAndTime = new Date(`${date}T${time}`);
   dateAndTime.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-  dateAndTime.toISOString();
-
-  return dateAndTime;
+  const isoDateAndTime = dateAndTime.toISOString();
+  return isoDateAndTime;
 }
