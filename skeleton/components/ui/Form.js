@@ -106,7 +106,9 @@ export default function Form({
             </Link>
             <button
               className={`rounded-lg w-36 p-3 font-bold text-white text-center ms-2 ${
-                formType === "delete" ? "bg-[#D62828]" : "bg-[#62929E]"
+                formType === "delete"
+                  ? "bg-[#D62828]"
+                  : "bg-selected hover:bg-buttonHover"
               } `}
               type="submit"
             >
@@ -184,7 +186,7 @@ export default function Form({
                 />
                 <label
                   htmlFor={currAccount.name.toLowerCase().replaceAll(" ", "_")}
-                  className={`flex flex-1 cursor-pointer bg-unselected rounded-lg p-10 text-2xl font-bold peer-checked:bg-[#62929E] peer-checked:text-white peer-disabled:cursor-default peer-disabled:text-[#aaa] ${
+                  className={`flex flex-1 cursor-pointer bg-unselected rounded-lg p-10 text-2xl font-bold peer-checked:bg-selected peer-checked:text-white peer-disabled:cursor-default peer-disabled:text-[#aaa] ${
                     i === 0 ? "ms-0" : "ms-2"
                   }`}
                 >

@@ -1,5 +1,9 @@
 import TransactionList from "@/components/ui/TransactionsList";
-import { faCircleLeft, faCircleRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleLeft,
+  faCirclePlus,
+  faCircleRight,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
@@ -13,6 +17,7 @@ import { PrismaClient } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { formatDate } from "@/helpers/formatters";
 import AccountTile from "@/components/ui/AccountTile";
+import Link from "next/link";
 
 export default function Transactions({
   month,
@@ -64,17 +69,32 @@ export default function Transactions({
 
   return (
     <>
-      <div className="flex flex-row rounded-lg p-8 bg-[#FFF] justify-between">
+      <div className="flex flex-row rounded-2xl p-6  bg-base-white justify-between">
         <h1 className="self-center">Transactions</h1>
+        <div className="flex flex-row self-center">
+          <Link href="/transactions/add">
+            <button
+              className={`rounded-lg bg-selected w-52 ms-2 p-3 font-bold text-white text-center hover:bg-buttonHover`}
+              type="submit"
+            >
+              <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
+              {` new transaction`}
+            </button>
+          </Link>
+        </div>
       </div>
-      <div className="flex bg-[#FFF] space-x-5 justify-center mt-2 p-5 rounded-lg">
+      <div className="flex rounded-2xl mt-2 p-5 space-x-5 bg-base-white justify-center">
         <button
           className="flex"
           onClick={() =>
             getTransactionsAPI(currentMonth - 1, currentYear, currentAccount)
           }
         >
-          <FontAwesomeIcon icon={faCircleLeft} size="2xl" />
+          <FontAwesomeIcon
+            icon={faCircleLeft}
+            size="2xl"
+            className="hover:text-linkHover"
+          />
         </button>
         <h1 className="flex w-60 justify-center">
           {getDateByMonthYear(currentMonth, currentYear)}
@@ -85,7 +105,11 @@ export default function Transactions({
             getTransactionsAPI(currentMonth + 1, currentYear, currentAccount)
           }
         >
-          <FontAwesomeIcon icon={faCircleRight} size="2xl" />
+          <FontAwesomeIcon
+            icon={faCircleRight}
+            size="2xl"
+            className="hover:text-linkHover"
+          />
         </button>
       </div>
       <div className="flex flex-row mt-2 space-x-2">

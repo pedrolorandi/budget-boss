@@ -12,9 +12,6 @@ module.exports = {
   ],
 
   theme: {
-    borderRadius: {
-      lg: "1rem",
-    },
     extend: {},
     colors: {
       "nav-gray": "#D9D9D9",
@@ -50,11 +47,14 @@ module.exports = {
       rent: "#019247",
       subscriptions: "#3AB54D",
       transportation: "#8DC640",
-      selected: "#50B99B",
+      selected: "#62929E",
       unselected: "#CED4DA",
       orange: "#F05A29",
       sidebar: "#F1F3F4",
       borderSidebar: "#D7DDE2",
+      "base-white": "#F8F9FA",
+      buttonHover: "#327C8F",
+      linkHover: "#57626E",
     },
   },
 
@@ -79,6 +79,9 @@ module.exports = {
     "bg-unselected",
     "bg-sidebar",
     "border-borderSidebar",
+    "bg-base-white",
+    "bg-buttonHover",
+    "text-linkHover",
   ],
 
   plugins: [
@@ -86,6 +89,7 @@ module.exports = {
       addBase({
         body: {
           backgroundColor: "#B5C2C9",
+          color: "#212529",
         },
         h1: {
           fontSize: theme("fontSize.2xl"),
