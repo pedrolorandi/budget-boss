@@ -17,6 +17,9 @@ import {
   faHouse,
   faArrowsSpin,
   faSackDollar,
+  faReceipt,
+  faChartSimple,
+  faChartPie,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Function to retrieve the appropriate icon for a given category
@@ -54,6 +57,17 @@ export function convertDate(date) {
 
   // Join the date parts into a formatted date string using hyphens
   return dateParts.join("-");
+}
+
+export function linkIcons(link) {
+  const LINK_ICONS = {
+    Overview: faHouse,
+    Accounts: faReceipt,
+    Budgets: faChartSimple,
+    Reports: faChartPie,
+  };
+
+  return LINK_ICONS[link];
 }
 
 // Function to format the date text based on whether it is today, yesterday, or another date
