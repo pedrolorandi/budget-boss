@@ -339,6 +339,24 @@ export async function getTransactionsGroupedByCategory(userId, month, year) {
   return result;
 }
 
+// Function to retrieve sums and names by Category from Transactions, filtered by the specified month and year
+export async function getCategoryBarChartData(userId, month, year) {
+  //Call "getTransactionsGroupedByCategory"
+  const result = await getTransactionsGroupedByCategory(userId, month, year);
+
+  //Destructure result into separate arrays
+  const sums = [];
+  const categoryNameList = [];
+
+  result.forEach(({ _sum, name }, i) => {
+    sums.push(_sum.amountDecimal / 100);
+    categoryNameList.push(name);
+  });
+
+  //Return resulting objects containing Transaction sums grouped by Categories and Category Names
+  return { sums, categoryNameList };
+}
+
 // Function to retrieve BudgetCategories amounts, Category Name and IDs, filtered by the specified month and year
 export async function getBudgets(userId, month, year) {
   const prisma = new PrismaClient();

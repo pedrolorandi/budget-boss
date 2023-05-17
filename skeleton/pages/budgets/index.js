@@ -46,8 +46,8 @@ export default function Budgets({
       {
         label: [],
         data: [
-          budgetSum.difference.toFixed(2),
-          budgetSum.currentBudget.toFixed(2),
+          (budgetSum.difference / 100).toFixed(2),
+          (budgetSum.currentBudget / 100).toFixed(2),
         ],
         backgroundColor: ["#E9ECEF", `${budgetPieChartColour}`],
       },
@@ -81,8 +81,8 @@ export default function Budgets({
           {
             ...currentBudgetPieData.datasets[0],
             data: [
-              res.data.newBudgetSum.difference.toFixed(2),
-              res.data.newBudgetSum.currentBudget.toFixed(2),
+              (res.data.newBudgetSum.difference / 100).toFixed(2),
+              (res.data.newBudgetSum.currentBudget / 100).toFixed(2),
             ],
             backgroundColor: [
               "#E9ECEF",
