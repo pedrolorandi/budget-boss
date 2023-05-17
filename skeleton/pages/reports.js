@@ -9,6 +9,7 @@ import {
   getCategoriesData,
   getPieChartColors,
   getRunningTotalData,
+  getCategoryBarChartData,
 } from "../helpers/selectors";
 import axios from "axios";
 import { useState } from "react";
@@ -23,6 +24,7 @@ export default function Reports({
   incomes,
   expenses,
   runningTotal,
+  categoryBarChartData,
 }) {
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
@@ -54,6 +56,17 @@ export default function Reports({
         backgroundColor: "rgb(80, 185, 155)",
         data: incomes,
       },
+      {
+        type: "bar",
+        label: "Expenses",
+        backgroundColor: "rgb(220, 36, 75)",
+        data: expenses,
+      },
+    ],
+  });
+  const [currentCategoryBarData, setCurrentcurrenCategoryBarData] = useState({
+    labels: dates,
+    datasets: [
       {
         type: "bar",
         label: "Expenses",
@@ -186,6 +199,12 @@ export async function getServerSideProps() {
     currentYear
   );
 
+  const categoryBarChartData = await getCategoryBarChartData(
+    1,
+    currentMonth,
+    currentYear
+  );
+
   return {
     props: {
       month,
@@ -197,6 +216,7 @@ export async function getServerSideProps() {
       incomes,
       expenses,
       runningTotal,
+      categoryBarChartData,
     },
   };
 }
