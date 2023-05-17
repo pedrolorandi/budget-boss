@@ -49,6 +49,7 @@ module.exports = {
       transportation: "#8DC640",
       selected: "#50B99B",
       unselected: "#CED4DA",
+      orange: "#F05A29",
     },
   },
 
