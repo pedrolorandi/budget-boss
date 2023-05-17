@@ -70,6 +70,8 @@ export default function Form({
             type="text"
             className="flex flex-1 py-8 px-10 text-xl rounded-lg border-2 border-[#CED4DA]"
             placeholder="Title (e.g. Coffee with friends)"
+            ref={titleRef}
+            value={transaction && transaction.title}
           />
         </div>
         <div className="flex flex-1 mt-2">
@@ -77,10 +79,11 @@ export default function Form({
             type="text"
             className="flex flex-1 py-8 px-10 text-xl rounded-lg border-2 border-[#CED4DA]"
             placeholder="Source (e.g. Starbucks)"
+            ref={sourRef}
           />
         </div>
         <div className="flex flex-row flex-1 mt-2">
-          {accounts.map((account) => {
+          {accounts.map((account, i) => {
             return (
               <>
                 <div className="flex flex-1">
@@ -88,12 +91,14 @@ export default function Form({
                     type="radio"
                     id={account.name.toLowerCase()}
                     name="account"
-                    className={`hidden peer`}
+                    className="hidden peer"
                     required
                   />
                   <label
                     htmlFor={account.name.toLowerCase()}
-                    className={`flex flex-1 cursor-pointer bg-unselected rounded-lg p-10 text-2xl font-bold peer-checked:bg-[#50B99B]`}
+                    className={`flex flex-1 cursor-pointer bg-unselected rounded-lg p-10 text-2xl font-bold peer-checked:bg-[#62929E] peer-checked:text-white ${
+                      i === 0 ? "ms-0" : "ms-2"
+                    }`}
                   >
                     {account.name}
                   </label>
@@ -102,15 +107,46 @@ export default function Form({
             );
           })}
         </div>
-        {/* <input
-          className="p-5 rounded-full bg-[#ccc] cursor-pointer"
-          type="date"
-        />
-        <style jsx>{`
-          .cursor-pointer::-webkit-calendar-picker-indicator {
-            cursor: pointer;
-          }
-        `}</style> */}
+        <div className="flex flex-row flex-1 mt-2">
+          <div className="flex flex-1">
+            <input
+              type="date"
+              className="flex flex-1 py-8 px-10 text-xl rounded-lg border-2 border-[#CED4DA] cursor-pointer"
+            />
+            <style jsx>{`
+              .cursor-pointer::-webkit-calendar-picker-indicator {
+                cursor: pointer;
+              }
+            `}</style>
+          </div>
+          <div className="flex flex-1">
+            <select
+              className="flex flex-1 py-8 px-10 text-xl rounded-lg border-2 border-[#CED4DA] cursor-pointer ms-2"
+              required
+            >
+              <option hidden value="">
+                Category
+              </option>
+              {categories.map((category) => {
+                return (
+                  <option value={category.id} key={category.id}>
+                    {category.name}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+          <div className="flex flex-1">
+            <span className="absolute ms-2 text-2xl text-bold ms-12 mt-8">
+              $
+            </span>
+            <input
+              type="text"
+              className="flex flex-1 py-8 px-10 text-xl rounded-lg border-2 border-[#CED4DA] ms-2 text-end"
+              placeholder="0.00"
+            />
+          </div>
+        </div>
       </form>
     </>
 
