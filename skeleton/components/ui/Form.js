@@ -1,98 +1,236 @@
-import React from 'react';
+import axios from "axios";
+import Link from "next/link";
+import React, { useState } from "react";
+import { useRouter } from "next/router";
+import { formatDateISOString } from "@/helpers/formatters";
 
-export default function Form({onSubmit, type, text, categories, accounts, titleRef, cateRef, amountRef, accountRef, sourRef, typeValue, handleOnChange, transaction, transactionSource}) {
-  
+export default function Form({
+  formType,
+  sources,
+  categories,
+  accounts,
+  transaction,
+}) {
+  const [type, setType] = useState((transaction && transaction.type) || "");
+  const [title, setTitle] = useState((transaction && transaction.title) || "");
+  const [source, setSource] = useState(
+    (transaction && transaction.source.name) || ""
+  );
+  const [accountId, setAccountId] = useState(
+    (transaction && transaction.accountId) || ""
+  );
+  const [date, setDate] = useState(
+    (transaction && transaction.date.slice(0, 10)) || ""
+  );
+  const [categoryId, setCategoryId] = useState(
+    (transaction && transaction.categoryId) || ""
+  );
+  const [amountDecimal, setAmountDecimal] = useState(
+    (transaction && transaction.amountDecimal / 100) || ""
+  );
+  const [transactionId, setTransactionId] = useState(
+    (transaction && transaction.id) || ""
+  );
+
+  let router = useRouter();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const inputValue = {
+      date: formatDateISOString(date),
+      title,
+      type,
+      accountId,
+      categoryId: Number(categoryId),
+    };
+
+    const data = {
+      source,
+      sources,
+      amountDecimal: String(amountDecimal),
+      inputValue,
+      transactionId,
+    };
+
+    if (formType === "add") {
+      axios
+        .post("/api/transaction/add", {
+          data,
+        })
+        .then((res) => {
+          router.push("/transactions");
+        });
+    }
+
+    if (formType === "edit") {
+      axios
+        .put("/api/transaction/edit", {
+          data,
+        })
+        .then((res) => {
+          router.push("/transactions");
+        });
+    }
+
+    if (formType === "delete") {
+      axios
+        .delete("/api/transaction/delete", {
+          data,
+        })
+        .then((res) => {
+          router.push("/transactions");
+        });
+    }
+  };
+
   return (
-    <div className="flex items-center h-screen">
-        <form onSubmit={onSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mx-auto">
-          <h1 className="text-xl font-bold mb-4">{text}</h1>
-
-          {type === 'transaction' && (
-            <>
-              <label style={{paddingRight: "160px"}}>
-                <input 
-                  type='radio' name='circle' value='Income' onChange={handleOnChange} checked={typeValue === 'Income'}
-                  style={{ display: 'inline-block', width: '20px', height: '20px', borderRadius: '50%', border: '1px solid black', marginRight: '5px', backgroundColor: typeValue === "Income" ? 'black' : '#FFFFFF' }}
-                  />
-                Income
-              </label>
-
-              <label>
-                <input 
-                type='radio' name='circle' value='Expense' onChange={handleOnChange} checked={typeValue === 'Expense'} 
-                style={{ display: 'inline-block', width: '20px', height: '20px', borderRadius: '50%', border: '1px solid black', marginRight: '5px', backgroundColor: typeValue === "Expense" ? 'black' : '#FFFFFF' }}
-                /> 
-                Expense 
-              </label>
-              <br />
-            </>
-          )}
-          <br />
-
-          <label>
-            Title:
-            <input 
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="text" ref={titleRef} placeholder={transaction && transaction.title}
-            />
+    <>
+      <form onSubmit={handleSubmit}>
+        <div className="flex flex-row rounded-lg p-6 bg-[#FFF] justify-between">
+          <h1 className="self-center">
+            {formType === "add" ? (
+              "New transaction"
+            ) : formType === "edit" ? (
+              "Edit transaction"
+            ) : (
+              <span className="text-[#ff0000]">Delete this transaction?</span>
+            )}
+          </h1>
+          <div className="flex flex-row self-center">
+            <Link
+              className="rounded-lg w-36 p-3 bg-[#CED4DA] font-bold text-center"
+              href="/transactions"
+            >
+              Cancel
+            </Link>
+            <button
+              className="rounded-lg w-36 p-3 bg-[#62929E] font-bold text-white text-center ms-2"
+              type="submit"
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+        <div className="flex flex-row flex-1 mt-2">
+          <input
+            type="radio"
+            id="income"
+            name="type"
+            className="hidden peer/income"
+            value="Income"
+            checked={type === "Income"}
+            onChange={(e) => setType(e.target.value)}
+          />
+          <label
+            htmlFor="income"
+            className="flex flex-1 cursor-pointer bg-unselected rounded-lg p-10 text-2xl font-bold peer-checked/income:bg-[#50B99B]"
+          >
+            Income
           </label>
-          <br />
-          <br/>
-          
-          <label>
-            Category:
-            <div className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-              <select 
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id='category' ref={cateRef} 
-              >
-              {categories && categories.map(category => {
-                return <option value={category.id} key={category.id}>{category.name}</option>
+          <input
+            type="radio"
+            id="expense"
+            name="type"
+            className="hidden peer/expense"
+            value="Expense"
+            checked={type === "Expense"}
+            onChange={(e) => setType(e.target.value)}
+          />
+          <label
+            htmlFor="expense"
+            className="flex flex-1 cursor-pointer bg-unselected rounded-lg p-10 text-2xl font-bold peer-checked/expense:bg-[#DC244B] ms-2"
+          >
+            Expense
+          </label>
+        </div>
+        <div className="flex flex-1 mt-2">
+          <input
+            type="text"
+            className="flex flex-1 py-8 px-10 text-xl rounded-lg border-2 border-[#CED4DA]"
+            placeholder="Title (e.g. Coffee with friends)"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
+        <div className="flex flex-1 mt-2">
+          <input
+            type="text"
+            className="flex flex-1 py-8 px-10 text-xl rounded-lg border-2 border-[#CED4DA]"
+            placeholder="Source (e.g. Starbucks)"
+            value={source}
+            onChange={(e) => setSource(e.target.value)}
+          />
+        </div>
+        <div className="flex flex-row flex-1 mt-2">
+          {accounts.map((currAccount, i) => {
+            return (
+              <div className="flex flex-1" key={currAccount.name}>
+                <input
+                  type="radio"
+                  id={currAccount.name.toLowerCase().replaceAll(" ", "_")}
+                  name="currAccount"
+                  className="hidden peer"
+                  checked={accountId === currAccount.id}
+                  value={currAccount.id}
+                  onChange={(e) => setAccountId(currAccount.id)}
+                />
+                <label
+                  htmlFor={currAccount.name.toLowerCase().replaceAll(" ", "_")}
+                  className={`flex flex-1 cursor-pointer bg-unselected rounded-lg p-10 text-2xl font-bold peer-checked:bg-[#62929E] peer-checked:text-white ${
+                    i === 0 ? "ms-0" : "ms-2"
+                  }`}
+                >
+                  {currAccount.name}
+                </label>
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex flex-row flex-1 mt-2">
+          <div className="flex flex-1">
+            <input
+              type="date"
+              className="flex flex-1 py-8 px-10 text-xl rounded-lg border-2 border-[#CED4DA] cursor-pointer"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+            <style jsx>{`
+              .cursor-pointer::-webkit-calendar-picker-indicator {
+                cursor: pointer;
+              }
+            `}</style>
+          </div>
+          <div className="flex flex-1">
+            <select
+              className="flex flex-1 py-8 px-10 text-xl rounded-lg border-2 border-[#CED4DA] cursor-pointer ms-2"
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+            >
+              <option hidden value="">
+                Category
+              </option>
+              {categories.map((category) => {
+                return (
+                  <option value={category.id} key={category.id}>
+                    {category.name}
+                  </option>
+                );
               })}
-              </select>
-            </div>
-          </label>
-          <br />
-          
-          <label>
-            Expense Amount:
-            <input 
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="text" ref={amountRef} placeholder={transaction && transaction.amountDecimal/100}
+            </select>
+          </div>
+          <div className="flex flex-1">
+            <span className="absolute text-2xl text-bold ms-12 mt-8">$</span>
+            <input
+              type="text"
+              className="flex flex-1 py-8 px-10 text-xl rounded-lg border-2 border-[#CED4DA] ms-2 text-end"
+              placeholder="0.00"
+              value={amountDecimal}
+              onChange={(e) => setAmountDecimal(e.target.value)}
             />
-          </label>
-          <br />
-          <br/>
-          
-          <label>
-            Payment Account:
-            <div className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-              <select 
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id='account' ref={accountRef} 
-              >
-              {accounts && accounts.map(account => {
-                return <option value={account.id} key={account.id}>{account.name}</option>
-              })}
-              </select>
-            </div>
-          </label>
-          <br/>
-          
-          <label>
-            Source:
-            <input 
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type='text' ref={sourRef} placeholder={transaction && transactionSource}
-            />
-          </label>
-          <br/>
-          <br/>
-          
-          <button type="submit" className="bg-indigo-500 text-white font-bold py-2 px-4 rounded">
-            Submit
-          </button>
-        </form>
-    </div>
+          </div>
+        </div>
+      </form>
+    </>
   );
 }

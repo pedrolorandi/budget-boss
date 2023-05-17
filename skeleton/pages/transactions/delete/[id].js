@@ -1,34 +1,47 @@
 import React from "react";
-import axios from 'axios';
+import { PrismaClient } from "@prisma/client";
 
-import useHook from '../../../hooks/useHook';
+import Form from "../../../components/ui/Form";
 
-export default function DeleteTransaction({transactionID}) {
-  const {route} = useHook();
-
-  function Delete () {
-    axios.delete('/api/transaction/delete', {data: {id: transactionID}})
-    .then(res => {
-      console.log('res', res)
-      route.push('/transactions')
-    })
-    .catch(error => console.log(error.response));
-  }
-
-  return(
-    <div>
-      <p>Are you sure you wanna delete this transaction?</p>
-      <button onClick={Delete} style={{paddingRight: "20px"}}>Delete</button>
-      <button onClick={() => route.push('/transactions')}>Cancel</button>
-    </div>
-  )
+export default function EditTransaction({ transaction, categories, user }) {
+  return (
+    <Form
+      formType="delete"
+      sources={user.sources}
+      categories={categories}
+      accounts={user.accounts}
+      transaction={transaction}
+    />
+  );
 }
 
 export async function getServerSideProps(content) {
-  const transactionID = Number(content.params.id); //got the id here
+  const prisma = new PrismaClient();
+  const transactionId = Number(content.params.id); //got the id here
+
+  const transaction = await prisma.transaction.findUnique({
+    where: { id: transactionId },
+    include: { source: true },
+  });
+
+  const user = await prisma.user.findUnique({
+    where: { id: 1 },
+    include: {
+      accounts: true,
+      sources: true,
+    },
+  });
+
+  const categories = await prisma.category.findMany();
 
   return {
-    props: {transactionID}
-  }
-};
-
+    props: {
+      transaction: {
+        ...transaction,
+        date: transaction.date.toISOString(),
+      },
+      categories,
+      user,
+    },
+  };
+}
