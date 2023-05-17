@@ -1,21 +1,28 @@
-import { PrismaClient } from "@prisma/client";
+//Budgets page
 
+//Import Prisma Selectors
 import {
   getDateByMonthYear,
   getTransactionsGroupedByCategory,
   getBudgets,
 } from "../../helpers/selectors";
+
+//Import Budget Helper Functions
 import {
   getBudgetAmounts,
   getBudgetSum,
   getBudgetPieChartColour,
 } from "@/helpers/budgetHelper";
+
+//Import React and Axios
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+//Import BudgetCategoriesList and BudgetPieChart components
 import BudgetCategoriesList from "@/components/ui/BudgetCategoriesList";
 import BudgetPieChart from "@/components/ui/BudgetPieChart";
 
+//Budgets page component to display transactions grouped by Categories, and compared to User's Budgets
 export default function Budgets({
   month,
   year,
@@ -45,11 +52,6 @@ export default function Budgets({
         backgroundColor: ["#E9ECEF", `${budgetPieChartColour}`],
       },
     ],
-    options: {
-      legend: {
-        display: false,
-      },
-    },
   });
 
   const getBudgetsAPI = (month, year) => {
@@ -66,15 +68,7 @@ export default function Budgets({
 
     // Making an API call to retrieve data for the specified month and year
     axios.get("../api/budgets", { params: { month, year } }).then((res) => {
-      let pieChartColour = [];
-      if (budgetSum.percent < 50) {
-        pieChartColour.push("#52A1A3");
-      } else if (budgetSum.percent >= 50 && budgetSum.percent < 75) {
-        pieChartColour.push("#E6B32C");
-      } else {
-        pieChartColour.push("#DC244B");
-      }
-      // Updating the state with the fetched data
+      // Updating the states with the fetched data
       setCurrentMonth(Number(res.data.reqMonth));
       setCurrentYear(Number(res.data.reqYear));
       setCurrentBudgetAmounts(res.data.newBudgetAmounts);
@@ -99,7 +93,6 @@ export default function Budgets({
       });
     });
   };
-  // console.log(currentBudgetPieData);
 
   return (
     <div className="flex flex-col items-center content-center w-full">
@@ -126,7 +119,7 @@ export default function Budgets({
           <BudgetPieChart
             budgetPieData={currentBudgetPieData}
             budgetSumPercent={`${Math.round(currentBudgetSum.percent).toFixed(
-              0
+              1
             )}%`}
           ></BudgetPieChart>
           <table className="table-fixed w-full text-lg">
@@ -163,6 +156,7 @@ export default function Budgets({
   );
 }
 
+//Retrieve initial Budgets data
 export async function getServerSideProps() {
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();

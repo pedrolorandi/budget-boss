@@ -18,10 +18,10 @@ export default async function handler(req, res) {
   const reqMonth = req.query.month;
   const reqYear = req.query.year;
 
-  // Calling the 'getCategoriesData' function with the provided parameters and storing the returned data in variables
+  // Calling the 'getBudgets' function with the provided parameters and storing the returned data in variables
   const newBudgets = await getBudgets(userId, reqMonth, reqYear);
 
-  // Calling the 'getRunningTotalData' function with the provided parameters and storing the returned data in variables
+  // Calling the 'getTransactionsGroupedByCategory' function with the provided parameters and storing the returned data in variables
   const newTransactions = await getTransactionsGroupedByCategory(
     userId,
     reqMonth,

@@ -295,9 +295,10 @@ export async function getRunningTotalData(userId, month, year) {
   return { dates, incomes, expenses, runningTotal: currentRunningTotal };
 }
 
+// Function to retrieve and group Transaction sums by Category, filtered by the specified month and year
 export async function getTransactionsGroupedByCategory(userId, month, year) {
   const prisma = new PrismaClient();
-  const categories = await prisma.transaction.groupBy({
+  const categoryTransaction = await prisma.transaction.groupBy({
     by: ["categoryId"],
     where: {
       source: { user: { id: userId } },
@@ -312,6 +313,7 @@ export async function getTransactionsGroupedByCategory(userId, month, year) {
     },
   });
 
+  //Retrieve Category IDs and Names
   const categoryNames = await prisma.category.findMany({
     select: {
       id: true,
@@ -319,9 +321,10 @@ export async function getTransactionsGroupedByCategory(userId, month, year) {
     },
   });
 
+  //Combine Names into Transactions Data by Category ID
   const result = [];
 
-  for (let i of categories) {
+  for (let i of categoryTransaction) {
     for (let j of categoryNames)
       if (i.categoryId === j.id) {
         let element = {
@@ -331,9 +334,12 @@ export async function getTransactionsGroupedByCategory(userId, month, year) {
         result.push(element);
       }
   }
+
+  //Return resulting object containing Transaction sums grouped by Categories
   return result;
 }
 
+// Function to retrieve BudgetCategories amounts, Category Name and IDs, filtered by the specified month and year
 export async function getBudgets(userId, month, year) {
   const prisma = new PrismaClient();
 
@@ -357,6 +363,7 @@ export async function getBudgets(userId, month, year) {
       },
     },
   });
+  //Return resulting object containing BudgetCategories amounts, Category Name and IDs
   return budgets;
 }
 

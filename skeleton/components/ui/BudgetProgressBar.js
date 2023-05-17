@@ -1,6 +1,7 @@
 import React from "react";
 
 export default function BarChart(props) {
+  //Class Name helper for Progress Bar colour based on width value and isValid
   let classNames = [];
   if (props.width < 50 && props.isValid) {
     classNames.push("bg-turquoise");

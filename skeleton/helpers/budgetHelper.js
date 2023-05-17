@@ -1,9 +1,4 @@
-import {
-  getDateByMonthYear,
-  getTransactionsGroupedByCategory,
-  getBudgets,
-} from "./selectors";
-
+//Function that uses BudgetCategories and Transactions grouped by Categories to create BudgetCategory List Data
 export function getBudgetAmounts(transactions, budgets) {
   let result = [];
 
@@ -45,6 +40,7 @@ export function getBudgetAmounts(transactions, budgets) {
   });
 }
 
+//Function that uses BudgetCategories and Transactions grouped by Categories to create Budget Pie Chart Data
 export function getBudgetSum(transactions, budgets) {
   let result = { totalBudget: 0, currentBudget: 0, percent: 0 };
 
@@ -66,6 +62,7 @@ export function getBudgetSum(transactions, budgets) {
   return result;
 }
 
+//Function that selected Pie Chart Colour by BudgetSum's percent data
 export function getBudgetPieChartColour(data) {
   let pieChartColour = [];
 
