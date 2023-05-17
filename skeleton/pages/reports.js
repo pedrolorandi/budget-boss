@@ -80,6 +80,14 @@ export default function Reports({
     ],
   });
 
+  //Bar Chart Options to remove legend
+  const options = {
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+  };
   // Function to fetch transactions data from the API
   const getTransactionsAPI = (month, year) => {
     // Adjusting month and year values for previous and next month
@@ -191,7 +199,10 @@ export default function Reports({
       </div>
       <Chart chartData={currentRunningTotal} />
       <div>
-        <CategoryBarChart chartData={currentCategoryBarData}></CategoryBarChart>
+        <CategoryBarChart
+          chartData={currentCategoryBarData}
+          options={options}
+        ></CategoryBarChart>
       </div>
     </>
   );
