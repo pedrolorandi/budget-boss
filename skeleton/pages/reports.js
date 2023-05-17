@@ -28,8 +28,6 @@ export default function Reports({
   sums,
   categoryNameList,
 }) {
-  console.log(sums);
-  console.log(categoryNameList);
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
   const [currentCategories, setCurrentCategories] = useState({
@@ -80,7 +78,7 @@ export default function Reports({
     ],
   });
 
-  //Bar Chart Options to remove legend
+  //Bar Chart Options to
   const options = {
     plugins: {
       legend: {
