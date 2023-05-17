@@ -113,3 +113,15 @@ export function formatTransaction(type, amount) {
 export function formatCategoryClassName(category) {
   return category.toLowerCase().replaceAll(" ", "_").replace("&", "n");
 }
+
+export function formatDateISOString(date) {
+  const today = new Date();
+  const hours = today.getHours().toString().padStart(2, "0");
+  const minutes = today.getMinutes().toString().padStart(2, "0");
+  const time = `${hours}:${minutes}`;
+
+  const dateAndTime = new Date(`${date}T${time}`);
+  dateAndTime.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+  const isoDateAndTime = dateAndTime.toISOString();
+  return isoDateAndTime;
+}
