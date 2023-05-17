@@ -341,7 +341,7 @@ export async function getTransactionsGroupedByCategory(userId, month, year) {
 
 // Function to retrieve sums and names by Category from Transactions, filtered by the specified month and year
 export async function getCategoryBarChartData(userId, month, year) {
-  //Call "getTransactionsGroupedByCategory"
+  //Call "getTransactionsGroupedByCategory" into result
   const result = await getTransactionsGroupedByCategory(userId, month, year);
 
   //Destructure result into separate arrays

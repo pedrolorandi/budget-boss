@@ -1,5 +1,9 @@
 // Importing necessary functions from the 'selectors' module
-import { getCategoriesData, getRunningTotalData } from "@/helpers/selectors";
+import {
+  getCategoriesData,
+  getRunningTotalData,
+  getCategoryBarChartData,
+} from "@/helpers/selectors";
 
 // Defining an asynchronous function called 'handler' with 'req' and 'res' as parameters
 export default async function handler(req, res) {
@@ -25,6 +29,12 @@ export default async function handler(req, res) {
     reqYear
   );
 
+  const { sums, categoryNameList } = await getCategoryBarChartData(
+    userId,
+    reqMonth,
+    reqYear
+  );
+
   // Sending the response as a JSON string containing the retrieved data
   res.send(
     JSON.stringify({
@@ -37,6 +47,8 @@ export default async function handler(req, res) {
       incomes,
       expenses,
       runningTotal,
+      sums,
+      categoryNameList,
     })
   );
 }

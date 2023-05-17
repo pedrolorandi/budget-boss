@@ -1,6 +1,7 @@
 import { formatCategoryClassName } from "@/helpers/formatters";
 import PieChart from "../components/ui/PieChart";
 import Chart from "../components/ui/RunningTotalChart";
+import CategoryBarChart from "@/components/ui/CategoryBarChart";
 import { faCircleLeft, faCircleRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -9,6 +10,7 @@ import {
   getCategoriesData,
   getPieChartColors,
   getRunningTotalData,
+  getCategoryBarChartData,
 } from "../helpers/selectors";
 import axios from "axios";
 import { useState } from "react";
@@ -23,6 +25,8 @@ export default function Reports({
   incomes,
   expenses,
   runningTotal,
+  sums,
+  categoryNameList,
 }) {
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
@@ -62,7 +66,26 @@ export default function Reports({
       },
     ],
   });
+  const [currentCategoryBarData, setCurrentCategoryBarData] = useState({
+    labels: categoryNameList,
+    datasets: [
+      {
+        type: "bar",
+        label: "Categories",
+        backgroundColor: getPieChartColors(),
+        data: sums,
+      },
+    ],
+  });
 
+  //Bar Chart Options to
+  const options = {
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+  };
   // Function to fetch transactions data from the API
   const getTransactionsAPI = (month, year) => {
     // Adjusting month and year values for previous and next month
@@ -105,6 +128,15 @@ export default function Reports({
           {
             ...currentRunningTotal.datasets[2],
             data: res.data.expenses,
+          },
+        ],
+      });
+      setCurrentCategoryBarData({
+        labels: res.data.categoryNameList,
+        datasets: [
+          {
+            ...currentCategoryBarData.datasets[0],
+            data: res.data.sums,
           },
         ],
       });
@@ -164,6 +196,12 @@ export default function Reports({
         <PieChart chartData={currentCategories} />
       </div>
       <Chart chartData={currentRunningTotal} />
+      <div>
+        <CategoryBarChart
+          chartData={currentCategoryBarData}
+          options={options}
+        ></CategoryBarChart>
+      </div>
     </>
   );
 }
@@ -186,6 +224,12 @@ export async function getServerSideProps() {
     currentYear
   );
 
+  const { sums, categoryNameList } = await getCategoryBarChartData(
+    1,
+    currentMonth,
+    currentYear
+  );
+
   return {
     props: {
       month,
@@ -197,6 +241,8 @@ export async function getServerSideProps() {
       incomes,
       expenses,
       runningTotal,
+      sums,
+      categoryNameList,
     },
   };
 }
