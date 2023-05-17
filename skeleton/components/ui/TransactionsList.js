@@ -14,7 +14,7 @@ export default function TransactionList({ transactions, formattedDates }) {
               return (
                 <div
                   key={transaction.id}
-                  className="flex hover:rounded-xl mt-1 p-5 hover:bg-[#FFDE9B]"
+                  className="flex mt-1 p-5 hover:rounded-xl hover:bg-[#FFDE9B]"
                 >
                   <div className="flex items-center w-16">
                     <FontAwesomeIcon
