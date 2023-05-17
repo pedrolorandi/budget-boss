@@ -12,6 +12,9 @@ module.exports = {
   ],
 
   theme: {
+    borderRadius: {
+      lg: "1rem",
+    },
     extend: {},
     colors: {
       "nav-gray": "#D9D9D9",
@@ -50,6 +53,8 @@ module.exports = {
       selected: "#50B99B",
       unselected: "#CED4DA",
       orange: "#F05A29",
+      sidebar: "#F1F3F4",
+      borderSidebar: "#D7DDE2",
     },
   },
 
@@ -72,13 +77,15 @@ module.exports = {
     "bg-transportation",
     "bg-selected",
     "bg-unselected",
+    "bg-sidebar",
+    "border-borderSidebar",
   ],
 
   plugins: [
     function ({ addBase, theme }) {
       addBase({
         body: {
-          backgroundColor: "#F0F0F0",
+          backgroundColor: "#B5C2C9",
         },
         h1: {
           fontSize: theme("fontSize.2xl"),

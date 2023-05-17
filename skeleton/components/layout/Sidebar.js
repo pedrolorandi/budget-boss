@@ -10,10 +10,10 @@ export default function Sidebar() {
 
   return (
     <div className="h-screen sticky top-0 flex flex-col p-2">
-      <div className="rounded-lg p-5 bg-[#FFF]">
+      <div className="rounded-lg p-5 bg-sidebar border-2 border-borderSidebar">
         <img src="./images/logo.png" alt="Logo" className="w-52" />
       </div>
-      <div className="flex flex-col rounded-lg p-5 bg-[#FFF] mt-2">
+      <div className="flex flex-col rounded-lg p-5 mt-2 bg-sidebar border-2 border-borderSidebar">
         {links.map(({ label, path }) => {
           return (
             <Link href={path} key={label} className="flex">
@@ -29,7 +29,7 @@ export default function Sidebar() {
           );
         })}
       </div>
-      <div className="flex flex-1 rounded-lg p-5 bg-[#fff] mt-2"></div>
+      <div className="flex flex-1 rounded-lg p-5 mt-2 bg-sidebar border-2 border-borderSidebar"></div>
     </div>
   );
 }

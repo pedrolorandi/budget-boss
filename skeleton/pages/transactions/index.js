@@ -64,22 +64,10 @@ export default function Transactions({
 
   return (
     <>
-      <div className="flex flex-row mb-2 space-x-2">
-        {accounts.map((account) => {
-          return (
-            <AccountTile
-              key={account.id}
-              account={account}
-              currentAccount={currentAccount}
-              currentRunningTotalbyAccount={currentRunningTotalbyAccount}
-              getTransactionsAPI={getTransactionsAPI}
-              currentMonth={currentMonth}
-              currentYear={currentYear}
-            />
-          );
-        })}
+      <div className="flex flex-row rounded-lg p-8 bg-[#FFF] justify-between">
+        <h1 className="self-center">Transactions</h1>
       </div>
-      <div className="flex bg-[#FFF] space-x-5 justify-center mb-2 p-5 rounded-lg">
+      <div className="flex bg-[#FFF] space-x-5 justify-center mt-2 p-5 rounded-lg">
         <button
           className="flex"
           onClick={() =>
@@ -99,6 +87,21 @@ export default function Transactions({
         >
           <FontAwesomeIcon icon={faCircleRight} size="2xl" />
         </button>
+      </div>
+      <div className="flex flex-row mt-2 space-x-2">
+        {accounts.map((account) => {
+          return (
+            <AccountTile
+              key={account.id}
+              account={account}
+              currentAccount={currentAccount}
+              currentRunningTotalbyAccount={currentRunningTotalbyAccount}
+              getTransactionsAPI={getTransactionsAPI}
+              currentMonth={currentMonth}
+              currentYear={currentYear}
+            />
+          );
+        })}
       </div>
       <TransactionList
         transactions={currentTransactions}
