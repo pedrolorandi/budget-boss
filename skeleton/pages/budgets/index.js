@@ -45,25 +45,13 @@ export default function Budgets({
         backgroundColor: ["#E9ECEF", `${budgetPieChartColour}`],
       },
     ],
-    plugins: [
-      {
-        beforeDraw: function (chart) {
-          const width = chart.width,
-            height = chart.height,
-            ctx = chart.ctx;
-          ctx.restore();
-          const fontSize = (height / 160).toFixed(2);
-          ctx.font = fontSize + "em sans-serif";
-          ctx.textBaseline = "top";
-          let text = `${Math.round(budgetSum.percent).toFixed(0)}%`,
-            textX = Math.round((width - ctx.measureText(text).width) / 2),
-            textY = height / 2;
-          ctx.fillText(text, textX, textY);
-          ctx.save();
-        },
+    options: {
+      legend: {
+        display: false,
       },
-    ],
+    },
   });
+
   const getBudgetsAPI = (month, year) => {
     // Adjusting month and year values for previous and next month
     if (month === 0) {
@@ -108,26 +96,6 @@ export default function Budgets({
             ],
           },
         ],
-        plugins: [
-          {
-            beforeDraw: function (chart) {
-              const width = chart.width,
-                height = chart.height,
-                ctx = chart.ctx;
-              ctx.restore();
-              const fontSize = (height / 160).toFixed(2);
-              ctx.font = fontSize + "em sans-serif";
-              ctx.textBaseline = "top";
-              let text = `${Math.round(res.data.newBudgetSum.percent).toFixed(
-                  0
-                )}%`,
-                textX = Math.round((width - ctx.measureText(text).width) / 2),
-                textY = height / 2;
-              ctx.fillText(text, textX, textY);
-              ctx.save();
-            },
-          },
-        ],
       });
     });
   };
@@ -155,7 +123,12 @@ export default function Budgets({
       {currentBudgets.length > 0 && (
         <>
           <div className="text-center text-3xl font-bold">Total Budgets</div>
-          <BudgetPieChart budgetPieData={currentBudgetPieData}></BudgetPieChart>
+          <BudgetPieChart
+            budgetPieData={currentBudgetPieData}
+            budgetSumPercent={`${Math.round(currentBudgetSum.percent).toFixed(
+              0
+            )}%`}
+          ></BudgetPieChart>
           <table className="table-fixed w-full text-lg">
             <thead>
               <tr>
