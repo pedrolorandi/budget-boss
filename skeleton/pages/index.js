@@ -6,6 +6,7 @@ import useHook from '../hooks/useHook';
 
 import Layout from "@/components/layout/Layout";
 import { getTransactions } from "../helpers/selectors";
+import { getSixTransactions } from "../helpers/selectors";
 import Transactions from '../pages/transactions/index';
 // import TransactionList from "@/components/ui/TransactionsList";
 // import RunningTotalChart from "@/components/ui/RunningTotalChart";
@@ -40,8 +41,12 @@ export async function getServerSideProps() {
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
   const transactionList = await getTransactions(1, currentMonth, currentYear);
-  const transactionsRecent = transactionList.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0,3);
-  const transactionsUpcoming = transactionList.slice(3,6);
+  const today = new Date().toISOString().slice(0,10);
+
+  const SixTransactions = getSixTransactions(today, transactionList);  
+  const transactionsRecent = SixTransactions.slice(0,3);
+  const transactionsUpcoming = SixTransactions.splice(3,3);
+
   const user = await prisma.user.findUnique({
     where: {
       id: 1,
@@ -52,7 +57,7 @@ export async function getServerSideProps() {
   return {
     props: {
       user,
-      month: currentMonth,
+      
       year: currentYear,
       transactionsRecent: transactionsRecent,
       transactionsUpcoming: transactionsUpcoming,

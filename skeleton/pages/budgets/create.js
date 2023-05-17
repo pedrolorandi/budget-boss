@@ -13,9 +13,9 @@ export default function CreateBudget() {
     getUserInput(inputValue);
     console.log(inputValue);
 
-    axios.put('/api/budget/create', inputValue)
-    .then(res => console.log('res', res))
-    .catch(error => console.log(error.response));
+    // axios.put('/api/budget/create', inputValue)
+    // .then(res => console.log('res', res))
+    // .catch(error => console.log(error.response));
   }
 
   for (let i = 0; i < 10; i++) {
@@ -31,4 +31,3 @@ export default function CreateBudget() {
     </>
   )
 }
-
