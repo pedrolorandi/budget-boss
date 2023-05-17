@@ -339,50 +339,22 @@ export async function getTransactionsGroupedByCategory(userId, month, year) {
   return result;
 }
 
+// Function to retrieve sums and names by Category from Transactions, filtered by the specified month and year
 export async function getCategoryBarChartData(userId, month, year) {
-  const prisma = new PrismaClient();
-  const categoryTransaction = await prisma.transaction.groupBy({
-    by: ["categoryId"],
-    where: {
-      source: { user: { id: userId } },
-      AND: [
-        { date: { gte: new Date(year, month - 1, 1) } },
-        { date: { lt: new Date(year, month, 1) } },
-      ],
-      type: "Expense",
-    },
-    _sum: {
-      amountDecimal: true,
-    },
-  });
+  //Call "getTransactionsGroupedByCategory" into result
+  const result = await getTransactionsGroupedByCategory(userId, month, year);
 
-  const categoryNames = await prisma.category.findMany({
-    select: {
-      id: true,
-      name: true,
-    },
-  });
-
-  const result = [];
-
-  for (let i of categoryTransaction) {
-    for (let j of categoryNames)
-      if (i.categoryId === j.id) {
-        let element = {
-          ...i,
-          name: j.name,
-        };
-        result.push(element);
-      }
-  }
-
-  console.log(result);
-
-  result.forEach(({ _sum, name }, i) => {});
-
+  //Destructure result into separate arrays
   const sums = [];
   const categoryNameList = [];
-  let currentTotal = 0;
+
+  result.forEach(({ _sum, name }, i) => {
+    sums.push(_sum.amountDecimal / 100);
+    categoryNameList.push(name);
+  });
+
+  //Return resulting objects containing Transaction sums grouped by Categories and Category Names
+  return { sums, categoryNameList };
 }
 
 // Function to retrieve BudgetCategories amounts, Category Name and IDs, filtered by the specified month and year
