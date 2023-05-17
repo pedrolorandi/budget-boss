@@ -1,5 +1,6 @@
 // Importing necessary dependencies
 import { PrismaClient } from "@prisma/client";
+import { convertDate } from "./formatters";
 
 // Function to get the formatted date string by month and year
 export function getDateByMonthYear(month, year) {
@@ -10,56 +11,127 @@ export function getDateByMonthYear(month, year) {
   return `${monthName} ${year}`;
 }
 
-// Function to retrieve transactions for a given user, month, and year
-export async function getTransactions(userId, month, year) {
+// Function to get all transactions for a specific user
+export async function getAllTransactions(userId) {
+  // Create a new instance of PrismaClient
   const prisma = new PrismaClient();
 
-  // Querying the Prisma client to fetch transactions based on user, month, and year
+  // Fetch transactions from the Prisma database based on the specified criteria
   const transactions = await prisma.transaction.findMany({
-    where: {
-      source: { user: { id: userId } },
-      AND: [
-        { date: { gte: new Date(year, month - 1, 1) } },
-        { date: { lt: new Date(year, month, 1) } },
-      ],
-    },
-    include: { source: true, category: true },
+    where: { source: { user: { id: userId } } },
+    include: { source: true, category: true, account: true }, // Include the related source and category data for each transaction // Filter transactions by user ID}
   });
 
-  // Formatting the transaction dates and grouping transactions by date
-  const formattedTransactions = transactions.map((transaction) => {
-    return {
-      ...transaction,
-      date: transaction.date.toLocaleDateString(),
-    };
+  // Format the transaction dates and group transactions by date
+  const formattedTransactions = transactions
+    .map((transaction) => {
+      const date = JSON.stringify(transaction.date).substring(1, 11);
+
+      return {
+        ...transaction,
+        date, // Format the transaction date as a localized string
+      };
+    })
+    .sort((a, b) => {
+      return new Date(b.date) - new Date(a.date);
+    });
+
+  return formattedTransactions;
+}
+
+// Function to retrieve and group transactions by date, filtered by the specified month and year
+export async function getTransactionsGroupedByDate(
+  userId,
+  month,
+  year,
+  accountId
+) {
+  // Retrieve all transactions for the specified user
+  const transactions = await getAllTransactions(userId);
+
+  // Create a string representing the current month and year in the format "YYYY-MM"
+  const currentMonthAndYear = `${year}-${month < 10 ? "0" + month : month}`;
+
+  // Filter transactions to include only those that match the current month and year
+  let filteredTransactions = transactions.filter((transaction) => {
+    return transaction.date.slice(0, 7) === currentMonthAndYear;
   });
 
-  const groupedTransactions = formattedTransactions.reduce(
+  // If there's an account, filter the transactions by accountId
+  if (accountId) {
+    filteredTransactions = filteredTransactions.filter((transaction) => {
+      return transaction.accountId === Number(accountId);
+    });
+  }
+
+  // Group the filtered transactions by date
+  const groupedTransactions = filteredTransactions.reduce(
     (result, transaction) => {
-      !result[transaction.date]
-        ? (result[transaction.date] = [transaction])
-        : result[transaction.date].push(transaction);
+      // Create a string representing the current month and year in the format "YYYY-MM"
+      const currentMonthAndYear = `${year}-${month < 10 ? "0" + month : month}`;
+
+      // If the transaction date matches the current month and year, add it to the corresponding group
+      if (transaction.date.slice(0, 7) === currentMonthAndYear) {
+        !result[transaction.date]
+          ? (result[transaction.date] = [transaction])
+          : result[transaction.date].push(transaction);
+      }
 
       return result;
     },
     {}
   );
 
-  // Sorting the grouped transactions by date in descending order
-  const sortedKeys = Object.keys(groupedTransactions).sort((a, b) => {
-    return new Date(b) - new Date(a);
-  });
-
-  // Creating an array of sorted transactions with date and corresponding grouped transactions
-  const sortedTransactions = sortedKeys.map((date) => {
+  // Create an array of transactions grouped by date
+  const transactionsByDate = Object.keys(groupedTransactions).map((date) => {
     return {
       date: date,
       transactions: groupedTransactions[date],
     };
   });
 
-  return sortedTransactions;
-};
+  // Return the transactions grouped by date
+  return transactionsByDate;
+}
+
+// Function to calculate the running total by account for a user,
+// based on the filtered transactions and their amounts
+export async function getRunnigTotalByAccount(userId) {
+  // Retrieve all transactions for the specified user
+  const transactions = await getAllTransactions(userId);
+
+  // Get the current date in the "YYYY-MM-DD" format
+  const today = convertDate(new Date());
+
+  // Filter transactions to include only those up to the current date,
+  // and reverse the order to start with the oldest transaction
+  const filteredTransactions = transactions
+    .reverse()
+    .filter((transaction) => transaction.date <= today);
+
+  // Initialize an empty object to store the running total by account
+  const accounts = {};
+
+  // Calculate the running total for each transaction, grouped by account
+  filteredTransactions.forEach((transaction) => {
+    // If the account doesn't exist in the accounts object, initialize it with a running total of 0
+    if (!accounts[transaction.account.id]) accounts[transaction.account.id] = 0;
+
+    // Update the running total based on the transaction type (income or expense)
+    accounts[transaction.account.id] +=
+      transaction.type === "Income"
+        ? transaction.amountDecimal / 100
+        : -transaction.amountDecimal / 100;
+  });
+
+  // Format the running total to have two decimal places for each account
+  Object.keys(accounts).forEach((accountId) => {
+    accounts[accountId] = accounts[accountId].toFixed(2);
+  });
+
+  // Return the running total by account
+  return accounts;
+}
 
 // Function to retrieve category data for a given user, month, and year
 export async function getCategoriesData(userId, month, year) {
@@ -173,8 +245,8 @@ export async function getRunningTotalData(userId, month, year) {
 
   // Looping through transactions to calculate running totals, incomes, expenses, and dates
   transactions.forEach(({ date, type, amountDecimal }, i) => {
-    const formattedDate = date.toLocaleDateString();
-    const [transactionMonth, _, transactionYear] = formattedDate.split("/");
+    const formattedDate = JSON.stringify(date).substring(1, 11);
+    const [transactionYear, transactionMonth, _] = formattedDate.split("-");
 
     // Calculating the running total based on transaction type and amount
     currentTotal +=
@@ -223,9 +295,10 @@ export async function getRunningTotalData(userId, month, year) {
   return { dates, incomes, expenses, runningTotal: currentRunningTotal };
 }
 
+// Function to retrieve and group Transaction sums by Category, filtered by the specified month and year
 export async function getTransactionsGroupedByCategory(userId, month, year) {
   const prisma = new PrismaClient();
-  const categories = await prisma.transaction.groupBy({
+  const categoryTransaction = await prisma.transaction.groupBy({
     by: ["categoryId"],
     where: {
       source: { user: { id: userId } },
@@ -240,6 +313,7 @@ export async function getTransactionsGroupedByCategory(userId, month, year) {
     },
   });
 
+  //Retrieve Category IDs and Names
   const categoryNames = await prisma.category.findMany({
     select: {
       id: true,
@@ -247,9 +321,10 @@ export async function getTransactionsGroupedByCategory(userId, month, year) {
     },
   });
 
+  //Combine Names into Transactions Data by Category ID
   const result = [];
 
-  for (let i of categories) {
+  for (let i of categoryTransaction) {
     for (let j of categoryNames)
       if (i.categoryId === j.id) {
         let element = {
@@ -259,9 +334,30 @@ export async function getTransactionsGroupedByCategory(userId, month, year) {
         result.push(element);
       }
   }
+
+  //Return resulting object containing Transaction sums grouped by Categories
   return result;
 }
 
+// Function to retrieve sums and names by Category from Transactions, filtered by the specified month and year
+export async function getCategoryBarChartData(userId, month, year) {
+  //Call "getTransactionsGroupedByCategory" into result
+  const result = await getTransactionsGroupedByCategory(userId, month, year);
+
+  //Destructure result into separate arrays
+  const sums = [];
+  const categoryNameList = [];
+
+  result.forEach(({ _sum, name }, i) => {
+    sums.push(_sum.amountDecimal / 100);
+    categoryNameList.push(name);
+  });
+
+  //Return resulting objects containing Transaction sums grouped by Categories and Category Names
+  return { sums, categoryNameList };
+}
+
+// Function to retrieve BudgetCategories amounts, Category Name and IDs, filtered by the specified month and year
 export async function getBudgets(userId, month, year) {
   const prisma = new PrismaClient();
 
@@ -285,6 +381,15 @@ export async function getBudgets(userId, month, year) {
       },
     },
   });
-
+  //Return resulting object containing BudgetCategories amounts, Category Name and IDs
   return budgets;
+}
+
+export function getLinks() {
+  return [
+    { label: "Overview", path: "/" },
+    { label: "Accounts", path: "/transactions" },
+    { label: "Budgets", path: "/" },
+    { label: "Reports", path: "/reports" },
+  ];
 }

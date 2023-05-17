@@ -47,6 +47,9 @@ module.exports = {
       rent: "#019247",
       subscriptions: "#3AB54D",
       transportation: "#8DC640",
+      selected: "#50B99B",
+      unselected: "#CED4DA",
+      orange: "#F05A29",
     },
   },
 
@@ -67,11 +70,16 @@ module.exports = {
     "bg-rent",
     "bg-subscriptions",
     "bg-transportation",
+    "bg-selected",
+    "bg-unselected",
   ],
 
   plugins: [
     function ({ addBase, theme }) {
       addBase({
+        body: {
+          backgroundColor: "#F0F0F0",
+        },
         h1: {
           fontSize: theme("fontSize.2xl"),
           fontWeight: theme("fontWeight.bold"),
