@@ -23,6 +23,10 @@ import axios from "axios";
 import BudgetCategoriesList from "@/components/ui/BudgetCategoriesList";
 import BudgetPieChart from "@/components/ui/BudgetPieChart";
 
+//Import left and right circle icons
+import { faCircleLeft, faCircleRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 //Budgets page component to display transactions grouped by Categories, and compared to User's Budgets
 export default function Budgets({
   month,
@@ -60,7 +64,7 @@ export default function Budgets({
           (budgetSum.difference / 100).toFixed(2),
           (budgetSum.currentBudget / 100).toFixed(2),
         ],
-        backgroundColor: ["#E9ECEF", `${budgetPieChartColour}`],
+        backgroundColor: ["#D2D5DB", `${budgetPieChartColour}`],
       },
     ],
   });
@@ -105,7 +109,7 @@ export default function Budgets({
               (res.data.newBudgetSum.currentBudget / 100).toFixed(2),
             ],
             backgroundColor: [
-              "#E9ECEF",
+              "#D2D5DB",
               `${getBudgetPieChartColour(res.data.newBudgetSum)}`,
             ],
           },
@@ -115,121 +119,69 @@ export default function Budgets({
   };
 
   return (
-    <div className="flex flex-col items-center content-center w-full">
-      <div className="flex space-x-5 justify-center mb-5">
-        {!currentCreateEditStatus && currentBudgets.length > 0 && (
-          <button
-            className="bg-turquoise text-white font-bold py-2 px-4 rounded"
-            onClick={() => setcurrentCreateEditStatus(true)}
-          >
-            Edit
-          </button>
-        )}
-        {!currentCreateEditStatus && (
-          <>
-            <button
-              className="flex"
-              onClick={() => getBudgetsAPI(currentMonth - 1, currentYear)}
-            >
-              Previous month
-            </button>
-          </>
-        )}
-
-        <h1 className="flex">
+    <>
+      <div className="flex bg-[#FFF] space-x-5 justify-center mb-2 p-5 rounded-lg">
+        <button
+          className="flex"
+          onClick={() => getBudgetsAPI(currentMonth - 1, currentYear)}
+        >
+          <FontAwesomeIcon icon={faCircleLeft} size="2xl" />
+        </button>
+        <h1 className="flex w-60 justify-center">
           {getDateByMonthYear(currentMonth, currentYear)}
         </h1>
-        {!currentCreateEditStatus && (
+        <button
+          className="flex"
+          onClick={() => getBudgetsAPI(currentMonth + 1, currentYear)}
+        >
+          <FontAwesomeIcon icon={faCircleRight} size="2xl" />
+        </button>
+      </div>
+
+      <div className="text-left flex flex-col items-center bg-[#F2F7FC] mb-2 p-5 rounded-lg w-full">
+        {currentBudgets.length > 0 && (
           <>
-            <button
-              className="flex"
-              onClick={() => getBudgetsAPI(currentMonth + 1, currentYear)}
-            >
-              Next month
-            </button>
+            <h1 className="flex text-left w-full">Total Budget</h1>
+            <BudgetPieChart
+              budgetPieData={currentBudgetPieData}
+              budgetSumPercent={`${Math.round(currentBudgetSum.percent).toFixed(
+                1
+              )}%`}
+            ></BudgetPieChart>
+            <table className="table-fixed w-full text-lg mt-2">
+              <thead>
+                <tr>
+                  <th className="px-6 py-3 text-right">Current Transactions</th>
+                  <th className="px-6 py-3 text-left">Budget Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="px-6 text-right">{`$${(
+                    currentBudgetSum.currentBudget / 100
+                  ).toFixed(2)}`}</td>
+                  <td className="px-6 text-left">{`$${(
+                    currentBudgetSum.totalBudget / 100
+                  ).toFixed(2)}`}</td>
+                </tr>
+              </tbody>
+            </table>
           </>
         )}
-      </div>
-      {currentBudgets.length > 0 && (
-        <>
-          <div className="text-center text-3xl font-bold">Total Budgets</div>
-          <BudgetPieChart
-            budgetPieData={currentBudgetPieData}
-            budgetSumPercent={`${Math.round(currentBudgetSum.percent).toFixed(
-              1
-            )}%`}
-          ></BudgetPieChart>
-          <table className="table-fixed w-full text-lg">
-            <thead>
-              <tr>
-                <th className="px-6 py-3 text-right">Current Transactions</th>
-                <th className="px-6 py-3 text-left">Budget Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="px-6 text-right">{`$${(
-                  currentBudgetSum.currentBudget / 100
-                ).toFixed(2)}`}</td>
-                <td className="px-6 text-left">{`$${(
-                  currentBudgetSum.totalBudget / 100
-                ).toFixed(2)}`}</td>
-              </tr>
-            </tbody>
-          </table>
-        </>
-      )}
-      {currentBudgets.length === 0 && (
-        <>
+        {currentBudgets.length === 0 && (
           <span className="text-xl my-48">
             A budget has not yet been created for{" "}
             {getDateByMonthYear(currentMonth, currentYear)}. Please create a
             budget.
           </span>
-          {!currentCreateEditStatus && (
-            <button onClick={() => setcurrentCreateEditStatus(true)}>
-              Create Budget
-            </button>
-          )}
-        </>
-      )}
-      {currentCreateEditStatus && (
-        <div>
-          <button
-            className="bg-turquoise text-white font-bold py-2 px-4 rounded"
-            type="submit"
-            onClick={() => {
-              const test = submit(
-                currentBudgetAmounts,
-                currentInputValues,
-                currentBudgets
-              );
-              console.log(test);
-              setcurrentCreateEditStatus(false);
-            }}
-          >
-            Submit
-          </button>
-        </div>
-      )}
-      {currentCreateEditStatus && (
-        <button
-          className="bg-gray-400 text-white font-bold py-2 px-4 rounded"
-          onClick={() => setcurrentCreateEditStatus(false)}
-        >
-          Cancel
-        </button>
-      )}
-
-      <BudgetCategoriesList
-        budgetAmounts={currentBudgetAmounts}
-        createEditStatus={currentCreateEditStatus}
-        inputValues={currentInputValues}
-        setter={(param) => {
-          setCurrentInputValues(param);
-        }}
-      ></BudgetCategoriesList>
-    </div>
+        )}
+      </div>
+      <div className="flex flex-col items-center bg-[#F2F7FC] p-5 rounded-lg w-full">
+        <BudgetCategoriesList
+          budgetAmounts={currentBudgetAmounts}
+        ></BudgetCategoriesList>
+      </div>
+    </>
   );
 }
 
