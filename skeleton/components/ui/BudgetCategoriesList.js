@@ -14,12 +14,13 @@ export default function BudgetCategoriesList(props) {
           2
         )}
         totalBudget={(Math.round(element.totalBudget * 100) / 100).toFixed(2)}
+        isValid={element.isValid}
       ></BarChart>
     );
   });
 
   return (
-    <div className="text-center text-3xl font-bold">
+    <div className="text-center text-3xl font-bold w-full mt-24">
       {" "}
       Budgets
       <div className="font-bold text-xl flex justify-end mr-5">

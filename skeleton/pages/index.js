@@ -1,24 +1,26 @@
-// import Head from "next/head";
-// import Image from "next/image";
 import { Inter } from "next/font/google";
 import prisma from "@/prisma/prismaclient";
 import useHook from '../hooks/useHook';
 
-import Layout from "@/components/layout/Layout";
-import { getTransactions } from "../helpers/selectors";
-import { getSixTransactions } from "../helpers/selectors";
+import { getTransactions, getSixTransactions } from "../helpers/selectors";
 import Transactions from '../pages/transactions/index';
 // import TransactionList from "@/components/ui/TransactionsList";
 // import RunningTotalChart from "@/components/ui/RunningTotalChart";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Home({ user, month, year, indexPage, transactionsRecent, transactionsUpcoming}) {
+export default function Home({ month, year, indexPage, transactionsRecent, transactionsUpcoming}) {
   const {route} = useHook();
 
   return (
     <>
-      <Layout user={user}></Layout>
+      <div className="bg-[#FFF] flex flex-col flex-1 rounded-lg p-5">
+        <div className="flex flex-row items-center">
+          <img src="images/user-icon.png" className="flex h-20" />
+          <h1 className="text-4xl ms-5">Hi, Jane!</h1>
+        </div>
+      </div>
+
       <div className="flex" style={{marginTop: '-10px', marginLeft: '290px'}}>
         <div className="w-1/2 p-32" style={{padding: '10px'}} onClick={() => route.push('/transactions')}>
           <Transactions 
@@ -33,6 +35,7 @@ export default function Home({ user, month, year, indexPage, transactionsRecent,
           />
         </div>
       </div>
+
     </>
   );
 }
@@ -46,18 +49,11 @@ export async function getServerSideProps() {
   const SixTransactions = getSixTransactions(today, transactionList);  
   const transactionsRecent = SixTransactions.slice(0,3);
   const transactionsUpcoming = SixTransactions.splice(3,3);
-
-  const user = await prisma.user.findUnique({
-    where: {
-      id: 1,
-    },
-  });
+  
   const indexPage = true;
 
   return {
-    props: {
-      user,
-      
+    props: {      
       year: currentYear,
       transactionsRecent: transactionsRecent,
       transactionsUpcoming: transactionsUpcoming,

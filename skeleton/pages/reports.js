@@ -1,13 +1,21 @@
 import { formatCategoryClassName } from "@/helpers/formatters";
 import PieChart from "../components/ui/PieChart";
 import Chart from "../components/ui/RunningTotalChart";
+import CategoryBarChart from "@/components/ui/CategoryBarChart";
+import { faCircleLeft, faCircleRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
   getDateByMonthYear,
   getCategoriesData,
   getPieChartColors,
   getRunningTotalData,
+  getCategoryBarChartData,
+  getTransactionsGroupedByCategory,
+  getBudgets,
 } from "../helpers/selectors";
+
+import { getBudgetAmounts } from "@/helpers/budgetHelper";
 import axios from "axios";
 import { useState } from "react";
 
@@ -21,6 +29,9 @@ export default function Reports({
   incomes,
   expenses,
   runningTotal,
+  sums,
+  categoryNameList,
+  budgetAmounts,
 }) {
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
@@ -41,22 +52,39 @@ export default function Reports({
       {
         type: "line",
         label: "Running Total",
-        borderColor: "rgb(255, 99, 132)",
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
+        borderColor: "rgb(222, 226, 230)",
+        backgroundColor: "rgba(173, 181, 189, 0.4)",
         fill: true,
         data: runningTotal,
       },
       {
         type: "bar",
         label: "Incomes",
-        backgroundColor: "rgb(75, 192, 192)",
+        backgroundColor: "rgb(80, 185, 155)",
         data: incomes,
       },
       {
         type: "bar",
         label: "Expenses",
-        backgroundColor: "rgb(53, 162, 235)",
+        backgroundColor: "rgb(220, 36, 75)",
         data: expenses,
+      },
+    ],
+  });
+  const [currentCategoryBarData, setCurrentCategoryBarData] = useState({
+    labels: categoryNameList,
+    datasets: [
+      {
+        type: "bar",
+        label: "Current Transactions",
+        backgroundColor: "rgb(80, 185, 155)",
+        data: sums,
+      },
+      {
+        type: "bar",
+        label: "Total Budget",
+        backgroundColor: "rgb(220, 36, 75)",
+        data: budgetAmounts.map((e) => e.totalBudget),
       },
     ],
   });
@@ -106,31 +134,44 @@ export default function Reports({
           },
         ],
       });
+      setCurrentCategoryBarData({
+        labels: res.data.categoryNameList,
+        datasets: [
+          {
+            ...currentCategoryBarData.datasets[0],
+            data: res.data.sums,
+          },
+          {
+            ...currentCategoryBarData.datasets[1],
+            data: res.data.budgetAmounts.map((e) => e.totalBudget),
+          },
+        ],
+      });
     });
   };
 
   return (
-    <main className="flex flex-col p-5">
-      <div className="flex space-x-5 justify-center mb-5">
+    <>
+      <div className="flex bg-[#FFF] space-x-5 justify-center mb-2 p-5 rounded-lg">
         <button
           className="flex"
           onClick={() => getTransactionsAPI(currentMonth - 1, currentYear)}
         >
-          Previous month
+          <FontAwesomeIcon icon={faCircleLeft} size="2xl" />
         </button>
-        <h1 className="flex">
+        <h1 className="flex w-60 justify-center">
           {getDateByMonthYear(currentMonth, currentYear)}
         </h1>
         <button
           className="flex"
           onClick={() => getTransactionsAPI(currentMonth + 1, currentYear)}
         >
-          Next month
+          <FontAwesomeIcon icon={faCircleRight} size="2xl" />
         </button>
       </div>
-      <div className="flex flex-row items-center">
-        <ul className="flex flex-col w-full">
-          {categories.map((category) => {
+      <div className="flex flex-row items-center bg-[#F2F7FC] p-5 rounded-lg space-x-10">
+        <ul className="flex flex-col w-1/3">
+          {categories.slice(0, 8).map((category) => {
             return (
               <li key={category} className="flex flex-row mb-2">
                 <div
@@ -144,15 +185,28 @@ export default function Reports({
             );
           })}
         </ul>
-
-        <div className="flex w-full ms-10">
-          <PieChart chartData={currentCategories} />
-        </div>
+        <ul className="flex flex-col w-1/3">
+          {categories.slice(8, 16).map((category) => {
+            return (
+              <li key={category} className="flex flex-row mb-2">
+                <div
+                  className={`flex bg-${formatCategoryClassName(
+                    category
+                  )} w-10 me-3`}
+                ></div>
+                <div className="flex-1">{category}</div>
+                <div>{currentPercentagePerCategory[category]} %</div>
+              </li>
+            );
+          })}
+        </ul>
+        <PieChart chartData={currentCategories} />
       </div>
-      <div className="flex w-full">
-        <Chart chartData={currentRunningTotal} />
+      <Chart chartData={currentRunningTotal} />
+      <div>
+        <CategoryBarChart chartData={currentCategoryBarData}></CategoryBarChart>
       </div>
-    </main>
+    </>
   );
 }
 
@@ -174,6 +228,17 @@ export async function getServerSideProps() {
     currentYear
   );
 
+  const { sums, categoryNameList } = await getCategoryBarChartData(
+    1,
+    currentMonth,
+    currentYear
+  );
+
+  const budgetAmounts = await getBudgetAmounts(
+    await getTransactionsGroupedByCategory(1, currentMonth, currentYear),
+    await getBudgets(1, currentMonth, currentYear)
+  );
+
   return {
     props: {
       month,
@@ -185,6 +250,9 @@ export async function getServerSideProps() {
       incomes,
       expenses,
       runningTotal,
+      sums,
+      categoryNameList,
+      budgetAmounts,
     },
   };
 }
