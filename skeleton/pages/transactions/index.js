@@ -91,7 +91,7 @@ export default function Transactions({
         <h1 className="flex w-60 justify-center">
           {getDateByMonthYear(currentMonth, currentYear)}
         </h1>
-        {!indexPage && <button
+        <button
           className="flex"
           onClick={() =>
             getTransactionsAPI(currentMonth + 1, currentYear, currentAccount)
@@ -99,7 +99,6 @@ export default function Transactions({
         >
           <FontAwesomeIcon icon={faCircleRight} size="2xl" />
         </button>
-        }
       </div>
       <TransactionList
         transactions={currentTransactions}

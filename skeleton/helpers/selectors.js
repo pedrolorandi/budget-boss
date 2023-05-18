@@ -424,3 +424,52 @@ export function getLinks() {
   ];
 }
 
+export async function getTransactions(userId, month, year) {
+  const prisma = new PrismaClient();
+
+  // Querying the Prisma client to fetch transactions based on user, month, and year
+  const transactions = await prisma.transaction.findMany({
+    where: {
+      source: { user: { id: userId } },
+      AND: [
+        { date: { gte: new Date(year, month - 1, 1) } },
+        { date: { lt: new Date(year, month, 1) } },
+      ],
+    },
+    include: { source: true, category: true },
+  });
+
+  // Formatting the transaction dates and grouping transactions by date
+  const formattedTransactions = transactions.map((transaction) => {
+    return {
+      ...transaction,
+      date: transaction.date.toLocaleDateString(),
+    };
+  });
+
+  const groupedTransactions = formattedTransactions.reduce(
+    (result, transaction) => {
+      !result[transaction.date]
+        ? (result[transaction.date] = [transaction])
+        : result[transaction.date].push(transaction);
+
+      return result;
+    },
+    {}
+  );
+
+  // Sorting the grouped transactions by date in descending order
+  const sortedKeys = Object.keys(groupedTransactions).sort((a, b) => {
+    return new Date(b) - new Date(a);
+  });
+
+  // Creating an array of sorted transactions with date and corresponding grouped transactions
+  const sortedTransactions = sortedKeys.map((date) => {
+    return {
+      date: date,
+      transactions: groupedTransactions[date],
+    };
+  });
+
+  return sortedTransactions;
+};

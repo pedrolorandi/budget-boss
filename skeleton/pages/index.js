@@ -2,7 +2,7 @@ import { Inter } from "next/font/google";
 import prisma from "@/prisma/prismaclient";
 import useHook from '../hooks/useHook';
 
-import { getTransactions, getSixTransactions } from "../helpers/selectors";
+import { getTransactions, getSixTransactions} from '../helpers/selectors';
 import Transactions from '../pages/transactions/index';
 // import TransactionList from "@/components/ui/TransactionsList";
 // import RunningTotalChart from "@/components/ui/RunningTotalChart";
@@ -43,8 +43,8 @@ export default function Home({ month, year, indexPage, transactionsRecent, trans
 export async function getServerSideProps() {
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
-  const transactionList = await getTransactions(1, currentMonth, currentYear);
   const today = new Date().toISOString().slice(0,10);
+  const transactionList = await getTransactions(1, currentMonth, currentYear);
 
   const SixTransactions = getSixTransactions(today, transactionList);  
   const transactionsRecent = SixTransactions.slice(0,3);
