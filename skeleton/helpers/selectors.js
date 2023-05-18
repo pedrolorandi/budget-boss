@@ -389,7 +389,7 @@ export function getLinks() {
   return [
     { label: "Overview", path: "/" },
     { label: "Accounts", path: "/transactions" },
-    { label: "Budgets", path: "/" },
+    { label: "Budgets", path: "/budgets" },
     { label: "Reports", path: "/reports" },
   ];
 }
