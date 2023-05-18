@@ -22,7 +22,7 @@ export default function BarChart(props) {
         </span>
       </div>
 
-      <div className="w-full bg-gray-200 rounded-full">
+      <div className="w-full bg-gray-300 rounded-full">
         <div
           className={`${classNames.join(
             " "

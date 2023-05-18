@@ -53,7 +53,7 @@ export default function Budgets({
           (budgetSum.difference / 100).toFixed(2),
           (budgetSum.currentBudget / 100).toFixed(2),
         ],
-        backgroundColor: ["#E9ECEF", `${budgetPieChartColour}`],
+        backgroundColor: ["#D2D5DB", `${budgetPieChartColour}`],
       },
     ],
   });
@@ -89,7 +89,7 @@ export default function Budgets({
               (res.data.newBudgetSum.currentBudget / 100).toFixed(2),
             ],
             backgroundColor: [
-              "#E9ECEF",
+              "#D2D5DB",
               `${getBudgetPieChartColour(res.data.newBudgetSum)}`,
             ],
           },
