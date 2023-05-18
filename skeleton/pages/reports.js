@@ -81,8 +81,17 @@ export default function Reports({
   const runningTotalOptions = {
     plugins: {
       title: {
+        font: {
+          size: 20,
+        },
+        color: "#212529",
         display: true,
         text: "Running Total",
+        padding: {
+          top: 20,
+          bottom: 10,
+        },
+        align: "start",
       },
     },
   };
@@ -92,6 +101,19 @@ export default function Reports({
     plugins: {
       legend: {
         display: false,
+      },
+      title: {
+        font: {
+          size: 20,
+        },
+        color: "#212529",
+        display: true,
+        text: "Actual Vs Budget by Category",
+        padding: {
+          top: 20,
+          bottom: 40,
+        },
+        align: "start",
       },
     },
   };
@@ -183,7 +205,10 @@ export default function Reports({
           />
         </button>
       </div>
-      <div className="flex flex-row rounded-2xl items-center p-5 space-x-10 mt-2 bg-[#F2F7FC]">
+      <div className="flex relative flex-row rounded-2xl items-center p-5 space-x-10 mt-2 bg-[#E7F3FE]">
+        <h1 className="absolute top-0 mt-5 text-[1.3rem] text-[#212529]">
+          Percentage by Category
+        </h1>
         <ul className="flex flex-col w-1/3">
           {categories.slice(0, 8).map((category) => {
             return (

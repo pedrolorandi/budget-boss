@@ -4,7 +4,7 @@ import { Chart as ChartJS } from "chart.js/auto";
 
 export default function RunningTotalChart({ chartData, options }) {
   return (
-    <div className="flex rounded-2xl items-center p-5 space-x-10 mt-2 bg-[#F2F7FC]">
+    <div className="flex rounded-2xl items-center p-5 space-x-10 mt-2 bg-[#E7F3FE]">
       <Chart data={chartData} options={options} />
     </div>
   );
