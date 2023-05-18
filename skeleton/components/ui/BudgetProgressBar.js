@@ -1,5 +1,4 @@
 import React from "react";
-
 export default function BarChart(props) {
   //Class Name helper for Progress Bar colour based on width value and isValid
   let classNames = [];
@@ -12,7 +11,6 @@ export default function BarChart(props) {
   } else {
     classNames.push("bg-gray-400");
   }
-
   return (
     <div className="m-5 text-lg">
       <div className="m-2 flex justify-between">
@@ -34,7 +32,7 @@ export default function BarChart(props) {
         </span>
       </div>
 
-      <div className="w-full bg-gray-300 rounded-full">
+      <div className="w-full bg-gray-200 rounded-full">
         <div
           className={`${classNames.join(
             " "

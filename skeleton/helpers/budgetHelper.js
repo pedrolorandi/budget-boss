@@ -1,7 +1,6 @@
 //Function that uses BudgetCategories and Transactions grouped by Categories to create BudgetCategory List Data
 export function getBudgetAmounts(transactions, budgets) {
   let result = [];
-
   if (budgets.length === 0) {
     for (let c of transactions) {
       result.push({
@@ -35,16 +34,13 @@ export function getBudgetAmounts(transactions, budgets) {
       }
     }
   }
-
   return result.sort((a, b) => {
     return b.isValid - a.isValid;
   });
 }
-
 //Function that uses BudgetCategories and Transactions grouped by Categories to create Budget Pie Chart Data
 export function getBudgetSum(transactions, budgets) {
   let result = { totalBudget: 0, currentBudget: 0, percent: 0 };
-
   for (let b of budgets) {
     result.totalBudget += b.amountDecimal;
     for (let c of transactions) {
@@ -55,18 +51,14 @@ export function getBudgetSum(transactions, budgets) {
       }
     }
   }
-
   result.percent = (result.currentBudget / result.totalBudget) * 100;
   result.difference =
     result.percent > 100 ? 0 : result.totalBudget - result.currentBudget;
-
   return result;
 }
-
 //Function that selected Pie Chart Colour by BudgetSum's percent data
 export function getBudgetPieChartColour(data) {
   let pieChartColour = [];
-
   if (data.percent < 50) {
     pieChartColour.push("#52A1A3");
   } else if (data.percent >= 50 && data.percent < 75) {

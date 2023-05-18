@@ -1,8 +1,6 @@
 import React from "react";
 import { useState } from "react";
-
 import BarChart from "./BudgetProgressBar";
-
 export default function BudgetCategoriesList(props) {
   const progressCharts = props.budgetAmounts.map((element, i) => {
     return (
@@ -25,8 +23,8 @@ export default function BudgetCategoriesList(props) {
   });
 
   return (
-    <div className="text-3xl font-bold w-full mt-2">
-      <h1>Budgets</h1>
+    <div className="text-center text-3xl font-bold w-full mt-24">
+      Budgets
       <div className="font-bold text-xl flex justify-end mr-5">
         Current / Total
       </div>
