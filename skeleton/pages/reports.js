@@ -78,6 +78,15 @@ export default function Reports({
     ],
   });
 
+  const runningTotalOptions = {
+    plugins: {
+      title: {
+        display: true,
+        text: "Running Total",
+      },
+    },
+  };
+
   //Bar Chart Options to
   const options = {
     plugins: {
@@ -86,6 +95,7 @@ export default function Reports({
       },
     },
   };
+
   // Function to fetch transactions data from the API
   const getTransactionsAPI = (month, year) => {
     // Adjusting month and year values for previous and next month
@@ -145,12 +155,19 @@ export default function Reports({
 
   return (
     <>
-      <div className="flex bg-[#FFF] space-x-5 justify-center mb-2 p-5 rounded-lg">
+      <div className="flex flex-row rounded-2xl p-6 h-[6.5rem] bg-base-white justify-between">
+        <h1 className="self-center">Reports</h1>
+      </div>
+      <div className="flex rounded-2xl mt-2 p-5 space-x-5 bg-base-white justify-center">
         <button
           className="flex"
           onClick={() => getTransactionsAPI(currentMonth - 1, currentYear)}
         >
-          <FontAwesomeIcon icon={faCircleLeft} size="2xl" />
+          <FontAwesomeIcon
+            icon={faCircleLeft}
+            size="2xl"
+            className="hover:text-linkHover"
+          />
         </button>
         <h1 className="flex w-60 justify-center">
           {getDateByMonthYear(currentMonth, currentYear)}
@@ -159,10 +176,14 @@ export default function Reports({
           className="flex"
           onClick={() => getTransactionsAPI(currentMonth + 1, currentYear)}
         >
-          <FontAwesomeIcon icon={faCircleRight} size="2xl" />
+          <FontAwesomeIcon
+            icon={faCircleRight}
+            size="2xl"
+            className="hover:text-linkHover"
+          />
         </button>
       </div>
-      <div className="flex flex-row items-center bg-[#F2F7FC] p-5 rounded-lg space-x-10">
+      <div className="flex flex-row rounded-2xl items-center p-5 space-x-10 mt-2 bg-[#F2F7FC]">
         <ul className="flex flex-col w-1/3">
           {categories.slice(0, 8).map((category) => {
             return (
@@ -195,13 +216,8 @@ export default function Reports({
         </ul>
         <PieChart chartData={currentCategories} />
       </div>
-      <Chart chartData={currentRunningTotal} />
-      <div>
-        <CategoryBarChart
-          chartData={currentCategoryBarData}
-          options={options}
-        ></CategoryBarChart>
-      </div>
+      <Chart chartData={currentRunningTotal} options={runningTotalOptions} />
+      <CategoryBarChart chartData={currentCategoryBarData} options={options} />
     </>
   );
 }
