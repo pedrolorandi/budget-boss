@@ -1,32 +1,30 @@
-import { PrismaClient } from '@prisma/client'
-import {add_edit} from '../../../helpers/crud'
+import { PrismaClient } from "@prisma/client";
+import { add_edit } from "../../../helpers/crud";
 
-export default async function Editing (req, res) {
+export default async function handler(req, res) {
   const prisma = new PrismaClient();
-  let inputValue = req.body.data.inputValue;
-  const sourceName = req.body.data.sourceName;
+  let amountDecimal = 0;
 
-  const sourceID = await add_edit(sourceName); //inputValue with sourceId 
-  inputValue['sourceId'] = sourceID;
-  await prisma.transaction.update({
-    where: {id: inputValue.id},
-    data: inputValue
-  });
+  if (req.body.data.amountDecimal.includes(".")) {
+    const amountArray = req.body.data.amountDecimal.split(".");
 
-  res.status(200).send('Transaction Edited');
-}
-
-/* (passed in from the front-end)
-req.body.data = {
-  sourceName: 'dango',
-  inputValue: {
-  id: 3,
-  type: 'Expense',
-  title: 'da',
-  categoryId: 1,
-  amountDecimal: 1200,
-  accountId: 1,
-  date: '2023-05-11T20:08:26.860Z'
+    amountDecimal = Number(
+      amountArray[0] +
+        (amountArray[1].length === 1 ? amountArray[1] + "0" : amountArray[1])
+    );
+  } else {
+    amountDecimal = Number(req.body.data.amountDecimal) * 100;
   }
+
+  const sourceId = await add_edit(req.body.data.sources, req.body.data.source);
+
+  let inputValue = req.body.data.inputValue;
+  inputValue["amountDecimal"] = amountDecimal;
+  inputValue["sourceId"] = sourceId;
+
+  await prisma.transaction.update({
+    where: { id: req.body.data.transactionId },
+    data: inputValue,
+  });
+  res.status(200).send("Transaction Edited");
 }
-*/
