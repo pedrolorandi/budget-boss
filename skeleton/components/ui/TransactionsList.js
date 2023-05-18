@@ -3,9 +3,14 @@ import { categoryIcons, formatTransaction } from "../../helpers/formatters.js";
 import { faPen, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link.js";
 
-export default function TransactionList({ transactions, formattedDates, indexPage, text}) {
+export default function TransactionList({
+  transactions,
+  formattedDates,
+  indexPage,
+  text,
+}) {
   return (
-    <div className="p-5 bg-[#FEEECD] rounded-2xl flex flex-col flex-1 mt-2">
+    <div className="p-5 bg-[#FEEECD] rounded-2xl flex flex-col flex-1">
       {indexPage ? <h1>{text}</h1> : <h1>Transactions</h1>}
       {transactions.map(({ date, transactions }) => {
         return (
@@ -36,35 +41,36 @@ export default function TransactionList({ transactions, formattedDates, indexPag
                       transaction.amountDecimal
                     )}
                   </div>
-                  {!indexPage &&
-                  <div className="flex items-center ps-3 ms-3">
-                    <Link
-                      href={`/transactions/edit/${encodeURIComponent(
-                        transaction.id
-                      )}`}
-                      title="Edit transaction"
-                    >
-                      <FontAwesomeIcon
-                        icon={faPen}
-                        className="hover:text-linkHover"
-                      />
-                    </Link>
-                  </div>}
-                  {!indexPage &&
-                  <div className="flex items-center ps-3">
-                    <Link
-                      href={`/transactions/delete/${encodeURIComponent(
-                        transaction.id
-                      )}`}
-                      title="Delete transaction"
-                    >
-                      <FontAwesomeIcon
-                        icon={faTrashCan}
-                        className="hover:text-linkHover"
-                      />
-                    </Link>
-                  </div>
-                  }
+                  {!indexPage && (
+                    <div className="flex items-center ps-3 ms-3">
+                      <Link
+                        href={`/transactions/edit/${encodeURIComponent(
+                          transaction.id
+                        )}`}
+                        title="Edit transaction"
+                      >
+                        <FontAwesomeIcon
+                          icon={faPen}
+                          className="hover:text-linkHover"
+                        />
+                      </Link>
+                    </div>
+                  )}
+                  {!indexPage && (
+                    <div className="flex items-center ps-3">
+                      <Link
+                        href={`/transactions/delete/${encodeURIComponent(
+                          transaction.id
+                        )}`}
+                        title="Delete transaction"
+                      >
+                        <FontAwesomeIcon
+                          icon={faTrashCan}
+                          className="hover:text-linkHover"
+                        />
+                      </Link>
+                    </div>
+                  )}
                 </div>
               );
             })}

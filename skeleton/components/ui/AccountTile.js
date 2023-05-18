@@ -7,7 +7,7 @@ export default function AccountTile({
   getTransactionsAPI,
   currentMonth,
   currentYear,
-  accountIndex
+  accountIndex,
 }) {
   const [backgroundColor, setBackgroundColor] = useState("bg-selected");
 
@@ -19,7 +19,9 @@ export default function AccountTile({
 
   return (
     <button
-      className={`flex flex-1 flex-col ${accountIndex ? "bg-selected" : backgroundColor} rounded-lg p-5`}
+      className={`flex flex-1 flex-col ${
+        accountIndex ? "bg-selected" : backgroundColor
+      } rounded-2xl mt-2 p-5`}
       onClick={() => getTransactionsAPI(currentMonth, currentYear, account.id)}
     >
       <span className="font-bold">{account.name}</span>
