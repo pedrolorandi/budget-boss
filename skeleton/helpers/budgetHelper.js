@@ -76,11 +76,13 @@ export function submit(budgetAmounts, inputValues, budgets) {
     if (budgets.length > 0) {
       submitData.push({
         budgetCategoryId: budgetAmounts[i].budgetCategoryId,
+        categoryId: budgetAmounts[i].categoryId,
       });
       submitData[i].amountDecimal = inputValues[i] * 100;
     } else {
       submitData.push({
         amountDecimal: inputValues[i] * 100,
+        categoryId: budgetAmounts[i].categoryId,
       });
     }
   }
