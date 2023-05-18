@@ -90,6 +90,17 @@ export default function Reports({
     ],
   });
 
+  const pieChartOptions = {
+    plugins: {
+      datalabels: {
+        color: "#fff",
+        font: {
+          size: 18,
+        },
+      },
+    },
+  };
+
   const runningTotalOptions = {
     plugins: {
       title: {
@@ -129,7 +140,6 @@ export default function Reports({
       },
     },
   };
-
 
   // Function to fetch transactions data from the API
   const getTransactionsAPI = (month, year) => {
@@ -194,81 +204,84 @@ export default function Reports({
 
   return (
     <>
-      {!indexPage &&
-      <>
-        <div className="flex flex-row rounded-2xl p-6 h-[6.5rem] bg-base-white justify-between">
-          <h1 className="self-center">Reports</h1>
-        </div>
-        <div className="flex rounded-2xl mt-2 p-5 space-x-5 bg-base-white justify-center">
-          <button
-            className="flex"
-            onClick={() => getTransactionsAPI(currentMonth - 1, currentYear)}
-          >
-            <FontAwesomeIcon
-              icon={faCircleLeft}
-              size="2xl"
-              className="hover:text-linkHover"
-            />
-          </button>
-          <h1 className="flex w-60 justify-center">
-            {getDateByMonthYear(currentMonth, currentYear)}
-          </h1>
-          <button
-            className="flex"
-            onClick={() => getTransactionsAPI(currentMonth + 1, currentYear)}
-          >
-            <FontAwesomeIcon
-              icon={faCircleRight}
-              size="2xl"
-              className="hover:text-linkHover"
-            />
-          </button>
-        </div>
-      </>
-      }
+      {!indexPage && (
+        <>
+          <div className="flex flex-row rounded-2xl p-6 h-[6.5rem] bg-base-white justify-between">
+            <h1 className="self-center">Reports</h1>
+          </div>
+          <div className="flex rounded-2xl mt-2 p-5 space-x-5 bg-base-white justify-center">
+            <button
+              className="flex"
+              onClick={() => getTransactionsAPI(currentMonth - 1, currentYear)}
+            >
+              <FontAwesomeIcon
+                icon={faCircleLeft}
+                size="2xl"
+                className="hover:text-linkHover"
+              />
+            </button>
+            <h1 className="flex w-60 justify-center">
+              {getDateByMonthYear(currentMonth, currentYear)}
+            </h1>
+            <button
+              className="flex"
+              onClick={() => getTransactionsAPI(currentMonth + 1, currentYear)}
+            >
+              <FontAwesomeIcon
+                icon={faCircleRight}
+                size="2xl"
+                className="hover:text-linkHover"
+              />
+            </button>
+          </div>
+        </>
+      )}
 
-      {!indexPage &&
-      <div className="flex relative flex-row rounded-2xl items-center p-5 space-x-10 mt-2 bg-[#E7F3FE]">
-        <h1 className="absolute top-0 mt-5 text-[1.3rem] text-[#212529]">
-          Percentage by Category
-        </h1>
-        <ul className="flex flex-col w-1/3">
-          {categories.slice(0, 8).map((category) => {
-            return (
-              <li key={category} className="flex flex-row mb-2">
-                <div
-                  className={`flex bg-${formatCategoryClassName(
-                    category
-                  )} w-10 me-3`}
-                ></div>
-                <div className="flex-1">{category}</div>
-                <div>{currentPercentagePerCategory[category]} %</div>
-              </li>
-            );
-          })}
-        </ul>
-        <ul className="flex flex-col w-1/3">
-          {categories.slice(8, 16).map((category) => {
-            return (
-              <li key={category} className="flex flex-row mb-2">
-                <div
-                  className={`flex bg-${formatCategoryClassName(
-                    category
-                  )} w-10 me-3`}
-                ></div>
-                <div className="flex-1">{category}</div>
-                <div>{currentPercentagePerCategory[category]} %</div>
-              </li>
-            );
-          })}
-        </ul>
-        <PieChart chartData={currentCategories} />
-      </div>
-      }
+      {!indexPage && (
+        <div className="flex relative flex-row rounded-2xl items-center p-5 space-x-10 mt-2 bg-[#E7F3FE]">
+          <h1 className="absolute top-0 mt-5 text-[1.3rem] text-[#212529]">
+            Percentage by Category
+          </h1>
+          <ul className="flex flex-col w-1/3">
+            {categories.slice(0, 8).map((category) => {
+              return (
+                <li key={category} className="flex flex-row mb-2">
+                  <div
+                    className={`flex bg-${formatCategoryClassName(
+                      category
+                    )} w-10 me-3`}
+                  ></div>
+                  <div className="flex-1">{category}</div>
+                  <div>{currentPercentagePerCategory[category]} %</div>
+                </li>
+              );
+            })}
+          </ul>
+          <ul className="flex flex-col w-1/3">
+            {categories.slice(8, 16).map((category) => {
+              return (
+                <li key={category} className="flex flex-row mb-2">
+                  <div
+                    className={`flex bg-${formatCategoryClassName(
+                      category
+                    )} w-10 me-3`}
+                  ></div>
+                  <div className="flex-1">{category}</div>
+                  <div>{currentPercentagePerCategory[category]} %</div>
+                </li>
+              );
+            })}
+          </ul>
+          <PieChart chartData={currentCategories} options={pieChartOptions} />
+        </div>
+      )}
       <Chart chartData={currentRunningTotal} options={runningTotalOptions} />
-      {!indexPage &&
-      <CategoryBarChart chartData={currentCategoryBarData} options={options} />
-      }
+      {!indexPage && (
+        <CategoryBarChart
+          chartData={currentCategoryBarData}
+          options={options}
+        />
+      )}
     </>
   );
 }
