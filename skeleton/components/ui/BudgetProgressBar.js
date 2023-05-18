@@ -18,7 +18,19 @@ export default function BarChart(props) {
       <div className="m-2 flex justify-between">
         <span className="font-bold">{props.name}</span>
         <span className="font-normal">
-          ${props.currentAmount} / ${props.totalBudget}
+          ${props.currentAmount} /{" "}
+          {props.createEditStatus ? (
+            <span>
+              $
+              <input
+                onChange={props.onChange}
+                value={props.value}
+                type="number"
+              ></input>
+            </span>
+          ) : (
+            "$" + props.totalBudget
+          )}
         </span>
       </div>
 

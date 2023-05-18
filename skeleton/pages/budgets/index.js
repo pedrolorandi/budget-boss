@@ -12,6 +12,7 @@ import {
   getBudgetAmounts,
   getBudgetSum,
   getBudgetPieChartColour,
+  submit,
 } from "@/helpers/budgetHelper";
 
 //Import React and Axios
@@ -32,12 +33,22 @@ export default function Budgets({
   budgetAmounts,
   budgetPieChartColour,
 }) {
+  const [currentCreateEditStatus, setcurrentCreateEditStatus] = useState(false);
   const [currentTransactionsByCategory, setCurrentTransactionsByCategory] =
     useState(transactionsByCategory);
   const [currentBudgets, setCurrentBudgets] = useState(budgets);
   const [currentBudgetSum, setCurrentBudgetSum] = useState(budgetSum);
   const [currentBudgetAmounts, setCurrentBudgetAmounts] =
     useState(budgetAmounts);
+  const [currentInputValues, setCurrentInputValues] = useState(
+    currentBudgetAmounts.map((element) => {
+      if (element.totalBudget) {
+        return element.totalBudget;
+      } else {
+        return "";
+      }
+    })
+  );
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
   const [currentBudgetPieData, setCurrentBudgetPieData] = useState({
@@ -75,6 +86,15 @@ export default function Budgets({
       setCurrentTransactionsByCategory(res.data.newTransactions);
       setCurrentBudgets(res.data.newBudgets);
       setCurrentBudgetSum(res.data.newBudgetSum);
+      setCurrentInputValues(
+        res.data.newBudgetAmounts.map((element) => {
+          if (element.totalBudget) {
+            return element.totalBudget;
+          } else {
+            return "";
+          }
+        })
+      );
       setCurrentBudgetPieData({
         ...currentBudgetPieData,
         datasets: [
@@ -97,21 +117,38 @@ export default function Budgets({
   return (
     <div className="flex flex-col items-center content-center w-full">
       <div className="flex space-x-5 justify-center mb-5">
-        <button
-          className="flex"
-          onClick={() => getBudgetsAPI(currentMonth - 1, currentYear)}
-        >
-          Previous month
-        </button>
+        {!currentCreateEditStatus && currentBudgets.length > 0 && (
+          <button
+            className="bg-turquoise text-white font-bold py-2 px-4 rounded"
+            onClick={() => setcurrentCreateEditStatus(true)}
+          >
+            Edit
+          </button>
+        )}
+        {!currentCreateEditStatus && (
+          <>
+            <button
+              className="flex"
+              onClick={() => getBudgetsAPI(currentMonth - 1, currentYear)}
+            >
+              Previous month
+            </button>
+          </>
+        )}
+
         <h1 className="flex">
           {getDateByMonthYear(currentMonth, currentYear)}
         </h1>
-        <button
-          className="flex"
-          onClick={() => getBudgetsAPI(currentMonth + 1, currentYear)}
-        >
-          Next month
-        </button>
+        {!currentCreateEditStatus && (
+          <>
+            <button
+              className="flex"
+              onClick={() => getBudgetsAPI(currentMonth + 1, currentYear)}
+            >
+              Next month
+            </button>
+          </>
+        )}
       </div>
       {currentBudgets.length > 0 && (
         <>
@@ -143,14 +180,54 @@ export default function Budgets({
         </>
       )}
       {currentBudgets.length === 0 && (
-        <span className="text-xl my-48">
-          A budget has not yet been created for{" "}
-          {getDateByMonthYear(currentMonth, currentYear)}. Please create a
-          budget.
-        </span>
+        <>
+          <span className="text-xl my-48">
+            A budget has not yet been created for{" "}
+            {getDateByMonthYear(currentMonth, currentYear)}. Please create a
+            budget.
+          </span>
+          {!currentCreateEditStatus && (
+            <button onClick={() => setcurrentCreateEditStatus(true)}>
+              Create Budget
+            </button>
+          )}
+        </>
       )}
+      {currentCreateEditStatus && (
+        <div>
+          <button
+            className="bg-turquoise text-white font-bold py-2 px-4 rounded"
+            type="submit"
+            onClick={() => {
+              const test = submit(
+                currentBudgetAmounts,
+                currentInputValues,
+                currentBudgets
+              );
+              console.log(test);
+              setcurrentCreateEditStatus(false);
+            }}
+          >
+            Submit
+          </button>
+        </div>
+      )}
+      {currentCreateEditStatus && (
+        <button
+          className="bg-gray-400 text-white font-bold py-2 px-4 rounded"
+          onClick={() => setcurrentCreateEditStatus(false)}
+        >
+          Cancel
+        </button>
+      )}
+
       <BudgetCategoriesList
         budgetAmounts={currentBudgetAmounts}
+        createEditStatus={currentCreateEditStatus}
+        inputValues={currentInputValues}
+        setter={(param) => {
+          setCurrentInputValues(param);
+        }}
       ></BudgetCategoriesList>
     </div>
   );

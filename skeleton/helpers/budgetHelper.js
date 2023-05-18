@@ -19,6 +19,7 @@ export function getBudgetAmounts(transactions, budgets) {
       for (let c of transactions) {
         if (b.category.id === c.categoryId) {
           result.push({
+            budgetCategoryId: b.id,
             categoryId: b.category.id,
             name: b.category.name,
             totalBudget: b.amountDecimal / 100,
@@ -74,4 +75,22 @@ export function getBudgetPieChartColour(data) {
     pieChartColour.push("#DC244B");
   }
   return pieChartColour;
+}
+
+//Function that handles Submit button for Budgets Create/Edit mode
+export function submit(budgetAmounts, inputValues, budgets) {
+  const submitData = [];
+  for (let i = 0; i < budgetAmounts.length; i++) {
+    if (budgets.length > 0) {
+      submitData.push({
+        budgetCategoryId: budgetAmounts[i].budgetCategoryId,
+      });
+      submitData[i].amountDecimal = inputValues[i] * 100;
+    } else {
+      submitData.push({
+        amountDecimal: inputValues[i] * 100,
+      });
+    }
+  }
+  return submitData;
 }
