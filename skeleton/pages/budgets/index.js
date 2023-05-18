@@ -32,6 +32,7 @@ export default function Budgets({
   budgetAmounts,
   budgetPieChartColour,
 }) {
+  const [currentCreateEdit, setcurrentCreateEdit] = useState(false);
   const [currentTransactionsByCategory, setCurrentTransactionsByCategory] =
     useState(transactionsByCategory);
   const [currentBudgets, setCurrentBudgets] = useState(budgets);
@@ -143,14 +144,18 @@ export default function Budgets({
         </>
       )}
       {currentBudgets.length === 0 && (
-        <span className="text-xl my-48">
-          A budget has not yet been created for{" "}
-          {getDateByMonthYear(currentMonth, currentYear)}. Please create a
-          budget.
-        </span>
+        <>
+          <span className="text-xl my-48">
+            A budget has not yet been created for{" "}
+            {getDateByMonthYear(currentMonth, currentYear)}. Please create a
+            budget.
+          </span>
+          {!currentCreateEdit && <button type="button" onClick={() => setcurrentCreateEdit(true)}>Create A Budget</button>}
+        </>
       )}
       <BudgetCategoriesList
         budgetAmounts={currentBudgetAmounts}
+        currentCreateEdit={currentCreateEdit}
       ></BudgetCategoriesList>
     </div>
   );

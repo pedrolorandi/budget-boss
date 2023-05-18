@@ -393,3 +393,12 @@ export function getLinks() {
     { label: "Reports", path: "/reports" },
   ];
 }
+
+export function getUserInput(obj) {
+  const keys = Object.keys(obj);
+  keys.forEach(key => {
+    obj[`${key}`] = Number(obj[`${key}`].value);
+  });
+  
+  return obj;
+}

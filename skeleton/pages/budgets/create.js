@@ -1,7 +1,7 @@
 import React, {useRef} from 'react';
 import axios from 'axios';
 
-import {getUserInput} from '../../helpers/selectors'
+import {getUserInput} from '../../helpers/selectors';
 
 export default function CreateBudget() {
   const input = useRef({});
