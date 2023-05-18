@@ -1,75 +1,47 @@
 import React from "react";
-import { PrismaClient } from '@prisma/client'
-import axios from 'axios';
+import { PrismaClient } from "@prisma/client";
 
-import Form from "../../../components/ui/Form"
-import useHook from '../../../hooks/useHook'
+import Form from "../../../components/ui/Form";
 
-export default function EditTransaction({transaction, categories, accounts, sources }) {
-  const {
-    titleRef,
-    cateRef,
-    amountRef,
-    accountRef,
-    sourRef
-  } = useHook();
-  
-  const transactionSource = sources.find(source => source.id === transaction.sourceId).name;
-  
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    const inputValue = {
-      id: transaction.id,
-      type: transaction.type,
-      title: titleRef.current.value,
-      categoryId: Number(cateRef.current.value),
-      amountDecimal: amountRef.current.value*100,
-      accountId: Number(accountRef.current.value),
-      date: new Date().toISOString()
-    }
-    const sourceName = sourRef.current.value;
-
-    axios.put('/api/transaction/edit', {data: {sourceName, inputValue}})
-    .then(res => console.log('res', res))
-    .catch(error => console.log(error.response));
-  }
-  
-  return(
-    <div>
-      <Form onSubmit={handleSubmit} 
-      titleRef={titleRef} cateRef={cateRef} amountRef={amountRef} accountRef={accountRef} sourRef={sourRef}
-      type='Edit' text='Edit A Transaction' 
-      transaction={transaction} categories={categories} accounts={accounts} transactionSource={transactionSource} />
-    </div>
-  )
+export default function EditTransaction({ transaction, categories, user }) {
+  return (
+    <Form
+      formType="edit"
+      sources={user.sources}
+      categories={categories}
+      accounts={user.accounts}
+      transaction={transaction}
+    />
+  );
 }
 
 export async function getServerSideProps(content) {
   const prisma = new PrismaClient();
-  const transactionID = Number(content.params.id); //got the id here
+  const transactionId = Number(content.params.id); //got the id here
 
   const transaction = await prisma.transaction.findUnique({
-    where: {id: transactionID}
-  })
+    where: { id: transactionId },
+    include: { source: true },
+  });
+
+  const user = await prisma.user.findUnique({
+    where: { id: 1 },
+    include: {
+      accounts: true,
+      sources: true,
+    },
+  });
+
   const categories = await prisma.category.findMany();
-  const accounts = await prisma.account.findMany({
-    where: {userId: 1}
-  });
-  const sources = await prisma.source.findMany({
-    where: {userId: 1}
-  });
 
   return {
     props: {
       transaction: {
         ...transaction,
-        date: transaction.date.toISOString()
+        date: transaction.date.toISOString(),
       },
       categories,
-      accounts,
-      sources
-    }
-  }
-};
-
+      user,
+    },
+  };
+}
