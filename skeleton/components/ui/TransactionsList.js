@@ -3,9 +3,10 @@ import { categoryIcons, formatTransaction } from "../../helpers/formatters.js";
 import { faPen, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link.js";
 
-export default function TransactionList({ transactions, formattedDates }) {
+export default function TransactionList({ transactions, formattedDates, indexPage, text}) {
   return (
     <div className="p-5 bg-[#FEEECD] rounded-2xl flex flex-col flex-1 mt-2">
+      {indexPage ? <h1>{text}</h1> : <h1>Transactions</h1>}
       {transactions.map(({ date, transactions }) => {
         return (
           <div className="mt-2 flex flex-col" key={date + transactions[0].id}>
@@ -35,6 +36,7 @@ export default function TransactionList({ transactions, formattedDates }) {
                       transaction.amountDecimal
                     )}
                   </div>
+                  {!indexPage &&
                   <div className="flex items-center ps-3 ms-3">
                     <Link
                       href={`/transactions/edit/${encodeURIComponent(
@@ -47,7 +49,8 @@ export default function TransactionList({ transactions, formattedDates }) {
                         className="hover:text-linkHover"
                       />
                     </Link>
-                  </div>
+                  </div>}
+                  {!indexPage &&
                   <div className="flex items-center ps-3">
                     <Link
                       href={`/transactions/delete/${encodeURIComponent(
@@ -61,6 +64,7 @@ export default function TransactionList({ transactions, formattedDates }) {
                       />
                     </Link>
                   </div>
+                  }
                 </div>
               );
             })}

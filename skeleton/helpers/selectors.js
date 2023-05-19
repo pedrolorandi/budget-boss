@@ -386,6 +386,36 @@ export async function getBudgets(userId, month, year) {
   return budgets;
 }
 
+export function getUserInput(obj) {
+  Object.keys(obj).forEach(key => {
+    obj[`${key}`] = Number(obj[`${key}`].value)*100;
+  });
+  
+  return obj;
+}
+
+export function getSixTransactions (today, transactionList) { //used to show 'recent' and 'upcoming' transactions in the overview screen
+  let arr = [];
+  transactionList.forEach(obj => {
+    if (obj.date <= today){ 
+      arr.push(obj);
+    }
+  }); //arr = an array of today's and preceding days' transactions
+  
+  arr.forEach((obj, index) => { //unveil more transactions of one specific date
+    if (obj.transactions.length > 1) {
+      obj.transactions.forEach(transaction => {
+        arr.push({date: obj.date, transactions: [transaction]});
+      })
+      arr.splice(index, 1);
+    }
+  });
+
+  const SixTransactions = arr.sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 6);
+  
+  return SixTransactions; //6 most recent transactions
+}
+
 export function getLinks() {
   return [
     { label: "Overview", path: "/" },

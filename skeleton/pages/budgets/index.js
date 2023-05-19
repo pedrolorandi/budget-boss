@@ -29,6 +29,7 @@ export default function Budgets({
   budgetSum,
   budgetAmounts,
   budgetPieChartColour,
+  indexPage,
 }) {
   const [currentCreateEditStatus, setcurrentCreateEditStatus] = useState(false);
   const [currentTransactionsByCategory, setCurrentTransactionsByCategory] =
@@ -129,6 +130,7 @@ export default function Budgets({
 
   return (
     <div className="flex flex-col items-center content-center w-full">
+      {!indexPage && 
       <div className="flex space-x-5 justify-center mb-5">
         {!currentCreateEditStatus && currentBudgets.length > 0 && (
           <button
@@ -152,18 +154,15 @@ export default function Budgets({
         <h1 className="flex">
           {getDateByMonthYear(currentMonth, currentYear)}
         </h1>
-        {!currentCreateEditStatus && (
-          <>
-            <button
-              className="flex"
-              onClick={() => getBudgetsAPI(currentMonth + 1, currentYear)}
-            >
-              Next month
-            </button>
-          </>
-        )}
-      </div>
-      {currentBudgets.length > 0 && (
+        <button
+          className="flex"
+          onClick={() => getBudgetsAPI(currentMonth + 1, currentYear)}
+        >
+          Next month
+        </button>
+      </div>}
+
+      {!indexPage && currentBudgets.length > 0 && (
         <>
           <div className="text-center text-3xl font-bold">Total Budgets</div>
           <BudgetPieChart
@@ -192,47 +191,17 @@ export default function Budgets({
           </table>
         </>
       )}
-      {currentBudgets.length === 0 && (
-        <>
-          <span className="text-xl my-48">
-            A budget has not yet been created for{" "}
-            {getDateByMonthYear(currentMonth, currentYear)}. Please create a
-            budget.
-          </span>
-          {!currentCreateEditStatus && (
-              <button onClick={() => setcurrentCreateEditStatus(true)}>
-                Create Budget
-              </button>
-          )}
-        </>
-      )}
-      {currentCreateEditStatus && (
-        <div>
-          <button
-            className="bg-turquoise text-white font-bold py-2 px-4 rounded"
-            type="submit"
-            onClick={handleOnClick}
-          >
-            Submit
-          </button>
-        </div>
-      )}
-      {currentCreateEditStatus && (
-        <button
-          className="bg-gray-400 text-white font-bold py-2 px-4 rounded"
-          onClick={() => setcurrentCreateEditStatus(false)}
-        >
-          Cancel
-        </button>
+      {!indexPage && currentBudgets.length === 0 && (
+        <span className="text-xl my-48">
+          A budget has not yet been created for{" "}
+          {getDateByMonthYear(currentMonth, currentYear)}. Please create a
+          budget.
+        </span>
       )}
 
       <BudgetCategoriesList
         budgetAmounts={currentBudgetAmounts}
-        createEditStatus={currentCreateEditStatus}
-        inputValues={currentInputValues}
-        setter={(param) => {
-          setCurrentInputValues(param);
-        }}
+        indexPage={indexPage}
       ></BudgetCategoriesList>
     </div>
   );

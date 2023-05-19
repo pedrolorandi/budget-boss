@@ -25,6 +25,9 @@ export default function Transactions({
   transactions,
   accounts,
   runningTotalbyAccount,
+  indexPage,
+  text,
+  accountIndex
 }) {
   const [currentTransactions, setCurrentTransactions] = useState(transactions);
   const [currentMonth, setCurrentMonth] = useState(month);
@@ -69,50 +72,55 @@ export default function Transactions({
 
   return (
     <>
-      <div className="flex flex-row rounded-2xl p-6 h-[6.5rem] bg-base-white justify-between">
-        <h1 className="self-center">Transactions</h1>
-        <div className="flex flex-row self-center">
-          <Link href="/transactions/add">
-            <button
-              className={`rounded-lg bg-selected w-52 ms-2 p-3 font-bold text-white text-center hover:bg-buttonHover`}
-              type="submit"
-            >
-              <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
-              {` new transaction`}
-            </button>
-          </Link>
+      {!indexPage && !accountIndex &&
+      <>
+        <div className="flex flex-row rounded-2xl p-6 h-[6.5rem] bg-base-white justify-between">
+          <h1 className="self-center">Transactions</h1>
+          <div className="flex flex-row self-center">
+            <Link href="/transactions/add">
+              <button
+                className={`rounded-lg bg-selected w-52 ms-2 p-3 font-bold text-white text-center hover:bg-buttonHover`}
+                type="submit"
+              >
+                <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
+                {` new transaction`}
+              </button>
+            </Link>
+          </div>
         </div>
-      </div>
-      <div className="flex rounded-2xl mt-2 p-5 space-x-5 bg-base-white justify-center">
-        <button
-          className="flex"
-          onClick={() =>
-            getTransactionsAPI(currentMonth - 1, currentYear, currentAccount)
-          }
-        >
-          <FontAwesomeIcon
-            icon={faCircleLeft}
-            size="2xl"
-            className="hover:text-linkHover"
-          />
-        </button>
-        <h1 className="flex w-60 justify-center">
-          {getDateByMonthYear(currentMonth, currentYear)}
-        </h1>
-        <button
-          className="flex"
-          onClick={() =>
-            getTransactionsAPI(currentMonth + 1, currentYear, currentAccount)
-          }
-        >
-          <FontAwesomeIcon
-            icon={faCircleRight}
-            size="2xl"
-            className="hover:text-linkHover"
-          />
-        </button>
-      </div>
-      <div className="flex flex-row mt-2 space-x-2">
+        <div className="flex rounded-2xl mt-2 p-5 space-x-5 bg-base-white justify-center">
+          <button
+            className="flex"
+            onClick={() =>
+              getTransactionsAPI(currentMonth - 1, currentYear, currentAccount)
+            }
+          >
+            <FontAwesomeIcon
+              icon={faCircleLeft}
+              size="2xl"
+              className="hover:text-linkHover"
+            />
+          </button>
+          <h1 className="flex w-60 justify-center">
+            {getDateByMonthYear(currentMonth, currentYear)}
+          </h1>
+          <button
+            className="flex"
+            onClick={() =>
+              getTransactionsAPI(currentMonth + 1, currentYear, currentAccount)
+            }
+          >
+            <FontAwesomeIcon
+              icon={faCircleRight}
+              size="2xl"
+              className="hover:text-linkHover"
+            />
+          </button>
+        </div>
+      </>
+      }
+      {!indexPage &&
+      <div className={accountIndex ? "flex flex-col mb-2 space-y-6" : "flex flex-row mb-2 space-x-2"}>
         {accounts.map((account) => {
           return (
             <AccountTile
@@ -123,14 +131,20 @@ export default function Transactions({
               getTransactionsAPI={getTransactionsAPI}
               currentMonth={currentMonth}
               currentYear={currentYear}
+              accountIndex={accountIndex}
             />
           );
         })}
       </div>
-      <TransactionList
-        transactions={currentTransactions}
-        formattedDates={formattedDates}
-      />
+      }
+      {!accountIndex && 
+        <TransactionList
+          transactions={currentTransactions}
+          formattedDates={formattedDates}
+          indexPage={indexPage}
+          text={text}
+        />
+      }
     </>
   );
 }

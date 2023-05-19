@@ -1,7 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
 
-let prisma;
-global.prisma = new PrismaClient();
-prisma = global.prisma;
+// let prisma;
+// global.prisma = new PrismaClient();
+// prisma = global.prisma;
 
-export default prisma;
+// export default prisma;
