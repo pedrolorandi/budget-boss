@@ -1,7 +1,6 @@
 //Function that uses BudgetCategories and Transactions grouped by Categories to create BudgetCategory List Data
 export function getBudgetAmounts(transactions, budgets) {
   let result = [];
-
   if (budgets.length === 0) {
     for (let c of transactions) {
       result.push({
@@ -19,6 +18,7 @@ export function getBudgetAmounts(transactions, budgets) {
       for (let c of transactions) {
         if (b.category.id === c.categoryId) {
           result.push({
+            budgetCategoryId: b.id,
             categoryId: b.category.id,
             name: b.category.name,
             totalBudget: b.amountDecimal / 100,
@@ -34,16 +34,13 @@ export function getBudgetAmounts(transactions, budgets) {
       }
     }
   }
-
   return result.sort((a, b) => {
     return b.isValid - a.isValid;
   });
 }
-
 //Function that uses BudgetCategories and Transactions grouped by Categories to create Budget Pie Chart Data
 export function getBudgetSum(transactions, budgets) {
   let result = { totalBudget: 0, currentBudget: 0, percent: 0 };
-
   for (let b of budgets) {
     result.totalBudget += b.amountDecimal;
     for (let c of transactions) {
@@ -54,18 +51,14 @@ export function getBudgetSum(transactions, budgets) {
       }
     }
   }
-
   result.percent = (result.currentBudget / result.totalBudget) * 100;
   result.difference =
     result.percent > 100 ? 0 : result.totalBudget - result.currentBudget;
-
   return result;
 }
-
 //Function that selected Pie Chart Colour by BudgetSum's percent data
 export function getBudgetPieChartColour(data) {
   let pieChartColour = [];
-
   if (data.percent < 50) {
     pieChartColour.push("#52A1A3");
   } else if (data.percent >= 50 && data.percent < 75) {
@@ -74,4 +67,24 @@ export function getBudgetPieChartColour(data) {
     pieChartColour.push("#DC244B");
   }
   return pieChartColour;
+}
+
+//Function that handles Submit button for Budgets Create/Edit mode
+export function submit(budgetAmounts, inputValues, budgets) {
+  const submitData = [];
+  for (let i = 0; i < budgetAmounts.length; i++) {
+    if (budgets.length > 0) {
+      submitData.push({
+        id: budgetAmounts[i].budgetCategoryId,
+        categoryId: budgetAmounts[i].categoryId,
+      });
+      submitData[i].amountDecimal = inputValues[i] * 100;
+    } else {
+      submitData.push({
+        amountDecimal: inputValues[i] * 100,
+        categoryId: budgetAmounts[i].categoryId,
+      });
+    }
+  }
+  return submitData;
 }

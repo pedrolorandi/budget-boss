@@ -1,27 +1,25 @@
 //Budgets page
-
 //Import Prisma Selectors
 import {
   getDateByMonthYear,
   getTransactionsGroupedByCategory,
   getBudgets,
 } from "../../helpers/selectors";
-
 //Import Budget Helper Functions
 import {
   getBudgetAmounts,
   getBudgetSum,
   getBudgetPieChartColour,
+  submit,
 } from "@/helpers/budgetHelper";
 
 //Import React and Axios
 import { useState, useEffect } from "react";
+import useHook from '../../hooks/useHook';
 import axios from "axios";
-
 //Import BudgetCategoriesList and BudgetPieChart components
 import BudgetCategoriesList from "@/components/ui/BudgetCategoriesList";
 import BudgetPieChart from "@/components/ui/BudgetPieChart";
-
 //Budgets page component to display transactions grouped by Categories, and compared to User's Budgets
 export default function Budgets({
   month,
@@ -33,12 +31,23 @@ export default function Budgets({
   budgetPieChartColour,
   indexPage,
 }) {
+  const [currentCreateEditStatus, setcurrentCreateEditStatus] = useState(false);
   const [currentTransactionsByCategory, setCurrentTransactionsByCategory] =
     useState(transactionsByCategory);
   const [currentBudgets, setCurrentBudgets] = useState(budgets);
   const [currentBudgetSum, setCurrentBudgetSum] = useState(budgetSum);
   const [currentBudgetAmounts, setCurrentBudgetAmounts] =
     useState(budgetAmounts);
+  const [currentInputValues, setCurrentInputValues] = useState(
+    currentBudgetAmounts.map((element) => {
+      if (element.totalBudget) {
+        return element.totalBudget;
+      } else {
+        return "";
+      }
+    })
+  );
+  const {route} = useHook();
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
   const [currentBudgetPieData, setCurrentBudgetPieData] = useState({
@@ -54,14 +63,12 @@ export default function Budgets({
       },
     ],
   });
-
   const getBudgetsAPI = (month, year) => {
     // Adjusting month and year values for previous and next month
     if (month === 0) {
       month = 12;
       year--;
     }
-
     if (month === 13) {
       month = 1;
       year++;
@@ -76,6 +83,15 @@ export default function Budgets({
       setCurrentTransactionsByCategory(res.data.newTransactions);
       setCurrentBudgets(res.data.newBudgets);
       setCurrentBudgetSum(res.data.newBudgetSum);
+      setCurrentInputValues(
+        res.data.newBudgetAmounts.map((element) => {
+          if (element.totalBudget) {
+            return element.totalBudget;
+          } else {
+            return "";
+          }
+        })
+      );
       setCurrentBudgetPieData({
         ...currentBudgetPieData,
         datasets: [
@@ -95,16 +111,46 @@ export default function Budgets({
     });
   };
 
+  function handleOnClick() {
+    const userInputs = submit(
+      currentBudgetAmounts,
+      currentInputValues,
+      currentBudgets,
+    );
+    setcurrentCreateEditStatus(false);
+    const date = new Date(currentYear, currentMonth - 1);
+    
+    axios.put('/api/addEditBudget', {date, userInputs})
+    .then((res) => {
+      console.log(res);
+      route.push('/');
+    })
+    .catch(err => console.log(err));
+  }
+
   return (
     <div className="flex flex-col items-center content-center w-full">
       {!indexPage && 
       <div className="flex space-x-5 justify-center mb-5">
-        <button
-          className="flex"
-          onClick={() => getBudgetsAPI(currentMonth - 1, currentYear)}
-        >
-          Previous month
-        </button>
+        {!currentCreateEditStatus && currentBudgets.length > 0 && (
+          <button
+            className="bg-turquoise text-white font-bold py-2 px-4 rounded"
+            onClick={() => setcurrentCreateEditStatus(true)}
+          >
+            Edit
+          </button>
+        )}
+        {!currentCreateEditStatus && (
+          <>
+            <button
+              className="flex"
+              onClick={() => getBudgetsAPI(currentMonth - 1, currentYear)}
+            >
+              Previous month
+            </button>
+          </>
+        )}
+
         <h1 className="flex">
           {getDateByMonthYear(currentMonth, currentYear)}
         </h1>
@@ -145,7 +191,6 @@ export default function Budgets({
           </table>
         </>
       )}
-
       {!indexPage && currentBudgets.length === 0 && (
         <span className="text-xl my-48">
           A budget has not yet been created for{" "}
@@ -161,7 +206,6 @@ export default function Budgets({
     </div>
   );
 }
-
 //Retrieve initial Budgets data
 export async function getServerSideProps() {
   const currentMonth = new Date().getMonth() + 1;
@@ -171,12 +215,10 @@ export async function getServerSideProps() {
     currentMonth,
     currentYear
   );
-
   const budgets = await getBudgets(1, currentMonth, currentYear);
   const budgetAmounts = await getBudgetAmounts(transactionsByCategory, budgets);
   const budgetSum = await getBudgetSum(transactionsByCategory, budgets);
   const budgetPieChartColour = await getBudgetPieChartColour(budgetSum);
-
   return {
     props: {
       month: currentMonth,

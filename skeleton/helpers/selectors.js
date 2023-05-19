@@ -372,6 +372,7 @@ export async function getBudgets(userId, month, year) {
       },
     },
     select: {
+      id: true,
       amountDecimal: true,
       category: {
         select: {
