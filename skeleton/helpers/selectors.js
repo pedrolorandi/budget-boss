@@ -201,8 +201,8 @@ export async function getCategoriesData(userId, month, year) {
 // Function to retrieve an array of colors for a pie
 export function getPieChartColors() {
   return [
-    "#FCED29",
-    "#FBB03B",
+    "#F5C43D",
+    "#FEA802",
     "#F15A25",
     "#ED1B24",
     "#C2272F",
@@ -387,32 +387,36 @@ export async function getBudgets(userId, month, year) {
 }
 
 export function getUserInput(obj) {
-  Object.keys(obj).forEach(key => {
-    obj[`${key}`] = Number(obj[`${key}`].value)*100;
+  Object.keys(obj).forEach((key) => {
+    obj[`${key}`] = Number(obj[`${key}`].value) * 100;
   });
-  
+
   return obj;
 }
 
-export function getSixTransactions (today, transactionList) { //used to show 'recent' and 'upcoming' transactions in the overview screen
+export function getSixTransactions(today, transactionList) {
+  //used to show 'recent' and 'upcoming' transactions in the overview screen
   let arr = [];
-  transactionList.forEach(obj => {
-    if (obj.date <= today){ 
+  transactionList.forEach((obj) => {
+    if (obj.date <= today) {
       arr.push(obj);
     }
   }); //arr = an array of today's and preceding days' transactions
-  
-  arr.forEach((obj, index) => { //unveil more transactions of one specific date
+
+  arr.forEach((obj, index) => {
+    //unveil more transactions of one specific date
     if (obj.transactions.length > 1) {
-      obj.transactions.forEach(transaction => {
-        arr.push({date: obj.date, transactions: [transaction]});
-      })
+      obj.transactions.forEach((transaction) => {
+        arr.push({ date: obj.date, transactions: [transaction] });
+      });
       arr.splice(index, 1);
     }
   });
 
-  const SixTransactions = arr.sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 6);
-  
+  const SixTransactions = arr
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 6);
+
   return SixTransactions; //6 most recent transactions
 }
 
