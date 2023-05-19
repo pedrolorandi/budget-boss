@@ -70,6 +70,7 @@ export default function Budgets({
       month = 1;
       year++;
     }
+
     // Making an API call to retrieve data for the specified month and year
     axios.get("../api/budgets", { params: { month, year } }).then((res) => {
       // Updating the states with the fetched data
@@ -106,6 +107,20 @@ export default function Budgets({
       });
     });
   };
+
+  function handleOnClick() {
+    const userInputs = submit(
+      currentBudgetAmounts,
+      currentInputValues,
+      currentBudgets
+    );
+    setcurrentCreateEditStatus(false);
+    
+    axios.put('/api/addEditBudget', userInputs)
+    .then(res => console.log(res))
+    .catch(err => console.log(err.response));
+  }
+
   return (
     <div className="flex flex-col items-center content-center w-full">
       <div className="flex space-x-5 justify-center mb-5">
@@ -190,15 +205,7 @@ export default function Budgets({
           <button
             className="bg-turquoise text-white font-bold py-2 px-4 rounded"
             type="submit"
-            onClick={() => {
-              const test = submit(
-                currentBudgetAmounts,
-                currentInputValues,
-                currentBudgets
-              );
-              console.log(test);
-              setcurrentCreateEditStatus(false);
-            }}
+            onClick={handleOnClick}
           >
             Submit
           </button>

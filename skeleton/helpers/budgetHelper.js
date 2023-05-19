@@ -75,7 +75,7 @@ export function submit(budgetAmounts, inputValues, budgets) {
   for (let i = 0; i < budgetAmounts.length; i++) {
     if (budgets.length > 0) {
       submitData.push({
-        budgetCategoryId: budgetAmounts[i].budgetCategoryId,
+        id: budgetAmounts[i].budgetCategoryId,
         categoryId: budgetAmounts[i].categoryId,
       });
       submitData[i].amountDecimal = inputValues[i] * 100;
