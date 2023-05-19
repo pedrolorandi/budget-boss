@@ -67,8 +67,8 @@ export default function Transactions({
 
   return (
     <>
-      {!indexPage && !accountIndex &&
-      <div className="flex flex-row mb-2 space-x-2">
+      {!indexPage &&
+      <div className={accountIndex ? "flex flex-col mb-2 space-y-6" : "flex flex-row mb-2 space-x-2"}>
       {accounts.map((account) => {
           return (
             <AccountTile
@@ -79,12 +79,13 @@ export default function Transactions({
               getTransactionsAPI={getTransactionsAPI}
               currentMonth={currentMonth}
               currentYear={currentYear}
+              accountIndex={accountIndex}
             />
           );
         })}
       </div>}
 
-      {!indexPage && 
+      {!indexPage && !accountIndex && 
       <div className="flex bg-[#FFF] space-x-5 justify-center mb-2 p-5 rounded-lg">
         <button
           className="flex"
@@ -107,12 +108,13 @@ export default function Transactions({
         </button>
       </div>
       }
+      {!accountIndex &&
       <TransactionList
         transactions={currentTransactions}
         formattedDates={formattedDates}
         indexPage={indexPage}
         text={text}
-      />
+      />}
     </>
   );
 }
