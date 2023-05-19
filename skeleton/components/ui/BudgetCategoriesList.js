@@ -23,16 +23,20 @@ export default function BudgetCategoriesList(props) {
   });
 
   return (
-    <div className={`text-center text-3xl font-bold w-full mt-24, ${props.indexPage && 'bg-yellow-100'}`}>      
-      {!props.indexPage &&
-      <>
-        {" "}
-        Budgets
-        <div className="font-bold text-xl flex justify-end mr-5">
-          Current / Total
-        </div>
-      </>
-      }    
+    <div
+      className={`text-center text-3xl font-bold w-full mt-24, ${
+        props.indexPage && "bg-yellow-100"
+      }`}
+    >
+      {!props.indexPage && (
+        <>
+          {" "}
+          Budgets
+          <div className="font-bold text-xl flex justify-end mr-5">
+            Current / Total
+          </div>
+        </>
+      )}
       {progressCharts}
     </div>
   );

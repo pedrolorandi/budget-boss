@@ -15,7 +15,7 @@ import {
 
 //Import React and Axios
 import { useState, useEffect } from "react";
-import useHook from '../../hooks/useHook';
+import useHook from "../../hooks/useHook";
 import axios from "axios";
 //Import BudgetCategoriesList and BudgetPieChart components
 import BudgetCategoriesList from "@/components/ui/BudgetCategoriesList";
@@ -31,7 +31,7 @@ export default function Budgets({
   budgetPieChartColour,
   indexPage,
 }) {
-  const [currentCreateEditStatus, setcurrentCreateEditStatus] = useState(false);
+  const [currentCreateEditStatus, setCurrentCreateEditStatus] = useState(false);
   const [currentTransactionsByCategory, setCurrentTransactionsByCategory] =
     useState(transactionsByCategory);
   const [currentBudgets, setCurrentBudgets] = useState(budgets);
@@ -47,7 +47,7 @@ export default function Budgets({
       }
     })
   );
-  const {route} = useHook();
+  const { route } = useHook();
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
   const [currentBudgetPieData, setCurrentBudgetPieData] = useState({
@@ -115,31 +115,57 @@ export default function Budgets({
     const userInputs = submit(
       currentBudgetAmounts,
       currentInputValues,
-      currentBudgets,
+      currentBudgets
     );
-    setcurrentCreateEditStatus(false);
+    setCurrentCreateEditStatus(false);
     const date = new Date(currentYear, currentMonth - 1);
-    
-    axios.put('/api/addEditBudget', {date, userInputs})
-    .then((res) => {
-      console.log(res);
-      route.push('/');
-    })
-    .catch(err => console.log(err));
+
+    axios
+      .put("/api/addEditBudget", { date, userInputs })
+      .then((res) => {
+        console.log(res);
+        getBudgetsAPI(currentMonth, currentYear);
+      })
+      .catch((err) => console.log(err));
   }
 
   return (
     <div className="flex flex-col items-center content-center w-full">
-      {!indexPage && 
       <div className="flex space-x-5 justify-center mb-5">
         {!currentCreateEditStatus && currentBudgets.length > 0 && (
           <button
             className="bg-turquoise text-white font-bold py-2 px-4 rounded"
-            onClick={() => setcurrentCreateEditStatus(true)}
+            onClick={() => setCurrentCreateEditStatus(true)}
           >
             Edit
           </button>
         )}
+        {currentCreateEditStatus > 0 && (
+          <button
+            className="bg-turquoise text-white font-bold py-2 px-4 rounded"
+            onClick={() => setCurrentCreateEditStatus(false)}
+          >
+            Cancel
+          </button>
+        )}
+        {currentCreateEditStatus > 0 && (
+          <button
+            className="bg-turquoise text-white font-bold py-2 px-4 rounded"
+            onClick={() => handleOnClick()}
+          >
+            Submit
+          </button>
+        )}
+        {!indexPage &&
+          currentBudgets.length === 0 &&
+          !currentCreateEditStatus && (
+            <button
+              className="bg-turquoise text-white font-bold py-2 px-4 rounded"
+              onClick={() => setCurrentCreateEditStatus(true)}
+            >
+              Create Budget
+            </button>
+          )}
         {!currentCreateEditStatus && (
           <>
             <button
@@ -150,17 +176,20 @@ export default function Budgets({
             </button>
           </>
         )}
-
-        <h1 className="flex">
-          {getDateByMonthYear(currentMonth, currentYear)}
-        </h1>
-        <button
-          className="flex"
-          onClick={() => getBudgetsAPI(currentMonth + 1, currentYear)}
-        >
-          Next month
-        </button>
-      </div>}
+        {!currentCreateEditStatus && (
+          <>
+            <h1 className="flex">
+              {getDateByMonthYear(currentMonth, currentYear)}
+            </h1>
+            <button
+              className="flex"
+              onClick={() => getBudgetsAPI(currentMonth + 1, currentYear)}
+            >
+              Next month
+            </button>
+          </>
+        )}
+      </div>
 
       {!indexPage && currentBudgets.length > 0 && (
         <>
@@ -192,16 +221,22 @@ export default function Budgets({
         </>
       )}
       {!indexPage && currentBudgets.length === 0 && (
-        <span className="text-xl my-48">
-          A budget has not yet been created for{" "}
-          {getDateByMonthYear(currentMonth, currentYear)}. Please create a
-          budget.
-        </span>
+        <>
+          {" "}
+          <span className="text-xl my-48">
+            A budget has not yet been created for{" "}
+            {getDateByMonthYear(currentMonth, currentYear)}. Please create a
+            budget.
+          </span>
+        </>
       )}
 
       <BudgetCategoriesList
         budgetAmounts={currentBudgetAmounts}
         indexPage={indexPage}
+        inputValues={currentInputValues}
+        setter={setCurrentInputValues}
+        createEditStatus={currentCreateEditStatus}
       ></BudgetCategoriesList>
     </div>
   );
