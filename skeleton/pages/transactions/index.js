@@ -20,6 +20,8 @@ export default function Transactions({
   transactions,
   accounts,
   runningTotalbyAccount,
+  indexPage,
+  text
 }) {
   const [currentTransactions, setCurrentTransactions] = useState(transactions);
   const [currentMonth, setCurrentMonth] = useState(month);
@@ -64,8 +66,9 @@ export default function Transactions({
 
   return (
     <>
+      {!indexPage && 
       <div className="flex flex-row mb-2 space-x-2">
-        {accounts.map((account) => {
+      {accounts.map((account) => {
           return (
             <AccountTile
               key={account.id}
@@ -78,7 +81,8 @@ export default function Transactions({
             />
           );
         })}
-      </div>
+      </div>}
+      {!indexPage && 
       <div className="flex bg-[#FFF] space-x-5 justify-center mb-2 p-5 rounded-lg">
         <button
           className="flex"
@@ -100,9 +104,12 @@ export default function Transactions({
           <FontAwesomeIcon icon={faCircleRight} size="2xl" />
         </button>
       </div>
+      }
       <TransactionList
         transactions={currentTransactions}
         formattedDates={formattedDates}
+        indexPage={indexPage}
+        text={text}
       />
     </>
   );
