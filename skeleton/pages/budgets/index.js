@@ -195,9 +195,9 @@ export default function Budgets({
             budget.
           </span>
           {!currentCreateEditStatus && (
-            <button onClick={() => setcurrentCreateEditStatus(true)}>
-              Create Budget
-            </button>
+              <button onClick={() => setcurrentCreateEditStatus(true)}>
+                Create Budget
+              </button>
           )}
         </>
       )}
