@@ -31,7 +31,7 @@ export default function Home({ month, year, accounts, transactions, runningTotal
               categoriesPercentages={categoriesPercentages} percentagePerCategory={percentagePerCategory}
             />
         </div>
-        <div className="w-1/2 p-32" style={{padding: '10px', marginLeft: '70px'}} onClick={() => route.push('/transactions')}>
+        <div className="w-1/2 p-32" style={{padding: '20px', paddingTop: '40px', marginLeft: '60px'}} onClick={() => route.push('/transactions')}>
           <Transactions 
             accounts={accounts} runningTotalbyAccount={runningTotalbyAccount}
             accountIndex={accountIndex} transactions={transactions}
@@ -39,15 +39,15 @@ export default function Home({ month, year, accounts, transactions, runningTotal
         </div>
       </section>
     
-      <div className="flex" style={{marginTop: '50px', marginLeft: '30px'}}>
-        <div className="w-1/2 p-32" style={{padding: '10px'}} onClick={() => route.push('/transactions')}>
+      <div className="flex" style={{marginTop: '50px', marginLeft: '30px'}} onClick={() => route.push('/transactions')}>
+        <div className="w-1/2 p-32" style={{padding: '10px'}}>
           <Transactions 
             transactions={transactionsRecent} 
             indexPage={indexPage} 
             text="Recent Transactions"
           />
         </div>
-        <div className="w-1/2 p-32" style={{padding: '10px', marginLeft: '70px'}} onClick={() => route.push('/transactions')}>
+        <div className="w-1/2 p-32" style={{padding: '10px', marginLeft: '70px'}}>
           <Transactions 
             transactions={transactionsUpcoming} 
             indexPage={indexPage} text="Upcoming Transactions"
@@ -55,7 +55,7 @@ export default function Home({ month, year, accounts, transactions, runningTotal
         </div>
       </div>
 
-      <div className="flex" style={{marginTop: '50px', marginLeft: '30px'}}>
+      <div className="flex" style={{marginTop: '40px', marginLeft: '30px'}} onClick={() => route.push('/budgets')}>
         <div className="w-1/2 p-32" style={{padding: '10px'}}>
           <Budgets 
             month={month} year={year} 
