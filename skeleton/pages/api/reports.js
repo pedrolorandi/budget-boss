@@ -3,7 +3,11 @@ import {
   getCategoriesData,
   getRunningTotalData,
   getCategoryBarChartData,
+  getTransactionsGroupedByCategory,
+  getBudgets,
 } from "@/helpers/selectors";
+
+import { getBudgetAmounts } from "@/helpers/budgetHelper";
 
 // Defining an asynchronous function called 'handler' with 'req' and 'res' as parameters
 export default async function handler(req, res) {
@@ -28,11 +32,17 @@ export default async function handler(req, res) {
     reqMonth,
     reqYear
   );
-
+  // Calling the 'getCategoryBarChartData' function with the provided parameters and storing the returned data in variables
   const { sums, categoryNameList } = await getCategoryBarChartData(
     userId,
     reqMonth,
     reqYear
+  );
+
+  // Calling the 'getBudgetAmounts' function with the provided parameters and storing the returned data
+  const budgetAmounts = await getBudgetAmounts(
+    await getTransactionsGroupedByCategory(userId, reqMonth, reqYear),
+    await getBudgets(userId, reqMonth, reqYear)
   );
 
   // Sending the response as a JSON string containing the retrieved data
@@ -49,6 +59,7 @@ export default async function handler(req, res) {
       runningTotal,
       sums,
       categoryNameList,
+      budgetAmounts,
     })
   );
 }

@@ -11,7 +11,11 @@ import {
   getPieChartColors,
   getRunningTotalData,
   getCategoryBarChartData,
+  getTransactionsGroupedByCategory,
+  getBudgets,
 } from "../helpers/selectors";
+
+import { getBudgetAmounts } from "@/helpers/budgetHelper";
 import axios from "axios";
 import { useState } from "react";
 
@@ -27,6 +31,7 @@ export default function Reports({
   runningTotal,
   sums,
   categoryNameList,
+  budgetAmounts,
 }) {
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
@@ -71,9 +76,15 @@ export default function Reports({
     datasets: [
       {
         type: "bar",
-        label: "Categories",
-        backgroundColor: getPieChartColors(),
+        label: "Current Transactions",
+        backgroundColor: "rgb(80, 185, 155)",
         data: sums,
+      },
+      {
+        type: "bar",
+        label: "Total Budget",
+        backgroundColor: "rgb(220, 36, 75)",
+        data: budgetAmounts.map((e) => e.totalBudget),
       },
     ],
   });
@@ -117,6 +128,7 @@ export default function Reports({
       },
     },
   };
+
 
   // Function to fetch transactions data from the API
   const getTransactionsAPI = (month, year) => {
@@ -169,6 +181,10 @@ export default function Reports({
           {
             ...currentCategoryBarData.datasets[0],
             data: res.data.sums,
+          },
+          {
+            ...currentCategoryBarData.datasets[1],
+            data: res.data.budgetAmounts.map((e) => e.totalBudget),
           },
         ],
       });
@@ -271,6 +287,11 @@ export async function getServerSideProps() {
     currentYear
   );
 
+  const budgetAmounts = await getBudgetAmounts(
+    await getTransactionsGroupedByCategory(1, currentMonth, currentYear),
+    await getBudgets(1, currentMonth, currentYear)
+  );
+
   return {
     props: {
       month,
@@ -284,6 +305,7 @@ export async function getServerSideProps() {
       runningTotal,
       sums,
       categoryNameList,
+      budgetAmounts,
     },
   };
 }

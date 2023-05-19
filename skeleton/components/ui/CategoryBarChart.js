@@ -4,6 +4,7 @@ import { Chart as ChartJS } from "chart.js/auto";
 
 export default function CategoryBarChart({ chartData, options }) {
   return (
+fix/css-transactions-reports
     <div className="flex flex-row rounded-2xl items-center p-5 space-x-10 mt-2 bg-[#E7F3FE]">
       <Chart data={chartData} options={options} />
     </div>
