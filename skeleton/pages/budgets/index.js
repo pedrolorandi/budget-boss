@@ -112,11 +112,12 @@ export default function Budgets({
     const userInputs = submit(
       currentBudgetAmounts,
       currentInputValues,
-      currentBudgets
+      currentBudgets,
     );
     setcurrentCreateEditStatus(false);
+    const date = new Date(currentYear, currentMonth - 1);
     
-    axios.put('/api/addEditBudget', userInputs)
+    axios.put('/api/addEditBudget', {date, userInputs})
     .then(res => console.log(res))
     .catch(err => console.log(err.response));
   }

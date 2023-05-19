@@ -1,12 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 
 export default async function handler (req, res) {
-  const userInputs = req.body;
+  const {date, userInputs} = req.body;
   const prisma = new PrismaClient();
 
   const newBudget = await prisma.budget.create({ data: {
-    "date": new Date().toISOString(),
-    "userId": 1
+    date: date,
+    userId: 1
     }
   });
 
