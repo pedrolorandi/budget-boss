@@ -1,5 +1,9 @@
 import TransactionList from "@/components/ui/TransactionsList";
-import { faCircleLeft, faCircleRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleLeft,
+  faCirclePlus,
+  faCircleRight,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
@@ -13,6 +17,7 @@ import { PrismaClient } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { formatDate } from "@/helpers/formatters";
 import AccountTile from "@/components/ui/AccountTile";
+import Link from "next/link";
 
 export default function Transactions({
   month,
@@ -67,9 +72,56 @@ export default function Transactions({
 
   return (
     <>
+      {!indexPage && !accountIndex &&
+      <>
+        <div className="flex flex-row rounded-2xl p-6 h-[6.5rem] bg-base-white justify-between">
+          <h1 className="self-center">Transactions</h1>
+          <div className="flex flex-row self-center">
+            <Link href="/transactions/add">
+              <button
+                className={`rounded-lg bg-selected w-52 ms-2 p-3 font-bold text-white text-center hover:bg-buttonHover`}
+                type="submit"
+              >
+                <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
+                {` new transaction`}
+              </button>
+            </Link>
+          </div>
+        </div>
+        <div className="flex rounded-2xl mt-2 p-5 space-x-5 bg-base-white justify-center">
+          <button
+            className="flex"
+            onClick={() =>
+              getTransactionsAPI(currentMonth - 1, currentYear, currentAccount)
+            }
+          >
+            <FontAwesomeIcon
+              icon={faCircleLeft}
+              size="2xl"
+              className="hover:text-linkHover"
+            />
+          </button>
+          <h1 className="flex w-60 justify-center">
+            {getDateByMonthYear(currentMonth, currentYear)}
+          </h1>
+          <button
+            className="flex"
+            onClick={() =>
+              getTransactionsAPI(currentMonth + 1, currentYear, currentAccount)
+            }
+          >
+            <FontAwesomeIcon
+              icon={faCircleRight}
+              size="2xl"
+              className="hover:text-linkHover"
+            />
+          </button>
+        </div>
+      </>
+      }
       {!indexPage &&
       <div className={accountIndex ? "flex flex-col mb-2 space-y-6" : "flex flex-row mb-2 space-x-2"}>
-      {accounts.map((account) => {
+        {accounts.map((account) => {
           return (
             <AccountTile
               key={account.id}
@@ -83,38 +135,16 @@ export default function Transactions({
             />
           );
         })}
-      </div>}
-
-      {!indexPage && !accountIndex && 
-      <div className="flex bg-[#FFF] space-x-5 justify-center mb-2 p-5 rounded-lg">
-        <button
-          className="flex"
-          onClick={() =>
-            getTransactionsAPI(currentMonth - 1, currentYear, currentAccount)
-          }
-        >
-          <FontAwesomeIcon icon={faCircleLeft} size="2xl" />
-        </button>
-        <h1 className="flex w-60 justify-center">
-          {getDateByMonthYear(currentMonth, currentYear)}
-        </h1>
-        <button
-          className="flex"
-          onClick={() =>
-            getTransactionsAPI(currentMonth + 1, currentYear, currentAccount)
-          }
-        >
-          <FontAwesomeIcon icon={faCircleRight} size="2xl" />
-        </button>
       </div>
       }
-      {!accountIndex &&
-      <TransactionList
-        transactions={currentTransactions}
-        formattedDates={formattedDates}
-        indexPage={indexPage}
-        text={text}
-      />}
+      {!accountIndex && 
+        <TransactionList
+          transactions={currentTransactions}
+          formattedDates={formattedDates}
+          indexPage={indexPage}
+          text={text}
+        />
+      }
     </>
   );
 }

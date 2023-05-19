@@ -87,7 +87,7 @@ export default function Form({
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <div className="flex flex-row rounded-lg p-6 bg-[#FFF] justify-between">
+        <div className="flex flex-row rounded-2xl p-6 bg-[#FFF] justify-between">
           <h1 className="self-center">
             {formType === "add" ? (
               "New transaction"
@@ -99,14 +99,16 @@ export default function Form({
           </h1>
           <div className="flex flex-row self-center">
             <Link
-              className="rounded-lg w-36 p-3 bg-[#CED4DA] font-bold text-center"
+              className="rounded-lg w-36 p-3 bg-cancel font-bold text-center hover:bg-cancelHover"
               href="/transactions"
             >
               Cancel
             </Link>
             <button
               className={`rounded-lg w-36 p-3 font-bold text-white text-center ms-2 ${
-                formType === "delete" ? "bg-[#D62828]" : "bg-[#62929E]"
+                formType === "delete"
+                  ? "bg-delete hover:bg-deleteHover"
+                  : "bg-selected hover:bg-buttonHover"
               } `}
               type="submit"
             >
@@ -127,7 +129,9 @@ export default function Form({
           />
           <label
             htmlFor="income"
-            className="flex flex-1 cursor-pointer bg-unselected rounded-lg p-10 text-2xl font-bold peer-checked/income:bg-[#50B99B] peer-disabled/income:cursor-default peer-disabled/income:text-[#888]"
+            className={`flex flex-1 cursor-pointer bg-unselected rounded-2xl p-10 text-2xl font-bold ${
+              formType !== "delete" && "peer-hover/income:bg-incomeHover"
+            } peer-checked/income:bg-income peer-checked/income:text-white peer-disabled/income:cursor-default peer-disabled/income:text-[#888]`}
           >
             Income
           </label>
@@ -143,7 +147,9 @@ export default function Form({
           />
           <label
             htmlFor="expense"
-            className="flex flex-1 cursor-pointer bg-unselected rounded-lg p-10 text-2xl font-bold peer-checked/expense:bg-[#DC244B] peer-disabled/expense:cursor-default  peer-disabled/expense:text-[#888] ms-2"
+            className={`flex flex-1 cursor-pointer bg-unselected rounded-2xl p-10 text-2xl font-bold ${
+              formType !== "delete" && "peer-hover/expense:bg-expenseHover"
+            } peer-checked/expense:bg-expense peer-checked/expense:text-white peer-disabled/expense:cursor-default  peer-disabled/expense:text-[#888] ms-2`}
           >
             Expense
           </label>
@@ -151,7 +157,7 @@ export default function Form({
         <div className="flex flex-1 mt-2">
           <input
             type="text"
-            className="flex flex-1 py-8 px-10 text-xl rounded-lg border-2 border-[#CED4DA] disabled:text-[#aaa]"
+            className="flex flex-1 py-8 px-10 text-xl rounded-2xl border-2 border-[#CED4DA] disabled:text-[#aaa]"
             placeholder="Title (e.g. Coffee with friends)"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -161,7 +167,7 @@ export default function Form({
         <div className="flex flex-1 mt-2">
           <input
             type="text"
-            className="flex flex-1 py-8 px-10 text-xl rounded-lg border-2 border-[#CED4DA] disabled:text-[#aaa]"
+            className="flex flex-1 py-8 px-10 text-xl rounded-2xl border-2 border-[#CED4DA] disabled:text-[#aaa]"
             placeholder="Source (e.g. Starbucks)"
             value={source}
             onChange={(e) => setSource(e.target.value)}
@@ -184,7 +190,9 @@ export default function Form({
                 />
                 <label
                   htmlFor={currAccount.name.toLowerCase().replaceAll(" ", "_")}
-                  className={`flex flex-1 cursor-pointer bg-unselected rounded-lg p-10 text-2xl font-bold peer-checked:bg-[#62929E] peer-checked:text-white peer-disabled:cursor-default peer-disabled:text-[#aaa] ${
+                  className={`flex flex-1 cursor-pointer bg-unselected rounded-2xl p-10 text-2xl font-bold ${
+                    formType !== "delete" && "peer-hover:bg-buttonHover"
+                  } peer-checked:bg-selected peer-checked:text-white peer-disabled:cursor-default peer-disabled:text-[#aaa] ${
                     i === 0 ? "ms-0" : "ms-2"
                   }`}
                 >
@@ -198,7 +206,7 @@ export default function Form({
           <div className="flex flex-1">
             <input
               type="date"
-              className="flex flex-1 py-8 px-10 text-xl rounded-lg border-2 border-[#CED4DA] cursor-pointer disabled:cursor-default disabled:text-[#aaa]"
+              className="flex flex-1 py-8 px-10 text-xl rounded-2xl border-2 border-[#CED4DA] cursor-pointer disabled:cursor-default disabled:text-[#aaa]"
               value={date}
               onChange={(e) => setDate(e.target.value)}
               disabled={formType === "delete"}
@@ -211,7 +219,7 @@ export default function Form({
           </div>
           <div className="flex flex-1">
             <select
-              className="flex flex-1 py-8 px-10 text-xl rounded-lg border-2 border-[#CED4DA] cursor-pointer ms-2 disabled:bg-[#F0F0F0] disabled:border-[#C7CBCF] disabled:cursor-default disabled:text-[#888]"
+              className="flex flex-1 py-8 px-10 text-xl rounded-2xl border-2 border-[#CED4DA] cursor-pointer ms-2 disabled:bg-[#CED4DA] disabled:border-[#C7CBCF] disabled:cursor-default disabled:text-[#888]"
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
               disabled={formType === "delete"}
@@ -238,7 +246,7 @@ export default function Form({
             </span>
             <input
               type="text"
-              className="flex flex-1 py-8 px-10 text-xl rounded-lg border-2 border-[#CED4DA] ms-2 text-end disabled:text-[#aaa]"
+              className="flex flex-1 py-8 px-10 text-xl rounded-2xl border-2 border-[#CED4DA] ms-2 text-end disabled:text-[#aaa]"
               placeholder="0.00"
               value={amountDecimal}
               onChange={(e) => setAmountDecimal(e.target.value)}
