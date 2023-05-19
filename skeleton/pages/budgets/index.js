@@ -31,6 +31,7 @@ export default function Budgets({
   budgetSum,
   budgetAmounts,
   budgetPieChartColour,
+  indexPage,
 }) {
   const [currentTransactionsByCategory, setCurrentTransactionsByCategory] =
     useState(transactionsByCategory);
@@ -96,6 +97,7 @@ export default function Budgets({
 
   return (
     <div className="flex flex-col items-center content-center w-full">
+      {!indexPage && 
       <div className="flex space-x-5 justify-center mb-5">
         <button
           className="flex"
@@ -112,8 +114,9 @@ export default function Budgets({
         >
           Next month
         </button>
-      </div>
-      {currentBudgets.length > 0 && (
+      </div>}
+
+      {!indexPage && currentBudgets.length > 0 && (
         <>
           <div className="text-center text-3xl font-bold">Total Budgets</div>
           <BudgetPieChart
@@ -142,15 +145,18 @@ export default function Budgets({
           </table>
         </>
       )}
-      {currentBudgets.length === 0 && (
+
+      {!indexPage && currentBudgets.length === 0 && (
         <span className="text-xl my-48">
           A budget has not yet been created for{" "}
           {getDateByMonthYear(currentMonth, currentYear)}. Please create a
           budget.
         </span>
       )}
+
       <BudgetCategoriesList
         budgetAmounts={currentBudgetAmounts}
+        indexPage={indexPage}
       ></BudgetCategoriesList>
     </div>
   );
