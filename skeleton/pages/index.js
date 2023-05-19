@@ -55,7 +55,7 @@ export default function Home({ month, year, accounts, transactions, runningTotal
         </div>
       </div>
 
-      <div className="flex" style={{marginTop: '40px', marginLeft: '30px'}} onClick={() => route.push('/budgets')}>
+      <div className="flex" style={{marginTop: '60px', marginLeft: '30px'}} onClick={() => route.push('/budgets')}>
         <div className="w-1/2 p-32" style={{padding: '10px'}}>
           <Budgets 
             month={month} year={year} 
