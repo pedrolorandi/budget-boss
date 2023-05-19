@@ -1,21 +1,47 @@
 import { Inter } from "next/font/google";
 import { PrismaClient } from "@prisma/client";
-import useHook from '../hooks/useHook';
+import useHook from "../hooks/useHook";
+import { useState } from "react";
 
-import { 
-  getTransactionsGroupedByDate, getSixTransactions, getRunnigTotalByAccount,
-  getTransactionsGroupedByCategory, getBudgets, getCategoriesData
-} from '../helpers/selectors';
+import {
+  getTransactionsGroupedByDate,
+  getSixTransactions,
+  getRunnigTotalByAccount,
+  getTransactionsGroupedByCategory,
+  getBudgets,
+  getCategoriesData,
+} from "../helpers/selectors";
 import { getBudgetAmounts, getBudgetSum } from "../helpers/budgetHelper";
-import Transactions from '../pages/transactions/index';
-import Reports from '../pages/reports';
-import Budgets from '../pages/budgets/index';
+import Transactions from "../pages/transactions/index";
+import Reports from "../pages/reports";
+import Budgets from "../pages/budgets/index";
+import BudgetCategoriesList from "@/components/ui/BudgetCategoriesList";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Home({ month, year, accounts, transactions, runningTotalbyAccount, budgetSum, budgets, budgetAmounts, firstSixBudgets, nextFiveBudgets, lastFiveBudgets, categories, categoriesPercentages, percentagePerCategory, indexPage, accountIndex, transactionsRecent, transactionsUpcoming}) {
-  const {route} = useHook();
-  
+export default function Home({
+  month,
+  year,
+  accounts,
+  transactions,
+  runningTotalbyAccount,
+  budgetSum,
+  budgets,
+  budgetAmounts,
+  firstSixBudgets,
+  nextFiveBudgets,
+  lastFiveBudgets,
+  categories,
+  categoriesPercentages,
+  percentagePerCategory,
+  indexPage,
+  accountIndex,
+  transactionsRecent,
+  transactionsUpcoming,
+  inputValues,
+}) {
+  const { route } = useHook();
+
   return (
     <div className="bg-[#FFF] flex flex-col flex-1 rounded-lg p-5">
       <div className="flex flex-row items-center">
@@ -23,62 +49,114 @@ export default function Home({ month, year, accounts, transactions, runningTotal
         <h1 className="text-4xl ms-5">Hi, Jane!</h1>
       </div>
 
-      <section className="flex" style={{marginTop: '30px', marginLeft: '30px'}}>
-        <div className="w-1/2 p-32" style={{padding: '10px'}} onClick={() => route.push('/reports')}> 
-          <Reports 
-              month={month} year={year} indexPage={indexPage} 
-              budgetAmounts={budgetAmounts} categories={categories} 
-              categoriesPercentages={categoriesPercentages} percentagePerCategory={percentagePerCategory}
-            />
+      <section
+        className="flex"
+        style={{ marginTop: "30px", marginLeft: "30px" }}
+      >
+        <div
+          className="w-1/2 p-32"
+          style={{ padding: "10px" }}
+          onClick={() => route.push("/reports")}
+        >
+          <Reports
+            month={month}
+            year={year}
+            indexPage={indexPage}
+            budgetAmounts={budgetAmounts}
+            categories={categories}
+            categoriesPercentages={categoriesPercentages}
+            percentagePerCategory={percentagePerCategory}
+          />
         </div>
-        <div className="w-1/2 p-32" style={{padding: '20px', paddingTop: '40px', marginLeft: '60px'}} onClick={() => route.push('/transactions')}>
-          <Transactions 
-            accounts={accounts} runningTotalbyAccount={runningTotalbyAccount}
-            accountIndex={accountIndex} transactions={transactions}
+        <div
+          className="w-1/2 p-32"
+          style={{ padding: "20px", paddingTop: "40px", marginLeft: "60px" }}
+          onClick={() => route.push("/transactions")}
+        >
+          <Transactions
+            accounts={accounts}
+            runningTotalbyAccount={runningTotalbyAccount}
+            accountIndex={accountIndex}
+            transactions={transactions}
           />
         </div>
       </section>
-    
-      <div className="flex" style={{marginTop: '50px', marginLeft: '30px'}} onClick={() => route.push('/transactions')}>
-        <div className="w-1/2 p-32" style={{padding: '10px'}}>
-          <Transactions 
-            transactions={transactionsRecent} 
-            indexPage={indexPage} 
+
+      <div
+        className="flex"
+        style={{ marginTop: "50px", marginLeft: "30px" }}
+        onClick={() => route.push("/transactions")}
+      >
+        <div className="w-1/2 p-32" style={{ padding: "10px" }}>
+          <Transactions
+            transactions={transactionsRecent}
+            indexPage={indexPage}
             text="Recent Transactions"
           />
         </div>
-        <div className="w-1/2 p-32" style={{padding: '10px', marginLeft: '70px'}}>
-          <Transactions 
-            transactions={transactionsUpcoming} 
-            indexPage={indexPage} text="Upcoming Transactions"
+        <div
+          className="w-1/2 p-32"
+          style={{ padding: "10px", marginLeft: "70px" }}
+        >
+          <Transactions
+            transactions={transactionsUpcoming}
+            indexPage={indexPage}
+            text="Upcoming Transactions"
           />
         </div>
       </div>
 
-      <div className="flex" style={{marginTop: '60px', marginLeft: '30px'}} onClick={() => route.push('/budgets')}>
-        <div className="w-1/2 p-32" style={{padding: '10px'}}>
-          <Budgets 
-            month={month} year={year} 
-            indexPage={indexPage} budgetSum={budgetSum}
-            budgets={budgets} budgetAmounts={firstSixBudgets}
+      <div
+        className="flex"
+        style={{ marginTop: "60px", marginLeft: "30px" }}
+        onClick={() => route.push("/budgets")}
+      >
+        <div
+          className="w-1/2 p-32 rounded-2xl p-2 bg-yellow-100"
+          style={{ padding: "10px" }}
+        >
+          <div className="text-left ml-4 mt-2">
+            <h1 className="self-center">Budget List</h1>
+          </div>
+          <BudgetCategoriesList
+            indexPage={indexPage}
+            budgetSum={budgetSum}
+            budgets={budgets}
+            inputValues={inputValues}
+            budgetAmounts={firstSixBudgets}
           />
         </div>
-        <div className="w-1/2 p-32" style={{padding: '10px', marginLeft: '70px'}} >
-          <Budgets 
-            month={month} year={year} 
-            indexPage={indexPage} budgetSum={budgetSum}
-            budgets={budgets} budgetAmounts={nextFiveBudgets}
+        <div
+          className="w-1/2 p-32 rounded-2xl p-2 bg-yellow-100"
+          style={{ padding: "10px", marginLeft: "70px" }}
+        >
+          <div className="text-left ml-4 mt-2">
+            <h1 className="self-center">Budget List</h1>
+          </div>
+          <BudgetCategoriesList
+            indexPage={indexPage}
+            budgetSum={budgetSum}
+            budgets={budgets}
+            inputValues={inputValues}
+            budgetAmounts={nextFiveBudgets}
           />
         </div>
-        <div className="w-1/2 p-32" style={{padding: '10px', marginLeft: '70px'}} >
-          <Budgets 
-            month={month} year={year} 
-            indexPage={indexPage} budgetSum={budgetSum}
-            budgets={budgets} budgetAmounts={lastFiveBudgets}
+        <div
+          className="w-1/2 p-32 rounded-2xl p-2 bg-yellow-100"
+          style={{ padding: "10px", marginLeft: "70px" }}
+        >
+          <div className="text-left ml-4 mt-2">
+            <h1 className="self-center">Budget List</h1>
+          </div>
+          <BudgetCategoriesList
+            indexPage={indexPage}
+            budgetSum={budgetSum}
+            budgets={budgets}
+            inputValues={inputValues}
+            budgetAmounts={lastFiveBudgets}
           />
         </div>
       </div>
-
     </div>
   );
 }
@@ -95,14 +173,18 @@ export async function getServerSideProps() {
     percentagePerCategory,
   } = await getCategoriesData(1, currentMonth, currentYear);
 
-
-  const today = new Date().toLocaleDateString().slice(0,10);
-  const transactionList = await getTransactionsGroupedByDate(1, currentMonth, currentYear, undefined);
+  const today = new Date().toLocaleDateString().slice(0, 10);
+  const transactionList = await getTransactionsGroupedByDate(
+    1,
+    currentMonth,
+    currentYear,
+    undefined
+  );
 
   const SixTransactions = getSixTransactions(today, transactionList);
-  const transactionsRecent = SixTransactions.slice(0,3);
-  const transactionsUpcoming = SixTransactions.splice(3,3);
-  
+  const transactionsRecent = SixTransactions.slice(0, 3);
+  const transactionsUpcoming = SixTransactions.splice(3, 3);
+
   const indexPage = true;
   const accountIndex = true;
 
@@ -123,6 +205,14 @@ export async function getServerSideProps() {
     await getTransactionsGroupedByCategory(1, currentMonth, currentYear),
     await getBudgets(1, currentMonth, currentYear)
   );
+
+  const inputValues = budgetAmounts.map((element) => {
+    if (element.totalBudget) {
+      return element.totalBudget;
+    } else {
+      return "";
+    }
+  });
   const copiedBudgetAmounts = JSON.parse(JSON.stringify(budgetAmounts));
   const firstSixBudgets = copiedBudgetAmounts.slice(0, 6);
   const nextFiveBudgets = copiedBudgetAmounts.splice(6, 5);
@@ -134,9 +224,9 @@ export async function getServerSideProps() {
     currentYear
   );
   const budgetSum = await getBudgetSum(transactionsByCategory, budgets);
-  
+
   return {
-    props: {      
+    props: {
       month,
       year,
       categories,
@@ -155,7 +245,7 @@ export async function getServerSideProps() {
       lastFiveBudgets,
       budgetSum,
       accounts,
+      inputValues,
     },
   };
 }
-
