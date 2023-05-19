@@ -14,8 +14,7 @@ export default async function handler (req, res) {
     userInputs.forEach(obj => {
       obj['budgetId'] = newBudget.id;
     })
-    console.log('userInputs', userInputs);
-
+    
     for (const userInput of userInputs) {
       await prisma.budgetCategory.create({
       data: userInput,
