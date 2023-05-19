@@ -5,11 +5,12 @@ import { useState } from "react";
 
 import {
   getTransactionsGroupedByDate,
-  getSixTransactions,
+  getThreeTransactions,
   getRunnigTotalByAccount,
   getTransactionsGroupedByCategory,
   getBudgets,
   getCategoriesData,
+  getRecentAndUpcomingTransactions,
 } from "../helpers/selectors";
 import { getBudgetAmounts, getBudgetSum } from "../helpers/budgetHelper";
 import Transactions from "../pages/transactions/index";
@@ -164,6 +165,7 @@ export default function Home({
 export async function getServerSideProps() {
   const prisma = new PrismaClient();
   const currentMonth = new Date().getMonth() + 1;
+  const nextMonth = new Date().getMonth() + 2;
   const currentYear = new Date().getFullYear();
   const {
     month,
@@ -174,16 +176,26 @@ export async function getServerSideProps() {
   } = await getCategoriesData(1, currentMonth, currentYear);
 
   const today = new Date().toLocaleDateString().slice(0, 10);
-  const transactionList = await getTransactionsGroupedByDate(
+  const currentTransactionList = await getTransactionsGroupedByDate(
     1,
     currentMonth,
     currentYear,
     undefined
   );
-
-  const SixTransactions = getSixTransactions(today, transactionList);
-  const transactionsRecent = SixTransactions.slice(0, 3);
-  const transactionsUpcoming = SixTransactions.splice(3, 3);
+  const NextMonthTransactionList = await getTransactionsGroupedByDate(
+    1,
+    nextMonth,
+    currentYear,
+    undefined
+  );
+  Array.prototype.unshift.apply(currentTransactionList, NextMonthTransactionList);
+  const recentTransactionList = currentTransactionList //a transaction list of both current and next months
+  const upcomingTransactionList = JSON.parse(JSON.stringify(recentTransactionList))
+  .sort((a, b) => new Date(a.date) - new Date(b.date));
+  
+  const arrObj = getRecentAndUpcomingTransactions(today, recentTransactionList, upcomingTransactionList);
+  const transactionsRecent = getThreeTransactions(arrObj.arrRecent);
+  const transactionsUpcoming = getThreeTransactions(arrObj.arrUpcoming, true);
 
   const indexPage = true;
   const accountIndex = true;
