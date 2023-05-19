@@ -123,7 +123,6 @@ export default function Budgets({
     axios
       .put("/api/addEditBudget", { date, userInputs })
       .then((res) => {
-        console.log(res);
         getBudgetsAPI(currentMonth, currentYear);
       })
       .catch((err) => console.log(err));
