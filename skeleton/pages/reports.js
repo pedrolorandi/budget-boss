@@ -32,6 +32,7 @@ export default function Reports({
   sums,
   categoryNameList,
   budgetAmounts,
+  indexPage,
 }) {
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
@@ -152,6 +153,7 @@ export default function Reports({
 
   return (
     <>
+      {!indexPage &&
       <div className="flex bg-[#FFF] space-x-5 justify-center mb-2 p-5 rounded-lg">
         <button
           className="flex"
@@ -169,6 +171,9 @@ export default function Reports({
           <FontAwesomeIcon icon={faCircleRight} size="2xl" />
         </button>
       </div>
+      }
+
+      {!indexPage &&
       <div className="flex flex-row items-center bg-[#F2F7FC] p-5 rounded-lg space-x-10">
         <ul className="flex flex-col w-1/3">
           {categories.slice(0, 8).map((category) => {
@@ -202,10 +207,15 @@ export default function Reports({
         </ul>
         <PieChart chartData={currentCategories} />
       </div>
+        }
+
       <Chart chartData={currentRunningTotal} />
+
+      {!indexPage &&
       <div>
         <CategoryBarChart chartData={currentCategoryBarData}></CategoryBarChart>
       </div>
+      }      
     </>
   );
 }

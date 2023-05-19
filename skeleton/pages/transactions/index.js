@@ -21,7 +21,8 @@ export default function Transactions({
   accounts,
   runningTotalbyAccount,
   indexPage,
-  text
+  text,
+  accountIndex
 }) {
   const [currentTransactions, setCurrentTransactions] = useState(transactions);
   const [currentMonth, setCurrentMonth] = useState(month);
@@ -66,7 +67,7 @@ export default function Transactions({
 
   return (
     <>
-      {!indexPage && 
+      {!indexPage && !accountIndex &&
       <div className="flex flex-row mb-2 space-x-2">
       {accounts.map((account) => {
           return (
@@ -82,6 +83,7 @@ export default function Transactions({
           );
         })}
       </div>}
+
       {!indexPage && 
       <div className="flex bg-[#FFF] space-x-5 justify-center mb-2 p-5 rounded-lg">
         <button
