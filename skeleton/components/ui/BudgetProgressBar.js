@@ -9,7 +9,7 @@ export default function BarChart(props) {
   } else if (props.width >= 75 && props.isValid) {
     classNames.push("bg-red");
   } else {
-    classNames.push("bg-gray-400");
+    classNames.push("bg-gray-500");
   }
   return (
     <div className="m-5 text-lg">
@@ -32,7 +32,7 @@ export default function BarChart(props) {
         </span>
       </div>
 
-      <div className="w-full bg-gray-200 rounded-full">
+      <div className="w-full bg-gray-300 rounded-full">
         <div
           className={`${classNames.join(
             " "

@@ -30,8 +30,6 @@ export default function BudgetCategoriesList(props) {
     >
       {!props.indexPage && (
         <>
-          {" "}
-          Budgets
           <div className="font-bold text-xl flex justify-end mr-5">
             Current / Total
           </div>
