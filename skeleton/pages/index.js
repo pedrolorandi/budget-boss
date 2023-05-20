@@ -15,7 +15,9 @@ import {
   getDateByMonthYear,
 } from "../helpers/selectors";
 import { getBudgetAmounts, getBudgetSum } from "../helpers/budgetHelper";
+import { formatDate } from "../helpers/formatters";
 import Transactions from "../pages/transactions/index";
+import TransactionsList from "../components/ui/TransactionsList";
 import Chart from "../components/ui/RunningTotalChart";
 import BudgetCategoriesList from "@/components/ui/BudgetCategoriesList";
 
@@ -29,6 +31,7 @@ export default function Home({
   runningTotalbyAccount,
   budgetSum,
   budgets,
+  formattedDates,
   firstSixBudgets,
   nextFiveBudgets,
   lastFiveBudgets,
@@ -96,8 +99,9 @@ export default function Home({
         onClick={() => route.push("/transactions")}
       >
         <div className="w-1/2 p-32" style={{ padding: "10px" }}>
-          <Transactions
+          <TransactionsList
             transactions={transactionsRecent}
+            formattedDates={formattedDates}
             indexPage={indexPage}
             text="Recent Transactions"
           />
@@ -106,8 +110,9 @@ export default function Home({
           className="w-1/2 p-32"
           style={{ padding: "10px", marginLeft: "70px" }}
         >
-          <Transactions
+          <TransactionsList
             transactions={transactionsUpcoming}
+            formattedDates={formattedDates}
             indexPage={indexPage}
             text="Upcoming Transactions"
           />
@@ -194,6 +199,7 @@ export async function getServerSideProps() {
   );
   Array.prototype.unshift.apply(currentTransactionList, NextMonthTransactionList);
   const recentTransactionList = currentTransactionList //a transaction list of both current and next months
+  const formattedDates = formatDate(recentTransactionList);
   const upcomingTransactionList = JSON.parse(JSON.stringify(recentTransactionList))
   .sort((a, b) => new Date(a.date) - new Date(b.date));
   
@@ -251,6 +257,7 @@ export async function getServerSideProps() {
       transactions,
       transactionsRecent: transactionsRecent,
       transactionsUpcoming: transactionsUpcoming,
+      formattedDates,
       indexPage: indexPage,
       accountIndex,
       budgets,

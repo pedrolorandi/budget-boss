@@ -72,7 +72,7 @@ export default function Transactions({
 
   return (
     <>
-      {!indexPage && !accountIndex &&
+      {!accountIndex &&
       <>
         <div className="flex flex-row rounded-2xl p-6 h-[6.5rem] bg-base-white justify-between">
           <h1 className="self-center">Transactions</h1>
@@ -119,7 +119,6 @@ export default function Transactions({
         </div>
       </>
       }
-      {!indexPage &&
       <div className={accountIndex ? "flex flex-col mb-2 space-y-6" : "flex flex-row mb-2 space-x-2"}>
         {accounts.map((account) => {
           return (
@@ -136,7 +135,7 @@ export default function Transactions({
           );
         })}
       </div>
-      }
+      
       {!accountIndex && 
         <TransactionList
           transactions={currentTransactions}
