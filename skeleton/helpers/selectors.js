@@ -439,3 +439,42 @@ export function getLinks() {
     { label: "Reports", path: "/reports" },
   ];
 }
+
+export async function getCurrentRunningTotal(currentMonth, currentYear){
+  const { dates, incomes, expenses, runningTotal } = await getRunningTotalData(
+    1,
+    currentMonth,
+    currentYear
+  );
+
+  let dateMonth = []
+  dates.forEach(date => {
+    dateMonth.push(date.slice(5, 10));
+  });
+
+  return {
+    labels: dateMonth,
+    datasets: [
+      {
+        type: "line",
+        label: "Running Total",
+        borderColor: "rgb(222, 226, 230)",
+        backgroundColor: "rgba(173, 181, 189, 0.4)",
+        fill: true,
+        data: runningTotal,
+      },
+      {
+        type: "bar",
+        label: "Incomes",
+        backgroundColor: "rgb(80, 185, 155)",
+        data: incomes,
+      },
+      {
+        type: "bar",
+        label: "Expenses",
+        backgroundColor: "rgb(220, 36, 75)",
+        data: expenses,
+      },
+    ],
+  };
+}

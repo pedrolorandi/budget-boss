@@ -7,7 +7,7 @@ import {
   getTransactionsGroupedByDate,
   getThreeTransactions,
   getRunnigTotalByAccount,
-  getRunningTotalData,
+  getCurrentRunningTotal,
   getTransactionsGroupedByCategory,
   getBudgets,
   getCategoriesData,
@@ -16,7 +16,6 @@ import {
 } from "../helpers/selectors";
 import { getBudgetAmounts, getBudgetSum } from "../helpers/budgetHelper";
 import Transactions from "../pages/transactions/index";
-import Reports from "../pages/reports";
 import Chart from "../components/ui/RunningTotalChart";
 import BudgetCategoriesList from "@/components/ui/BudgetCategoriesList";
 
@@ -30,55 +29,17 @@ export default function Home({
   runningTotalbyAccount,
   budgetSum,
   budgets,
-  budgetAmounts,
   firstSixBudgets,
   nextFiveBudgets,
   lastFiveBudgets,
-  categories,
-  categoriesPercentages,
-  percentagePerCategory,
   indexPage,
   accountIndex,
   transactionsRecent,
   transactionsUpcoming,
   inputValues,
-  dates,
-  incomes,
-  expenses,
-  runningTotal
+  currentRunningTotal
 }) {
   const { route } = useHook();
-  
-  let dateMonth = []
-  dates.forEach(date => {
-    dateMonth.push(date.slice(5, 10));
-  });
-
-  const currentRunningTotal = {
-    labels: dateMonth,
-    datasets: [
-      {
-        type: "line",
-        label: "Running Total",
-        borderColor: "rgb(222, 226, 230)",
-        backgroundColor: "rgba(173, 181, 189, 0.4)",
-        fill: true,
-        data: runningTotal,
-      },
-      {
-        type: "bar",
-        label: "Incomes",
-        backgroundColor: "rgb(80, 185, 155)",
-        data: incomes,
-      },
-      {
-        type: "bar",
-        label: "Expenses",
-        backgroundColor: "rgb(220, 36, 75)",
-        data: expenses,
-      },
-    ],
-  };
   const runningTotalOptions = {
     plugins: {
       title: {
@@ -215,10 +176,7 @@ export async function getServerSideProps() {
   const currentYear = new Date().getFullYear();
   const {
     month,
-    year,
-    categories,
-    categoriesPercentages,
-    percentagePerCategory,
+    year
   } = await getCategoriesData(1, currentMonth, currentYear);
 
   const today = new Date().toLocaleDateString().slice(0, 10);
@@ -283,19 +241,12 @@ export async function getServerSideProps() {
   );
   const budgetSum = await getBudgetSum(transactionsByCategory, budgets);
 
-  const { dates, incomes, expenses, runningTotal } = await getRunningTotalData(
-    1,
-    currentMonth,
-    currentYear
-  );
+  const currentRunningTotal = await getCurrentRunningTotal(currentMonth, currentYear);
 
   return {
     props: {
       month,
       year,
-      categories,
-      categoriesPercentages,
-      percentagePerCategory,
       runningTotalbyAccount,
       transactions,
       transactionsRecent: transactionsRecent,
@@ -310,10 +261,7 @@ export async function getServerSideProps() {
       budgetSum,
       accounts,
       inputValues,
-      dates,
-      incomes,
-      expenses,
-      runningTotal
+      currentRunningTotal
     },
   };
 }
