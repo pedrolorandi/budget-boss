@@ -394,15 +394,26 @@ export function getUserInput(obj) {
   return obj;
 }
 
-export function getSixTransactions(today, transactionList) {
-  //used to show 'recent' and 'upcoming' transactions in the overview screen
-  let arr = [];
-  transactionList.forEach((obj) => {
-    if (obj.date <= today) {
-      arr.push(obj);
-    }
-  }); //arr = an array of today's and preceding days' transactions
+export function getRecentAndUpcomingTransactions (today, recentTransactionList, upcomingTransactionList) {
+  let arrObj = {arrRecent: [], arrUpcoming: []};
 
+  recentTransactionList.forEach((obj) => {
+    if (obj.date <= today && arrObj.arrRecent.length < 3) {
+      arrObj.arrRecent.push(obj);
+    } 
+  });
+
+  upcomingTransactionList.forEach((obj) => {
+    if (obj.date > today && arrObj.arrUpcoming.length < 3) {
+      arrObj.arrUpcoming.push(obj);
+    }
+  });
+
+  return arrObj;
+}
+
+export function getThreeTransactions(arr, ascending = false) {
+  //the func is used to show 'recent' and 'upcoming' transactions in the overview screen
   arr.forEach((obj, index) => {
     //unveil more transactions of one specific date
     if (obj.transactions.length > 1) {
@@ -413,11 +424,11 @@ export function getSixTransactions(today, transactionList) {
     }
   });
 
-  const SixTransactions = arr
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 6);
+  const threeTransactions = arr
+    .sort((a, b) => ascending ? new Date(a.date) - new Date(b.date) : new Date(b.date) - new Date(a.date))
+    .slice(0, 3);
 
-  return SixTransactions; //6 most recent transactions
+  return threeTransactions;
 }
 
 export function getLinks() {
@@ -427,4 +438,43 @@ export function getLinks() {
     { label: "Budgets", path: "/budgets" },
     { label: "Reports", path: "/reports" },
   ];
+}
+
+export async function getCurrentRunningTotal(currentMonth, currentYear){
+  const { dates, incomes, expenses, runningTotal } = await getRunningTotalData(
+    1,
+    currentMonth,
+    currentYear
+  );
+
+  let dateMonth = []
+  dates.forEach(date => {
+    dateMonth.push(date.slice(5, 10));
+  });
+
+  return {
+    labels: dateMonth,
+    datasets: [
+      {
+        type: "line",
+        label: "Running Total",
+        borderColor: "rgb(222, 226, 230)",
+        backgroundColor: "rgba(173, 181, 189, 0.4)",
+        fill: true,
+        data: runningTotal,
+      },
+      {
+        type: "bar",
+        label: "Incomes",
+        backgroundColor: "rgb(80, 185, 155)",
+        data: incomes,
+      },
+      {
+        type: "bar",
+        label: "Expenses",
+        backgroundColor: "rgb(220, 36, 75)",
+        data: expenses,
+      },
+    ],
+  };
 }

@@ -16,7 +16,6 @@ import {
 
 //Import React and Axios
 import { useState, useEffect } from "react";
-import useHook from "../../hooks/useHook";
 import axios from "axios";
 
 //Import BudgetCategoriesList and BudgetPieChart components
@@ -58,7 +57,6 @@ export default function Budgets({
       }
     })
   );
-  const { route } = useHook();
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
   const [currentBudgetPieData, setCurrentBudgetPieData] = useState({
@@ -133,7 +131,7 @@ export default function Budgets({
 
     axios
       .put("/api/addEditBudget", { date, userInputs })
-      .then((res) => {
+      .then(() => {
         getBudgetsAPI(currentMonth, currentYear);
       })
       .catch((err) => console.log(err));
