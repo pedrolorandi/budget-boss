@@ -116,7 +116,14 @@ export default function Form({
             </button>
           </div>
         </div>
-        <div className="flex flex-row flex-1 mt-2">
+        <div className="px-6 py-2">
+          <h2
+            className={`text-xl ${formType === "delete" && "text-[#9F9F9F]"}`}
+          >
+            Select the transaction type:
+          </h2>
+        </div>
+        <div className="flex flex-row flex-1">
           <input
             type="radio"
             id="income"
@@ -174,7 +181,14 @@ export default function Form({
             disabled={formType === "delete"}
           />
         </div>
-        <div className="flex flex-row flex-1 mt-2">
+        <div className="px-6 py-2">
+          <h2
+            className={`text-xl ${formType === "delete" && "text-[#9F9F9F]"}`}
+          >
+            Select the account:
+          </h2>
+        </div>
+        <div className="flex flex-row flex-1">
           {accounts.map((currAccount, i) => {
             return (
               <div className="flex flex-1" key={currAccount.name}>
