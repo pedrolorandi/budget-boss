@@ -25,9 +25,6 @@ export default function Transactions({
   transactions,
   accounts,
   runningTotalbyAccount,
-  indexPage,
-  text,
-  accountIndex
 }) {
   const [currentTransactions, setCurrentTransactions] = useState(transactions);
   const [currentMonth, setCurrentMonth] = useState(month);
@@ -72,7 +69,6 @@ export default function Transactions({
 
   return (
     <>
-      {!accountIndex &&
       <>
         <div className="flex flex-row rounded-2xl p-6 h-[6.5rem] bg-base-white justify-between">
           <h1 className="self-center">Transactions</h1>
@@ -118,8 +114,7 @@ export default function Transactions({
           </button>
         </div>
       </>
-      }
-      <div className={accountIndex ? "flex flex-col mb-2 space-y-6" : "flex flex-row mb-2 space-x-2"}>
+      <div className={"flex flex-row mb-2 space-x-2"}>
         {accounts.map((account) => {
           return (
             <AccountTile
@@ -130,20 +125,14 @@ export default function Transactions({
               getTransactionsAPI={getTransactionsAPI}
               currentMonth={currentMonth}
               currentYear={currentYear}
-              accountIndex={accountIndex}
             />
           );
         })}
       </div>
-      
-      {!accountIndex && 
         <TransactionList
           transactions={currentTransactions}
           formattedDates={formattedDates}
-          indexPage={indexPage}
-          text={text}
         />
-      }
     </>
   );
 }

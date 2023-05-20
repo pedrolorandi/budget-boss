@@ -1,33 +1,29 @@
-import { Inter } from "next/font/google";
+// import { Inter } from "next/font/google";
 import { PrismaClient } from "@prisma/client";
-import useHook from "../hooks/useHook";
-import { useState } from "react";
+import {useRouter} from 'next/router';
 
 import {
   getTransactionsGroupedByDate,
   getThreeTransactions,
-  getRunnigTotalByAccount,
   getCurrentRunningTotal,
   getTransactionsGroupedByCategory,
   getBudgets,
   getCategoriesData,
   getRecentAndUpcomingTransactions,
+  getRunnigTotalByAccount,
   getDateByMonthYear,
 } from "../helpers/selectors";
 import { getBudgetAmounts, getBudgetSum } from "../helpers/budgetHelper";
 import { formatDate } from "../helpers/formatters";
-import Transactions from "../pages/transactions/index";
+import AccountTile from '../components/ui/AccountTile';
 import TransactionsList from "../components/ui/TransactionsList";
 import Chart from "../components/ui/RunningTotalChart";
 import BudgetCategoriesList from "@/components/ui/BudgetCategoriesList";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export default function Home({
   month,
   year,
   accounts,
-  transactions,
   runningTotalbyAccount,
   budgetSum,
   budgets,
@@ -42,7 +38,7 @@ export default function Home({
   inputValues,
   currentRunningTotal
 }) {
-  const { route } = useHook();
+  const route = useRouter();
   const runningTotalOptions = {
     plugins: {
       title: {
@@ -74,22 +70,28 @@ export default function Home({
       >
         <div
           className="w-1/2 p-32"
-          style={{ padding: "20px", width: '100%'}}
+          style={{ padding: "20px", width: "100%"}}
           onClick={() => route.push("/reports")}
         >
           <Chart chartData={currentRunningTotal} options={runningTotalOptions} />
         </div>
         <div
-          className="w-1/2 p-32"
-          style={{ padding: "20px", paddingTop: "40px", marginLeft: "60px" }}
+          className="w-1/2 p-32, flex flex-col mb-2 space-y-6"
+          style={{ padding: "20px", marginTop: "110px", marginLeft: "60px" }}
           onClick={() => route.push("/transactions")}
         >
-          <Transactions
-            accounts={accounts}
-            runningTotalbyAccount={runningTotalbyAccount}
-            accountIndex={accountIndex}
-            transactions={transactions}
-          />
+         {accounts.map((account) => {
+          return (
+            <AccountTile
+              key={account.id}
+              account={account}
+              currentRunningTotalbyAccount={runningTotalbyAccount}
+              currentMonth={month}
+              currentYear={year}
+              accountIndex={accountIndex}
+            />
+          );
+        })}
         </div>
       </section>
 
@@ -184,6 +186,7 @@ export async function getServerSideProps() {
     year
   } = await getCategoriesData(1, currentMonth, currentYear);
 
+  //data for transactions section
   const today = new Date().toLocaleDateString().slice(0, 10);
   const currentTransactionList = await getTransactionsGroupedByDate(
     1,
@@ -207,27 +210,22 @@ export async function getServerSideProps() {
   const transactionsRecent = getThreeTransactions(arrObj.arrRecent);
   const transactionsUpcoming = getThreeTransactions(arrObj.arrUpcoming, true);
 
+  //boolean values
   const indexPage = true;
   const accountIndex = true;
 
+  //data for accounts section
   const accounts = await prisma.account.findMany({
     where: { userId: 1 },
   });
-
   const runningTotalbyAccount = await getRunnigTotalByAccount(1);
-  const transactions = await getTransactionsGroupedByDate(
-    1,
-    currentMonth,
-    currentYear,
-    undefined
-  );
 
+  //data for budgets section
   const budgets = await getBudgets(1, currentMonth, currentYear);
   const budgetAmounts = await getBudgetAmounts(
     await getTransactionsGroupedByCategory(1, currentMonth, currentYear),
     await getBudgets(1, currentMonth, currentYear)
   );
-
   const inputValues = budgetAmounts.map((element) => {
     if (element.totalBudget) {
       return element.totalBudget;
@@ -239,7 +237,6 @@ export async function getServerSideProps() {
   const firstSixBudgets = copiedBudgetAmounts.slice(0, 6);
   const nextFiveBudgets = copiedBudgetAmounts.splice(6, 5);
   const lastFiveBudgets = copiedBudgetAmounts.splice(6, 5);
-
   const transactionsByCategory = await getTransactionsGroupedByCategory(
     1,
     currentMonth,
@@ -247,6 +244,7 @@ export async function getServerSideProps() {
   );
   const budgetSum = await getBudgetSum(transactionsByCategory, budgets);
 
+  //data for runningTotal chart
   const currentRunningTotal = await getCurrentRunningTotal(currentMonth, currentYear);
 
   return {
@@ -254,7 +252,6 @@ export async function getServerSideProps() {
       month,
       year,
       runningTotalbyAccount,
-      transactions,
       transactionsRecent: transactionsRecent,
       transactionsUpcoming: transactionsUpcoming,
       formattedDates,
