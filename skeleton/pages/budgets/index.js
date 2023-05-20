@@ -131,7 +131,7 @@ export default function Budgets({
 
     axios
       .put("/api/addEditBudget", { date, userInputs })
-      .then((res) => {
+      .then(() => {
         getBudgetsAPI(currentMonth, currentYear);
       })
       .catch((err) => console.log(err));
@@ -256,7 +256,7 @@ export default function Budgets({
           </>
         )}
       </div>
-      <div className={`${!indexPage && "flex flex-col rounded-2xl p-5 bg-yellow-100 justify-center w-full"}`}>
+      <div className="flex flex-col rounded-2xl p-5 bg-yellow-100 justify-center w-full">
         <div className="text-left">
           <h1 className="self-center">Budget List</h1>
         </div>
