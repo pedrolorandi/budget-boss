@@ -21,8 +21,12 @@ export default function AccountTile({
     <button
       className={`flex flex-1 flex-col ${
         accountIndex ? "bg-selected" : backgroundColor
-      } rounded-2xl mt-2 p-5`}
-      onClick={() => accountIndex ? true : getTransactionsAPI(currentMonth, currentYear, account.id)}
+      } rounded-2xl mt-2 p-5 hover:bg-buttonHover`}
+      onClick={() =>
+        accountIndex
+          ? true
+          : getTransactionsAPI(currentMonth, currentYear, account.id)
+      }
     >
       <span className="font-bold">{account.name}</span>
       <span className="mt-4 text-3xl">
