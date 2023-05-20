@@ -7,15 +7,17 @@ import {
   getTransactionsGroupedByDate,
   getThreeTransactions,
   getRunnigTotalByAccount,
+  getRunningTotalData,
   getTransactionsGroupedByCategory,
   getBudgets,
   getCategoriesData,
   getRecentAndUpcomingTransactions,
+  getDateByMonthYear,
 } from "../helpers/selectors";
 import { getBudgetAmounts, getBudgetSum } from "../helpers/budgetHelper";
 import Transactions from "../pages/transactions/index";
 import Reports from "../pages/reports";
-import Budgets from "../pages/budgets/index";
+import Chart from "../components/ui/RunningTotalChart";
 import BudgetCategoriesList from "@/components/ui/BudgetCategoriesList";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -40,8 +42,60 @@ export default function Home({
   transactionsRecent,
   transactionsUpcoming,
   inputValues,
+  dates,
+  incomes,
+  expenses,
+  runningTotal
 }) {
   const { route } = useHook();
+  
+  let dateMonth = []
+  dates.forEach(date => {
+    dateMonth.push(date.slice(5, 10));
+  });
+
+  const currentRunningTotal = {
+    labels: dateMonth,
+    datasets: [
+      {
+        type: "line",
+        label: "Running Total",
+        borderColor: "rgb(222, 226, 230)",
+        backgroundColor: "rgba(173, 181, 189, 0.4)",
+        fill: true,
+        data: runningTotal,
+      },
+      {
+        type: "bar",
+        label: "Incomes",
+        backgroundColor: "rgb(80, 185, 155)",
+        data: incomes,
+      },
+      {
+        type: "bar",
+        label: "Expenses",
+        backgroundColor: "rgb(220, 36, 75)",
+        data: expenses,
+      },
+    ],
+  };
+  const runningTotalOptions = {
+    plugins: {
+      title: {
+        font: {
+          size: 20,
+        },
+        color: "#212529",
+        display: true,
+        text: "Running Total",
+        padding: {
+          top: 5,
+          bottom: 5,
+        },
+        align: "start",
+      },
+    },
+  };
 
   return (
     <div className="bg-[#FFF] flex flex-col flex-1 rounded-lg p-5">
@@ -56,18 +110,10 @@ export default function Home({
       >
         <div
           className="w-1/2 p-32"
-          style={{ padding: "10px" }}
+          style={{ padding: "20px", width: '100%'}}
           onClick={() => route.push("/reports")}
         >
-          <Reports
-            month={month}
-            year={year}
-            indexPage={indexPage}
-            budgetAmounts={budgetAmounts}
-            categories={categories}
-            categoriesPercentages={categoriesPercentages}
-            percentagePerCategory={percentagePerCategory}
-          />
+          <Chart chartData={currentRunningTotal} options={runningTotalOptions} />
         </div>
         <div
           className="w-1/2 p-32"
@@ -108,56 +154,56 @@ export default function Home({
       </div>
 
       <div
-        className="flex"
-        style={{ marginTop: "60px", marginLeft: "30px" }}
-        onClick={() => route.push("/budgets")}
+        className='bg-yellow-100'
+        style={{ marginTop: "60px", marginLeft: "30px" }} 
       >
-        <div
-          className="w-1/2 p-32 rounded-2xl p-2 bg-yellow-100"
-          style={{ padding: "10px" }}
-        >
           <div className="text-left ml-4 mt-2">
-            <h1 className="self-center">Budget List</h1>
+              <h1 className="self-center">Budget List {getDateByMonthYear(month, year)}</h1>
           </div>
-          <BudgetCategoriesList
-            indexPage={indexPage}
-            budgetSum={budgetSum}
-            budgets={budgets}
-            inputValues={inputValues}
-            budgetAmounts={firstSixBudgets}
-          />
-        </div>
-        <div
-          className="w-1/2 p-32 rounded-2xl p-2 bg-yellow-100"
-          style={{ padding: "10px", marginLeft: "70px" }}
-        >
-          <div className="text-left ml-4 mt-2">
-            <h1 className="self-center">Budget List</h1>
+
+          <div
+            className="flex"
+            onClick={() => route.push("/budgets")}
+          >
+            <div
+              className="w-1/2 p-32 rounded-2xl p-2"
+              style={{ padding: "10px" }}
+            >
+              <BudgetCategoriesList
+                indexPage={indexPage}
+                budgetSum={budgetSum}
+                budgets={budgets}
+                inputValues={inputValues}
+                budgetAmounts={firstSixBudgets}
+              />
+            </div>
+            <div
+              className="w-1/2 p-32 rounded-2xl p-2"
+              style={{ padding: "10px", marginLeft: "70px" }}
+            >
+              <BudgetCategoriesList
+                indexPage={indexPage}
+                budgetSum={budgetSum}
+                budgets={budgets}
+                inputValues={inputValues}
+                budgetAmounts={nextFiveBudgets}
+              />
+            </div>
+            <div
+              className="w-1/2 p-32 rounded-2xl p-2"
+              style={{ padding: "10px", marginLeft: "70px" }}
+            >
+              <BudgetCategoriesList
+                indexPage={indexPage}
+                budgetSum={budgetSum}
+                budgets={budgets}
+                inputValues={inputValues}
+                budgetAmounts={lastFiveBudgets}
+              />
+            </div>
           </div>
-          <BudgetCategoriesList
-            indexPage={indexPage}
-            budgetSum={budgetSum}
-            budgets={budgets}
-            inputValues={inputValues}
-            budgetAmounts={nextFiveBudgets}
-          />
-        </div>
-        <div
-          className="w-1/2 p-32 rounded-2xl p-2 bg-yellow-100"
-          style={{ padding: "10px", marginLeft: "70px" }}
-        >
-          <div className="text-left ml-4 mt-2">
-            <h1 className="self-center">Budget List</h1>
-          </div>
-          <BudgetCategoriesList
-            indexPage={indexPage}
-            budgetSum={budgetSum}
-            budgets={budgets}
-            inputValues={inputValues}
-            budgetAmounts={lastFiveBudgets}
-          />
-        </div>
       </div>
+
     </div>
   );
 }
@@ -237,6 +283,12 @@ export async function getServerSideProps() {
   );
   const budgetSum = await getBudgetSum(transactionsByCategory, budgets);
 
+  const { dates, incomes, expenses, runningTotal } = await getRunningTotalData(
+    1,
+    currentMonth,
+    currentYear
+  );
+
   return {
     props: {
       month,
@@ -258,6 +310,10 @@ export async function getServerSideProps() {
       budgetSum,
       accounts,
       inputValues,
+      dates,
+      incomes,
+      expenses,
+      runningTotal
     },
   };
 }

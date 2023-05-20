@@ -16,7 +16,6 @@ import {
 
 //Import React and Axios
 import { useState, useEffect } from "react";
-import useHook from "../../hooks/useHook";
 import axios from "axios";
 
 //Import BudgetCategoriesList and BudgetPieChart components
@@ -58,7 +57,6 @@ export default function Budgets({
       }
     })
   );
-  const { route } = useHook();
   const [currentMonth, setCurrentMonth] = useState(month);
   const [currentYear, setCurrentYear] = useState(year);
   const [currentBudgetPieData, setCurrentBudgetPieData] = useState({
@@ -258,7 +256,7 @@ export default function Budgets({
           </>
         )}
       </div>
-      <div className="flex flex-col rounded-2xl p-5 bg-yellow-100 justify-center w-full">
+      <div className={`${!indexPage && "flex flex-col rounded-2xl p-5 bg-yellow-100 justify-center w-full"}`}>
         <div className="text-left">
           <h1 className="self-center">Budget List</h1>
         </div>
