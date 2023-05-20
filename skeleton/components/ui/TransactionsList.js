@@ -11,7 +11,9 @@ export default function TransactionList({
 }) {
   return (
     <div className="p-5 bg-[#FEEECD] rounded-2xl flex flex-col flex-1">
-      {indexPage ? <h1>{text}</h1> : <h1>Transactions</h1>}
+      {indexPage && text && (
+        <h1 className="text-[1.3rem] text-[#212529]">{text}</h1>
+      )}
       {transactions.map(({ date, transactions }) => {
         return (
           <div className="mt-2 flex flex-col" key={date + transactions[0].id}>

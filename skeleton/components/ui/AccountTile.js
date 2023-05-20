@@ -19,7 +19,7 @@ export default function AccountTile({
 
   return (
     <button
-      className={`flex flex-1 flex-col ${
+      className={`flex flex-1 flex-col max-h-[7rem] ${
         accountIndex ? "bg-selected" : backgroundColor
       } rounded-2xl mt-2 p-5 hover:bg-buttonHover`}
       onClick={() =>
