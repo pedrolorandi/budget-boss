@@ -1,4 +1,7 @@
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { categoryIcons } from "@/helpers/formatters";
+
 export default function BarChart(props) {
   //Class Name helper for Progress Bar colour based on width value and isValid
   let classNames = [];
@@ -11,10 +14,14 @@ export default function BarChart(props) {
   } else {
     classNames.push("bg-gray-500");
   }
+
   return (
     <div className="m-5 text-lg">
       <div className="m-2 flex justify-between">
-        <span className="font-bold">{props.name}</span>
+        <span className="font-bold">
+          <FontAwesomeIcon icon={categoryIcons(props.name)} className="me-4" />
+          {props.name}
+        </span>
         <span className="font-normal">
           ${props.currentAmount} /{" "}
           {props.createEditStatus ? (

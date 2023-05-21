@@ -30,6 +30,7 @@ import {
   faAngleDoubleDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { categoryIcons } from "../../helpers/formatters.js";
 
 //Budgets page component to display transactions grouped by Categories, and compared to User's Budgets
 export default function Budgets({
@@ -205,7 +206,7 @@ export default function Budgets({
           </>
         )}
       </div>
-      <div className="flex flex-col rounded-2xl p-5 bg-[#E7F3FE] justify-center items-center w-full mb-2">
+      <div className="flex flex-col rounded-2xl p-5 bg-budgetsList justify-center items-center w-full mb-2">
         {!indexPage && currentBudgets.length > 0 && (
           <>
             <div className="text-left w-full">
@@ -259,7 +260,7 @@ export default function Budgets({
           </div>
         )}
       </div>
-      <div className="flex flex-col rounded-2xl p-5 bg-yellow-50 justify-center w-full">
+      <div className="flex flex-col rounded-2xl p-5 bg-budgetsList justify-center w-full">
         <div className="text-left">
           <h1 className="self-center flex justify-between">
             Budget List

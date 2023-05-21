@@ -69,7 +69,7 @@ export default function Transactions({
 
   return (
     <>
-      <div className="flex flex-row rounded-2xl p-6 h-[6.5rem] bg-base-white justify-between">
+      <div className="flex flex-row rounded-2xl p-6 h-[6.5rem] bg-base-white justify-between sticky top-0 drop-shadow-sm">
         <h1 className="self-center">Transactions</h1>
         <div className="flex flex-row self-center">
           <Link href="/transactions/add">

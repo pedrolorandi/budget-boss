@@ -63,6 +63,7 @@ module.exports = {
       incomeHover: "#49AA8E",
       expense: "#DC244B",
       expenseHover: "#BA1E3F",
+      budgetsList: "#FAF8F4",
     },
   },
 
@@ -98,13 +99,14 @@ module.exports = {
     "bg-incomeHover",
     "bg-expense",
     "bg-expenseHover",
+    "bg-budgetsList",
   ],
 
   plugins: [
     function ({ addBase, theme }) {
       addBase({
         body: {
-          backgroundColor: "#B5C2C9",
+          backgroundColor: "#E0E0E0",
           color: "#212529",
         },
         h1: {

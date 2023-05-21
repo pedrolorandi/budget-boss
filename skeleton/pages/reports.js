@@ -77,13 +77,17 @@ export default function Reports({
       {
         type: "bar",
         label: "Current Transactions",
-        backgroundColor: "rgb(80, 185, 155)",
+        backgroundColor: "#66B2FF",
         data: sums,
       },
       {
-        type: "bar",
+        type: "line",
         label: "Total Budget",
-        backgroundColor: "rgb(220, 36, 75)",
+        pointStyle: "line",
+        pointRadius: 30,
+        pointBorderWidth: 5,
+        borderColor: "#FF9933",
+        borderWidth: 0,
         data: budgetAmounts.map((e) => e.totalBudget),
       },
     ],
@@ -130,7 +134,7 @@ export default function Reports({
         },
         color: "#212529",
         display: true,
-        text: "Actual Vs Budget by Category",
+        text: "Actual VS Budget by Category",
         padding: {
           top: 20,
           bottom: 40,
@@ -203,7 +207,7 @@ export default function Reports({
 
   return (
     <>
-      <div className="flex flex-row rounded-2xl p-6 h-[6.5rem] bg-base-white justify-between">
+      <div className="flex flex-row rounded-2xl p-6 h-[6.5rem] bg-base-white justify-between sticky top-0 drop-shadow-sm z-10">
         <h1 className="self-center">Reports</h1>
       </div>
       <div className="flex rounded-2xl mt-2 p-5 space-x-5 bg-base-white justify-center">

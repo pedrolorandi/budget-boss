@@ -60,9 +60,9 @@ export default function Home({
 
   return (
     <>
-      <div className="flex flex-row rounded-2xl p-6 h-[6.5rem] bg-base-white">
+      <div className="flex flex-row rounded-2xl p-6 h-[6.5rem] bg-base-white sticky top-0 drop-shadow-sm">
         <img src="images/user-icon.png" className="flex h-14" />
-        <h1 className="text-4xl ms-5">Hi, Jane!</h1>
+        <h1 className="text-4xl ms-5 self-center">Hi, Jane!</h1>
       </div>
       <div className="flex flex-1 flex-row">
         <div className="w-2/3">
@@ -111,7 +111,7 @@ export default function Home({
         </div>
       </Link>
       <Link href="/budgets">
-        <div className="flex flex-1 mt-2 flex-col rounded-2xl bg-yellow-50 py-5">
+        <div className="flex flex-1 mt-2 flex-col rounded-2xl bg-budgetsList py-5">
           <h1 className="text-[1.3rem] text-[#212529] ms-5">
             Budget List of {getDateByMonthYear(month, year)}
           </h1>

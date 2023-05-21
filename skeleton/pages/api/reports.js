@@ -2,9 +2,10 @@
 import {
   getCategoriesData,
   getRunningTotalData,
-  getCategoryBarChartData,
+  getData,
   getTransactionsGroupedByCategory,
   getBudgets,
+  getCategoryBarChartData,
 } from "@/helpers/selectors";
 
 import { getBudgetAmounts } from "@/helpers/budgetHelper";
