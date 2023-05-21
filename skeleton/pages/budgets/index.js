@@ -27,6 +27,7 @@ import {
   faCircleLeft,
   faCircleRight,
   faCirclePlus,
+  faAngleDoubleDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -139,7 +140,7 @@ export default function Budgets({
 
   return (
     <>
-      <div className="flex flex-row rounded-2xl p-6 h-[6.5rem] bg-base-white justify-between w-full mb-2">
+      <div className="flex flex-row rounded-2xl p-6 h-[6.5rem] bg-base-white justify-between w-full mb-2 sticky top-0 drop-shadow-sm z-20">
         <h1 className="self-center">Budgets</h1>
         <div className="flex flex-row self-center">
           {!currentCreateEditStatus && currentBudgets.length > 0 && (
@@ -150,15 +151,17 @@ export default function Budgets({
               Edit
             </button>
           )}
-          {currentCreateEditStatus > 0 && (
+          {currentCreateEditStatus && (
             <button
               className={`rounded-lg w-36 p-3 bg-cancel font-bold text-center hover:bg-cancelHover`}
-              onClick={() => setCurrentCreateEditStatus(false)}
+              onClick={() => {
+                setCurrentCreateEditStatus(false);
+              }}
             >
               Cancel
             </button>
           )}
-          {currentCreateEditStatus > 0 && (
+          {currentCreateEditStatus && (
             <button
               className={`rounded-lg w-36 p-3 font-bold text-white text-center ms-2 bg-selected hover:bg-buttonHover `}
               onClick={() => handleOnClick()}
@@ -166,20 +169,9 @@ export default function Budgets({
               Submit
             </button>
           )}
-          {!indexPage &&
-            currentBudgets.length === 0 &&
-            !currentCreateEditStatus && (
-              <button
-                className={`rounded-lg bg-selected w-52 ms-2 p-3 font-bold text-white text-center hover:bg-buttonHover`}
-                onClick={() => setCurrentCreateEditStatus(true)}
-              >
-                <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
-                Create Budget
-              </button>
-            )}
         </div>
       </div>
-      <div className="flex rounded-2xl p-5 space-x-5 bg-base-white justify-center w-full mb-2">
+      <div className="flex rounded-2xl p-5 bg-base-white justify-center w-full mb-2">
         {!currentCreateEditStatus && (
           <>
             <button
@@ -246,19 +238,39 @@ export default function Budgets({
           </>
         )}
         {!indexPage && currentBudgets.length === 0 && (
-          <>
+          <div className="flex flex-col justify-center items-center my-36">
             {" "}
-            <span className="text-xl my-48">
+            <span className="text-2xl py-24">
               A budget has not yet been created for{" "}
               {getDateByMonthYear(currentMonth, currentYear)}. Please create a
               budget.
             </span>
-          </>
+            {!indexPage &&
+              currentBudgets.length === 0 &&
+              !currentCreateEditStatus && (
+                <button
+                  className={`rounded-lg bg-selected text-xl w-64 p-6 font-bold text-white text-center hover:bg-buttonHover`}
+                  onClick={() => setCurrentCreateEditStatus(true)}
+                >
+                  <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
+                  Create Budget
+                </button>
+              )}
+          </div>
         )}
       </div>
-      <div className="flex flex-col rounded-2xl p-5 bg-yellow-100 justify-center w-full">
+      <div className="flex flex-col rounded-2xl p-5 bg-yellow-50 justify-center w-full">
         <div className="text-left">
-          <h1 className="self-center">Budget List</h1>
+          <h1 className="self-center flex justify-between">
+            Budget List
+            {currentCreateEditStatus && (
+              <FontAwesomeIcon
+                icon={faAngleDoubleDown}
+                size="xl"
+                className="text-red fa-bounce inline pr-16"
+              />
+            )}
+          </h1>
         </div>
         <BudgetCategoriesList
           budgetAmounts={currentBudgetAmounts}

@@ -111,7 +111,7 @@ export default function Home({
         </div>
       </Link>
       <Link href="/budgets">
-        <div className="flex flex-1 mt-2 flex-col rounded-2xl bg-yellow-100 py-5">
+        <div className="flex flex-1 mt-2 flex-col rounded-2xl bg-yellow-50 py-5">
           <h1 className="text-[1.3rem] text-[#212529] ms-5">
             Budget List of {getDateByMonthYear(month, year)}
           </h1>
