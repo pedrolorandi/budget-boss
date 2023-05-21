@@ -1,6 +1,6 @@
 // import { Inter } from "next/font/google";
 import { PrismaClient } from "@prisma/client";
-import {useRouter} from 'next/router';
+import { useRouter } from "next/router";
 
 import {
   getTransactionsGroupedByDate,
@@ -15,10 +15,11 @@ import {
 } from "../helpers/selectors";
 import { getBudgetAmounts, getBudgetSum } from "../helpers/budgetHelper";
 import { formatDate } from "../helpers/formatters";
-import AccountTile from '../components/ui/AccountTile';
+import AccountTile from "../components/ui/AccountTile";
 import TransactionsList from "../components/ui/TransactionsList";
 import Chart from "../components/ui/RunningTotalChart";
 import BudgetCategoriesList from "@/components/ui/BudgetCategoriesList";
+import Link from "next/link";
 
 export default function Home({
   month,
@@ -36,7 +37,7 @@ export default function Home({
   transactionsRecent,
   transactionsUpcoming,
   inputValues,
-  currentRunningTotal
+  currentRunningTotal,
 }) {
   const route = useRouter();
   const runningTotalOptions = {
@@ -58,121 +59,89 @@ export default function Home({
   };
 
   return (
-    <div className="bg-[#FFF] flex flex-col flex-1 rounded-lg p-5">
-      <div className="flex flex-row items-center">
-        <img src="images/user-icon.png" className="flex h-20" />
+    <>
+      <div className="flex flex-row rounded-2xl p-6 h-[6.5rem] bg-base-white">
+        <img src="images/user-icon.png" className="flex h-14" />
         <h1 className="text-4xl ms-5">Hi, Jane!</h1>
       </div>
-
-      <section
-        className="flex"
-        style={{ marginTop: "30px", marginLeft: "30px" }}
-      >
-        <div
-          className="w-1/2 p-32"
-          style={{ padding: "20px", width: "100%"}}
-          onClick={() => route.push("/reports")}
-        >
-          <Chart chartData={currentRunningTotal} options={runningTotalOptions} />
-        </div>
-        <div
-          className="w-1/2 p-32, flex flex-col mb-2 space-y-6"
-          style={{ padding: "20px", marginTop: "110px", marginLeft: "60px" }}
-          onClick={() => route.push("/transactions")}
-        >
-         {accounts.map((account) => {
-          return (
-            <AccountTile
-              key={account.id}
-              account={account}
-              currentRunningTotalbyAccount={runningTotalbyAccount}
-              currentMonth={month}
-              currentYear={year}
-              accountIndex={accountIndex}
+      <div className="flex flex-1 flex-row">
+        <div className="w-2/3">
+          <Link href="/reports">
+            <Chart
+              chartData={currentRunningTotal}
+              options={runningTotalOptions}
             />
-          );
-        })}
+          </Link>
         </div>
-      </section>
-
-      <div
-        className="flex"
-        style={{ marginTop: "50px", marginLeft: "30px" }}
-        onClick={() => route.push("/transactions")}
-      >
-        <div className="w-1/2 p-32" style={{ padding: "10px" }}>
-          <TransactionsList
-            transactions={transactionsRecent}
-            formattedDates={formattedDates}
-            indexPage={indexPage}
-            text="Recent Transactions"
-          />
-        </div>
-        <div
-          className="w-1/2 p-32"
-          style={{ padding: "10px", marginLeft: "70px" }}
-        >
-          <TransactionsList
-            transactions={transactionsUpcoming}
-            formattedDates={formattedDates}
-            indexPage={indexPage}
-            text="Upcoming Transactions"
-          />
+        <div className="w-1/3 ms-2 flex flex-col">
+          {accounts.map((account) => {
+            return (
+              <Link href="/transactions" className="flex">
+                <AccountTile
+                  key={account.id}
+                  account={account}
+                  currentRunningTotalbyAccount={runningTotalbyAccount}
+                  currentMonth={month}
+                  currentYear={year}
+                  accountIndex={accountIndex}
+                />
+              </Link>
+            );
+          })}
         </div>
       </div>
-
-      <div
-        className='bg-yellow-100'
-        style={{ marginTop: "60px", marginLeft: "30px" }} 
-      >
-          <div className="text-left ml-4 mt-2">
-              <h1 className="self-center">Budget List {getDateByMonthYear(month, year)}</h1>
+      <Link href="/transactions">
+        <div className="flex flex-1 mt-2">
+          <div className="flex w-1/2">
+            <TransactionsList
+              transactions={transactionsRecent}
+              formattedDates={formattedDates}
+              indexPage={indexPage}
+              text="Recent Transactions"
+            />
           </div>
-
-          <div
-            className="flex"
-            onClick={() => route.push("/budgets")}
-          >
-            <div
-              className="w-1/2 p-32 rounded-2xl p-2"
-              style={{ padding: "10px" }}
-            >
-              <BudgetCategoriesList
-                indexPage={indexPage}
-                budgetSum={budgetSum}
-                budgets={budgets}
-                inputValues={inputValues}
-                budgetAmounts={firstSixBudgets}
-              />
-            </div>
-            <div
-              className="w-1/2 p-32 rounded-2xl p-2"
-              style={{ padding: "10px", marginLeft: "70px" }}
-            >
-              <BudgetCategoriesList
-                indexPage={indexPage}
-                budgetSum={budgetSum}
-                budgets={budgets}
-                inputValues={inputValues}
-                budgetAmounts={nextFiveBudgets}
-              />
-            </div>
-            <div
-              className="w-1/2 p-32 rounded-2xl p-2"
-              style={{ padding: "10px", marginLeft: "70px" }}
-            >
-              <BudgetCategoriesList
-                indexPage={indexPage}
-                budgetSum={budgetSum}
-                budgets={budgets}
-                inputValues={inputValues}
-                budgetAmounts={lastFiveBudgets}
-              />
-            </div>
+          <div className="flex w-1/2 ms-2">
+            <TransactionsList
+              transactions={transactionsUpcoming}
+              formattedDates={formattedDates}
+              indexPage={indexPage}
+              text="Upcoming Transactions"
+            />
           </div>
-      </div>
+        </div>
+      </Link>
+      <Link href="/budgets">
+        <div className="flex flex-1 mt-2 flex-col rounded-2xl bg-yellow-100 py-5">
+          <h1 className="text-[1.3rem] text-[#212529] ms-5">
+            Budget List of {getDateByMonthYear(month, year)}
+          </h1>
 
-    </div>
+          <div className="flex flex-row flex-1">
+            <BudgetCategoriesList
+              indexPage={indexPage}
+              budgetSum={budgetSum}
+              budgets={budgets}
+              inputValues={inputValues}
+              budgetAmounts={firstSixBudgets}
+            />
+            <BudgetCategoriesList
+              indexPage={indexPage}
+              budgetSum={budgetSum}
+              budgets={budgets}
+              inputValues={inputValues}
+              budgetAmounts={nextFiveBudgets}
+            />
+            <BudgetCategoriesList
+              indexPage={indexPage}
+              budgetSum={budgetSum}
+              budgets={budgets}
+              inputValues={inputValues}
+              budgetAmounts={lastFiveBudgets}
+            />
+          </div>
+        </div>
+      </Link>
+    </>
   );
 }
 
@@ -181,10 +150,7 @@ export async function getServerSideProps() {
   const currentMonth = new Date().getMonth() + 1;
   const nextMonth = new Date().getMonth() + 2;
   const currentYear = new Date().getFullYear();
-  const {
-    month,
-    year
-  } = await getCategoriesData(1, currentMonth, currentYear);
+  const { month, year } = await getCategoriesData(1, currentMonth, currentYear);
 
   //data for transactions section
   const today = new Date().toLocaleDateString().slice(0, 10);
@@ -200,13 +166,21 @@ export async function getServerSideProps() {
     currentYear,
     undefined
   );
-  Array.prototype.unshift.apply(currentTransactionList, NextMonthTransactionList);
-  const recentTransactionList = currentTransactionList //a transaction list of both current and next months
+  Array.prototype.unshift.apply(
+    currentTransactionList,
+    NextMonthTransactionList
+  );
+  const recentTransactionList = currentTransactionList; //a transaction list of both current and next months
   const formattedDates = formatDate(recentTransactionList);
-  const upcomingTransactionList = JSON.parse(JSON.stringify(recentTransactionList))
-  .sort((a, b) => new Date(a.date) - new Date(b.date));
-  
-  const arrObj = getRecentAndUpcomingTransactions(today, recentTransactionList, upcomingTransactionList);
+  const upcomingTransactionList = JSON.parse(
+    JSON.stringify(recentTransactionList)
+  ).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  const arrObj = getRecentAndUpcomingTransactions(
+    today,
+    recentTransactionList,
+    upcomingTransactionList
+  );
   const transactionsRecent = getThreeTransactions(arrObj.arrRecent);
   const transactionsUpcoming = getThreeTransactions(arrObj.arrUpcoming, true);
 
@@ -245,7 +219,10 @@ export async function getServerSideProps() {
   const budgetSum = await getBudgetSum(transactionsByCategory, budgets);
 
   //data for runningTotal chart
-  const currentRunningTotal = await getCurrentRunningTotal(currentMonth, currentYear);
+  const currentRunningTotal = await getCurrentRunningTotal(
+    currentMonth,
+    currentYear
+  );
 
   return {
     props: {
@@ -265,7 +242,7 @@ export async function getServerSideProps() {
       budgetSum,
       accounts,
       inputValues,
-      currentRunningTotal
+      currentRunningTotal,
     },
   };
 }
