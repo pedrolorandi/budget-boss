@@ -21,10 +21,10 @@ export default function BarChart(props) {
             <span>
               $
               <input
-                className="w-20 rounded-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-solid font-medium text-gray-900 dark:text-white"
+                type="number"
+                className="w-20 border-gray-400 px-0.5 rounded-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none font-medium"
                 onChange={props.onChange}
                 value={props.value}
-                type="number"
               ></input>
             </span>
           ) : (

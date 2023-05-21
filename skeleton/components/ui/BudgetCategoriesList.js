@@ -25,7 +25,7 @@ export default function BudgetCategoriesList(props) {
   return (
     <div
       className={`text-center text-3xl font-bold w-full mt-24, ${
-        props.indexPage && "bg-yellow-100"
+        props.indexPage && "bg-yellow-50"
       }`}
     >
       {!props.indexPage && (
