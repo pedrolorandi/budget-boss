@@ -1,42 +1,51 @@
 //Function that uses BudgetCategories and Transactions grouped by Categories to create BudgetCategory List Data
-export function getBudgetAmounts(transactions, budgets) {
+export function getBudgetAmounts(transactions, budgets, categories) {
+  // console.log(categories);
   let result = [];
-  if (budgets.length === 0) {
+  const res = categories.map((element) => {
+    return {
+      budgetCategoryId: 0,
+      categoryId: element.id,
+      name: element.name,
+      totalBudget: 0,
+      currentAmount: 0,
+      budgetRemaining: 0,
+      budgetPercentage: 100,
+      isValid: false,
+    };
+  });
+
+  for (let i = 0; i < res.length; i++) {
     for (let c of transactions) {
-      result.push({
-        categoryId: c.categoryId,
-        name: c.name,
-        totalBudget: 0,
-        currentAmount: c._sum.amountDecimal / 100,
-        budgetRemaining: 0,
-        budgetPercentage: 100,
-        isValid: false,
-      });
-    }
-  } else {
-    for (let b of budgets) {
-      for (let c of transactions) {
-        if (b.category.id === c.categoryId) {
-          result.push({
-            budgetCategoryId: b.id,
-            categoryId: b.category.id,
-            name: b.category.name,
-            totalBudget: b.amountDecimal / 100,
-            currentAmount: c._sum.amountDecimal / 100,
-            budgetRemaining: (b.amountDecimal - c._sum.amountDecimal) / 100,
-            budgetPercentage:
-              b.amountDecimal === 0
-                ? 100
-                : (c._sum.amountDecimal / b.amountDecimal) * 100,
-            isValid: b.amountDecimal === 0 ? false : true,
-          });
-        }
+      if (res[i].categoryId === c.categoryId) {
+        res[i].currentAmount = c._sum.amountDecimal / 100;
       }
     }
   }
-  return result.sort((a, b) => {
-    return b.isValid - a.isValid;
-  });
+
+  if (budgets.length === 0) {
+    return res;
+  } else {
+    for (let i = 0; i < res.length; i++) {
+      for (let b of budgets) {
+        if (res[i].categoryId === b.category.id) {
+          res[i].budgetCategoryId = b.id;
+          res[i].totalBudget = b.amountDecimal / 100;
+          res[i].budgetRemaining =
+            (b.amountDecimal - res[i].currentAmount) / 100;
+          res[i].budgetPercentage =
+            b.amountDecimal === 0
+              ? 100
+              : (res[i].currentAmount / b.amountDecimal) * 10000;
+          res[i].isValid = b.amountDecimal === 0 ? false : true;
+        }
+      }
+    }
+    // console.log(res);
+    return res.sort((a, b) => {
+      return b.isValid - a.isValid;
+    });
+  }
 }
 //Function that uses BudgetCategories and Transactions grouped by Categories to create Budget Pie Chart Data
 export function getBudgetSum(transactions, budgets) {

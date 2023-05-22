@@ -394,13 +394,17 @@ export function getUserInput(obj) {
   return obj;
 }
 
-export function getRecentAndUpcomingTransactions (today, recentTransactionList, upcomingTransactionList) {
-  let arrObj = {arrRecent: [], arrUpcoming: []};
+export function getRecentAndUpcomingTransactions(
+  today,
+  recentTransactionList,
+  upcomingTransactionList
+) {
+  let arrObj = { arrRecent: [], arrUpcoming: [] };
 
   recentTransactionList.forEach((obj) => {
     if (obj.date <= today && arrObj.arrRecent.length < 3) {
       arrObj.arrRecent.push(obj);
-    } 
+    }
   });
 
   upcomingTransactionList.forEach((obj) => {
@@ -425,7 +429,11 @@ export function getThreeTransactions(arr, ascending = false) {
   });
 
   const threeTransactions = arr
-    .sort((a, b) => ascending ? new Date(a.date) - new Date(b.date) : new Date(b.date) - new Date(a.date))
+    .sort((a, b) =>
+      ascending
+        ? new Date(a.date) - new Date(b.date)
+        : new Date(b.date) - new Date(a.date)
+    )
     .slice(0, 3);
 
   return threeTransactions;
@@ -440,15 +448,15 @@ export function getLinks() {
   ];
 }
 
-export async function getCurrentRunningTotal(currentMonth, currentYear){
+export async function getCurrentRunningTotal(currentMonth, currentYear) {
   const { dates, incomes, expenses, runningTotal } = await getRunningTotalData(
     1,
     currentMonth,
     currentYear
   );
 
-  let dateMonth = []
-  dates.forEach(date => {
+  let dateMonth = [];
+  dates.forEach((date) => {
     dateMonth.push(date.slice(5, 10));
   });
 
@@ -477,4 +485,19 @@ export async function getCurrentRunningTotal(currentMonth, currentYear){
       },
     ],
   };
+}
+// Function to retrieve Category ID
+export async function getCategoryInfo() {
+  const prisma = new PrismaClient();
+
+  // Querying the Prisma client to fetch categories and their associated transactions
+  const categories = await prisma.category.findMany({
+    where: {
+      name: {
+        not: "Income",
+      },
+    },
+  });
+
+  return categories;
 }

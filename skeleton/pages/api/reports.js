@@ -6,6 +6,7 @@ import {
   getTransactionsGroupedByCategory,
   getBudgets,
   getCategoryBarChartData,
+  getCategoryInfo,
 } from "@/helpers/selectors";
 
 import { getBudgetAmounts } from "@/helpers/budgetHelper";
@@ -43,7 +44,8 @@ export default async function handler(req, res) {
   // Calling the 'getBudgetAmounts' function with the provided parameters and storing the returned data
   const budgetAmounts = await getBudgetAmounts(
     await getTransactionsGroupedByCategory(userId, reqMonth, reqYear),
-    await getBudgets(userId, reqMonth, reqYear)
+    await getBudgets(userId, reqMonth, reqYear),
+    await getCategoryInfo()
   );
 
   // Sending the response as a JSON string containing the retrieved data
