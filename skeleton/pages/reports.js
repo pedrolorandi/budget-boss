@@ -13,6 +13,7 @@ import {
   getCategoryBarChartData,
   getTransactionsGroupedByCategory,
   getBudgets,
+  getCategoryInfo,
 } from "../helpers/selectors";
 
 import { getBudgetAmounts } from "@/helpers/budgetHelper";
@@ -305,7 +306,8 @@ export async function getServerSideProps() {
 
   const budgetAmounts = await getBudgetAmounts(
     await getTransactionsGroupedByCategory(1, currentMonth, currentYear),
-    await getBudgets(1, currentMonth, currentYear)
+    await getBudgets(1, currentMonth, currentYear),
+    await getCategoryInfo()
   );
 
   return {

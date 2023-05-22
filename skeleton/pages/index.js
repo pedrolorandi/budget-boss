@@ -12,6 +12,7 @@ import {
   getRecentAndUpcomingTransactions,
   getRunnigTotalByAccount,
   getDateByMonthYear,
+  getCategoryInfo,
 } from "../helpers/selectors";
 import { getBudgetAmounts, getBudgetSum } from "../helpers/budgetHelper";
 import { formatDate } from "../helpers/formatters";
@@ -198,7 +199,8 @@ export async function getServerSideProps() {
   const budgets = await getBudgets(1, currentMonth, currentYear);
   const budgetAmounts = await getBudgetAmounts(
     await getTransactionsGroupedByCategory(1, currentMonth, currentYear),
-    await getBudgets(1, currentMonth, currentYear)
+    await getBudgets(1, currentMonth, currentYear),
+    await getCategoryInfo()
   );
   const inputValues = budgetAmounts.map((element) => {
     if (element.totalBudget) {
