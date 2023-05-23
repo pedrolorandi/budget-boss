@@ -78,12 +78,12 @@ export default function Transactions({
               type="submit"
             >
               <FontAwesomeIcon icon={faCirclePlus} className="me-2" />
-              {` new transaction`}
+              {` New Transaction`}
             </button>
           </Link>
         </div>
       </div>
-      <div className="flex rounded-2xl mt-2 p-5 space-x-5 bg-base-white justify-center">
+      <div className="flex rounded-2xl mt-2 p-5 space-x-5 bg-base-white justify-center sticky top-[5rem] drop-shadow-sm">
         <button
           className="flex"
           onClick={() =>

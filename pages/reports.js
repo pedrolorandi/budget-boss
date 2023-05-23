@@ -211,7 +211,7 @@ export default function Reports({
       <div className="flex flex-row rounded-2xl p-6 h-[6.5rem] bg-base-white justify-between sticky top-0 drop-shadow-sm z-10">
         <h1 className="self-center">Reports</h1>
       </div>
-      <div className="flex rounded-2xl mt-2 p-5 space-x-5 bg-base-white justify-center">
+      <div className="flex rounded-2xl mt-2 p-5 space-x-5 bg-base-white justify-center sticky top-[5rem] drop-shadow-sm z-10">
         <button
           className="flex"
           onClick={() => getTransactionsAPI(currentMonth - 1, currentYear)}

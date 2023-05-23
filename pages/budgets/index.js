@@ -181,7 +181,7 @@ export default function Budgets({
           )}
         </div>
       </div>
-      <div className="flex rounded-2xl p-5 bg-base-white justify-center w-full mb-2">
+      <div className="flex rounded-2xl p-5 bg-base-white space-x-5 justify-center w-full mb-2 sticky top-[5rem] drop-shadow-sm z-20">
         {!currentCreateEditStatus && (
           <>
             <button
