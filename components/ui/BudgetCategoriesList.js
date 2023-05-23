@@ -1,5 +1,4 @@
 import React from "react";
-import { useState } from "react";
 import BarChart from "./BudgetProgressBar";
 export default function BudgetCategoriesList(props) {
   const progressCharts = props.budgetAmounts.map((element, i) => {

@@ -4,6 +4,7 @@ import {
   getDateByMonthYear,
   getTransactionsGroupedByCategory,
   getBudgets,
+  getCategoryInfo,
 } from "../../helpers/selectors";
 
 //Import Budget Helper Functions
@@ -15,7 +16,7 @@ import {
 } from "@/helpers/budgetHelper";
 
 //Import React and Axios
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 
 //Import BudgetCategoriesList and BudgetPieChart components
@@ -30,7 +31,6 @@ import {
   faAngleDoubleDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { categoryIcons } from "../../helpers/formatters.js";
 
 //Budgets page component to display transactions grouped by Categories, and compared to User's Budgets
 export default function Budgets({
@@ -157,6 +157,15 @@ export default function Budgets({
               className={`rounded-lg w-36 p-3 bg-cancel font-bold text-center hover:bg-cancelHover`}
               onClick={() => {
                 setCurrentCreateEditStatus(false);
+                setCurrentInputValues(
+                  currentBudgetAmounts.map((element) => {
+                    if (element.totalBudget) {
+                      return element.totalBudget;
+                    } else {
+                      return "";
+                    }
+                  })
+                );
               }}
             >
               Cancel
@@ -293,8 +302,13 @@ export async function getServerSideProps() {
     currentMonth,
     currentYear
   );
+
   const budgets = await getBudgets(1, currentMonth, currentYear);
-  const budgetAmounts = await getBudgetAmounts(transactionsByCategory, budgets);
+  const budgetAmounts = await getBudgetAmounts(
+    transactionsByCategory,
+    budgets,
+    await getCategoryInfo()
+  );
   const budgetSum = await getBudgetSum(transactionsByCategory, budgets);
   const budgetPieChartColour = await getBudgetPieChartColour(budgetSum);
   return {

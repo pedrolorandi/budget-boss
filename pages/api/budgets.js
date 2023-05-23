@@ -2,6 +2,7 @@
 import {
   getBudgets,
   getTransactionsGroupedByCategory,
+  getCategoryInfo,
 } from "@/helpers/selectors";
 
 import {
@@ -27,9 +28,16 @@ export default async function handler(req, res) {
     reqMonth,
     reqYear
   );
+  // Calling the 'newBudgetAmounts' function with the provided parameters and storing the returned data in variables
+  const newBudgetAmounts = await getBudgetAmounts(
+    newTransactions,
+    newBudgets,
+    await getCategoryInfo()
+  );
 
-  const newBudgetAmounts = getBudgetAmounts(newTransactions, newBudgets);
+  // Calling the 'newBudgetSum' function with the provided parameters and storing the returned data in variables
   const newBudgetSum = getBudgetSum(newTransactions, newBudgets);
+  // Calling the 'newBudgetSum' function with the provided parameters and storing the returned data in variables
   const newBudgetPieChartColour = getBudgetPieChartColour(newBudgetSum);
 
   // Sending the response as a JSON string containing the retrieved data
