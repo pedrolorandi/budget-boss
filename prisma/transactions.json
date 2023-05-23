@@ -171,7 +171,7 @@
     "categoryId": 9
   },
   {
-    "date": "2023-05-20T15:30:00.000Z",
+    "date": "2023-05-24T15:30:00.000Z",
     "amountDecimal": 34500,
     "title": "Home Improvement",
     "type": "Expense",
@@ -891,7 +891,7 @@
     "categoryId": 17
   },
   {
-    "date": "2023-05-29T10:00:00.000Z",
+    "date": "2023-05-25T10:00:00.000Z",
     "amountDecimal": 272725,
     "title": "Salary",
     "type": "Income",
@@ -932,7 +932,7 @@
     "title": "Salary",
     "type": "Income",
     "sourceId": 21,
-    "accountId": 1,
+    "accountId": 2,
     "categoryId": 17
   },
   {
@@ -941,16 +941,16 @@
     "title": "Salary",
     "type": "Income",
     "sourceId": 21,
-    "accountId": 1,
+    "accountId": 2,
     "categoryId": 17
   },
   {
     "date": "2023-08-21T10:00:00.000Z",
-    "amountDecimal": 272725,
+    "amountDecimal": 672725,
     "title": "Salary",
     "type": "Income",
     "sourceId": 21,
-    "accountId": 1,
+    "accountId": 2,
     "categoryId": 17
   }
 ]

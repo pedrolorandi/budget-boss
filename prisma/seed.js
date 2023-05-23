@@ -4,6 +4,8 @@ const accounts = require("./accounts.json");
 const categories = require("./categories.json");
 const sources = require("./sources.json");
 const transactions = require("./transactions.json");
+const budgets = require("./budgets.json");
+const budgetCategories = require("./budgetCategory.json");
 
 const prisma = new PrismaClient();
 
@@ -40,6 +42,20 @@ async function main() {
   for (const transaction of transactions) {
     await prisma.transaction.create({
       data: transaction,
+    });
+  }
+
+  // Budgets
+  for (const budget of budgets) {
+    await prisma.budget.create({
+      data: budget,
+    });
+  }
+
+  // BudgetCategory
+  for (const budgetCategory of budgetCategories) {
+    await prisma.budgetCategory.create({
+      data: budgetCategory,
     });
   }
 }
