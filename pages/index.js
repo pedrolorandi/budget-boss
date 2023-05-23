@@ -75,9 +75,9 @@ export default function Home({
           </Link>
         </div>
         <div className="w-1/3 ms-2 flex flex-col">
-          {accounts.map((account) => {
+          {accounts.map((account, i) => {
             return (
-              <Link href="/transactions" className="flex">
+              <Link href="/transactions" className="flex" key={account.id}>
                 <AccountTile
                   key={account.id}
                   account={account}
