@@ -35,7 +35,7 @@ Organize your monthly budget and see how you’re progressing daily and meeting 
 Clone the project
 
 ```bash
-  git clone https://github.com/Ruheee/CardHeros
+  git clone https://github.com/pedro-lorandi/budget-boss
 ```
 
 Go to the project directory
