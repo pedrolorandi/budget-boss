@@ -100,4 +100,4 @@ npx prisma db push --force-reset && npx prisma db push && npx prisma db seed
 ```
 
 ### schema
-
+!["schema"](https://github.com/pedrolorandi/budget-boss/blob/main/planning/db_schema.png?raw=true)
