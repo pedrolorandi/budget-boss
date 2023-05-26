@@ -20,15 +20,15 @@ Organize your monthly budget and see how you’re progressing daily and meeting 
 
 ### Transactions
 
-!["User Page"](public/images/screenshots/admin_page.gif)
+!["Transactions"](https://github.com/pedrolorandi/budget-boss/blob/main/planning/transactions_screen.gif?raw=true)
 
 ### Budgets
 
-!["Filtering"](public/images/screenshots/filter.gif)
+!["Budgets"](https://github.com/pedrolorandi/budget-boss/blob/main/planning/budgets_screen.gif?raw=true)
 
 ### Reports
 
-!["Card Id"](public/images/screenshots/contact_seller.gif)
+!["Reports"](https://github.com/pedrolorandi/budget-boss/blob/main/planning/reports_screen.gif?raw=true)
 
 ## Run Locally
 
