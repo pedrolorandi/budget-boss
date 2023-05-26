@@ -1,38 +1,103 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# BudgeBoss - Lighthouse Labs final project
 
-## Getting Started
+In today’s age, keeping track of your finances is more important than ever. With so many different transactions like groceries, side hustles, and monthly subscriptions, understanding how your money flows can become a pain.
 
-First, run the development server:
+That is why we’d like to introduce BudgetBoss, a budgeting app that will keep track of your money for you. With BudgetBoss, you can record your income and expenses in your various accounts and view them all in one place with clean visual graphs.
+
+Organize your monthly budget and see how you’re progressing daily and meeting your budget goals so you can be the boss of your own budget.<br/><br/>
+
+## Authors
+
+- [@binding1](https://github.com/binding1)
+- [@Dango3010](https://github.com/Dango3010)
+- [@pedrolorandi](https://github.com/pedrolorandi)
+
+## Demo
+
+### Overview
+
+!["Home Page"](public/images/screenshots/home_page.gif)
+
+### Transactions
+
+!["User Page"](public/images/screenshots/admin_page.gif)
+
+### Budgets
+
+!["Filtering"](public/images/screenshots/filter.gif)
+
+### Reports
+
+!["Card Id"](public/images/screenshots/contact_seller.gif)
+
+## Run Locally
+
+Clone the project
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+  git clone https://github.com/Ruheee/CardHeros
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Go to the project directory
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+```bash
+  cd budget-boss
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+Install dependencies
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+```bash
+  npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Start the server
 
-## Learn More
+```bash
+  npm run dev
+```
+On browser
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+localhost:3000
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Tech Stack
 
-## Deploy on Vercel
+React, Next.js, SQLite, Prisma, Tailwind
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Dependencies
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- @fortawesome/fontawesome-svg-core ^6.4.0
+- @fortawesome/free-regular-svg-icons ^6.4.0
+- @fortawesome/free-solid-svg-icons ^6.4.0
+- @fortawesome/react-fontawesome ^0.2.0
+- @prisma/client ^4.12.0
+- axios ^1.4.0
+- chart.js ^4.3.0
+- chartjs-plugin-datalabels ^2.2.0
+- eslint 8.37.0
+- eslint-config-next 13.2.4
+- next 13.2.4
+- prisma ^4.12.0
+- react 18.2.0
+- react-chartjs-2 ^5.2.0
+- react-dom 18.2.0
+- tailwind ^4.0.0
+
+## Database
+
+Database schema migrations
+
+```bash
+npx prisma migrate dev
+```
+
+Force reset database, apply migrations, and seed data 
+
+```bash
+npx prisma db push --force-reset && npx prisma db push && npx prisma db seed
+```
+
+### schema
+
