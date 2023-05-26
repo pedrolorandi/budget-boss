@@ -16,7 +16,7 @@ Organize your monthly budget and see how you’re progressing daily and meeting 
 
 ### Overview
 
-!["Home Page"](public/images/screenshots/home_page.gif)
+!["Overview"](https://github.com/pedrolorandi/budget-boss/blob/main/planning/overview_screen.gif?raw=true)
 
 ### Transactions
 
